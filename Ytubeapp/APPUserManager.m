@@ -1,0 +1,254 @@
+//
+//  APPVideoManager.m
+//  Ytubeapp
+//
+//  Created by Matthias Stumpp on 10.11.12.
+//  Copyright (c) 2012 Matthias Stumpp. All rights reserved.
+//
+
+#import "APPUserManager.h"
+#import "APPUserProfileQuery.h"
+#import "APPUserImageQuery.h"
+
+@interface APPUserManager()
+@property (strong, nonatomic) GDataEntryYouTubeUserProfile *currentUserProfile;
+@property (strong, nonatomic) UIImage *currentUserImage;
+@property (strong, nonatomic) GTMOAuth2Authentication *auth;
+
+// userProfile observer
+@property (strong, nonatomic) NSMutableArray<UserProfileChangeDelegate> *userProfileObserver;
+@end
+
+@implementation APPUserManager
+
+static APPUserManager *classInstance = nil;
+
++(APPUserManager*)classInstance
+{
+    if (classInstance == nil) {
+        classInstance = [[super allocWithZone:NULL] init];
+        classInstance.currentUserProfile = nil;
+        classInstance.currentUserImage = nil;
+        classInstance.userProfileObserver = [NSMutableArray array];
+    }
+    return classInstance;
+}
+
+-(void)initWithAuth:(GTMOAuth2Authentication*)auth onCompletion:(void (^)(GDataEntryYouTubeUserProfile *user, NSError *error))callback
+{
+    // if auth parameter nil, do nothing
+    // check if auth object can authorize
+    if (!auth || !auth.canAuthorize) {
+        if (callback)
+            callback(nil, [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"auth is nil or cannot authorize"] code:1 userInfo:nil]);
+        return;
+    }
+
+    [self signOutOnCompletion:^(BOOL isSignedOut) {
+        if (isSignedOut) {
+            self.auth = auth;
+
+            [self currentUserProfileWithCallback:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
+                if (user && !error) {
+                    if (callback)
+                        callback(user, nil);
+                    
+                } else {
+                    if (callback)
+                        callback(nil, error);
+                }
+            }];
+
+        } else {
+            if (callback)
+                callback(nil, [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"could not sign you out"] code:1 userInfo:nil]);
+        }
+    }];
+}
+
+-(void)signIn:(GTMOAuth2Authentication*)auth onCompletion:(void (^)(GDataEntryYouTubeUserProfile *user, NSError *error))callback
+{
+    // if auth parameter nil, do nothing
+    // check if auth object can authorize
+    if (!auth || !auth.canAuthorize) {
+        if (callback)
+            callback(nil, [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"auth is nil or cannot authorize"] code:1 userInfo:nil]);
+        return;
+    }
+
+    [self signOutOnCompletion:^(BOOL isSignedOut) {
+        if (isSignedOut) {
+            self.auth = auth;
+
+            [self currentUserProfileWithCallback:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
+                if (user && !error) {
+
+                    // inform observers
+                    NSEnumerator *e = [self.userProfileObserver objectEnumerator];
+                    id object;
+                    while (object = [e nextObject]) {
+                        [object userSignedIn:user andAuth:self.auth];
+                    }
+
+                    if (callback)
+                        callback(user, nil);
+                    
+                } else {
+                    if (callback)
+                        callback(nil, error);
+                }
+            }];
+
+        } else {
+            if (callback)
+                callback(nil, [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"error when authenticating"] code:1 userInfo:nil]);
+        }
+    }];
+}
+
+-(void)signOutOnCompletion:(void (^)(BOOL isSignedOut))callback
+{
+    if (self.currentUserProfile) {
+        self.currentUserProfile = nil;
+        self.currentUserImage = nil;
+
+        // remove the stored Google authentication from the keychain, if any
+        [GTMOAuth2ViewControllerTouch removeAuthFromKeychainForName:kKeychainItemName];
+                
+        // remove the token from Google's servers
+        [GTMOAuth2ViewControllerTouch revokeTokenForGoogleAuthentication:self.auth];
+
+        self.auth = nil;
+
+        // inform observers
+        NSEnumerator *e = [self.userProfileObserver objectEnumerator];
+        id object;
+        while (object = [e nextObject])
+            [object userSignedOut];
+
+        if (callback)
+            callback(TRUE);
+    
+    } else {
+        if (callback)
+            callback(TRUE);
+    }
+}
+
+-(BOOL)canAuthorize
+{
+    if (self.auth && self.auth.canAuthorize)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+-(BOOL)isUserSignedIn
+{
+    if ([self canAuthorize] && self.currentUserProfile)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+-(GDataEntryYouTubeUserProfile*)getUserProfile
+{
+    if ([self isUserSignedIn])
+        return self.currentUserProfile;
+    return nil;
+}
+
+-(void)currentUserProfileWithCallback:(void (^)(GDataEntryYouTubeUserProfile *user, NSError *error))callback
+{
+    if ([self isUserSignedIn]) {
+        if (callback)
+            callback(self.currentUserProfile, nil);
+        return;
+    }
+
+    if ([self canAuthorize]) {
+        // here we have to get the queue
+        [[APPUserProfileQuery instanceWithQueue:nil] process:nil onCompletion:^(int state, id data, NSError *error) {
+                switch (state)
+                {
+                    case tLoaded:
+                    {
+                        if (error) {
+                            if (callback)
+                                callback(nil, error);
+
+                        } else {
+                            self.currentUserProfile = (GDataEntryYouTubeUserProfile*) data;
+                            if (callback)
+                                callback(self.currentUserProfile, nil);
+                        }
+                        break;
+                    }
+
+                    default:
+                    {
+                          NSLog(@"currentUserProfileWithCallback switch default");
+                          break;
+                    }
+                }
+        }];
+    } else {
+        if (callback)
+            callback(nil, nil);
+    }
+}
+
+-(void)imageForCurrentUserWithCallback:(void (^)(UIImage *image))callback
+{
+    if (![self isUserSignedIn]) {
+        if (callback)
+            callback(nil);
+        return;
+    }
+
+    if (self.currentUserImage) {
+        if (callback)
+            callback(self.currentUserImage);
+        return;
+    }
+
+    // here we have to get the queue
+    [[APPUserImageQuery instanceWithQueue:nil] process:[self getUserProfile] onCompletion:^(int state, id data, NSError *error) {
+        switch (state)
+        {
+            case tLoaded:
+            {
+                if (error) {
+                    if (callback)
+                        callback(nil);
+
+                } else {
+                    self.currentUserImage = data;
+                    if (callback)
+                        callback(self.currentUserImage);
+                }
+                break;
+            }
+
+            default:
+            {
+                NSLog(@"imageForCurrentUserWithCallback switch default");
+                break;
+            }
+        }
+    }];
+}
+
+-(void)registerUserProfileObserverWithDelegate:(id<UserProfileChangeDelegate>) observer
+{
+    if (![self.userProfileObserver containsObject:observer])
+        [self.userProfileObserver addObject:observer];
+}
+
+-(void)unregisterUserProfileObserverWithDelegate:(id<UserProfileChangeDelegate>) observer
+{
+    if ([self.userProfileObserver containsObject:observer])
+        [self.userProfileObserver removeObject:observer];
+}
+
+@end
