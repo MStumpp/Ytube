@@ -1,0 +1,50 @@
+PODS:
+  - GData (1.9.1):
+    - GData/Core
+    - GData/XMLNode
+    - gtm-oauth2
+    - GTMHTTPFetcher
+  - GData/Core (1.9.1):
+    - gtm-oauth2
+    - GTMHTTPFetcher
+  - GData/XMLNode (1.9.1):
+    - gtm-oauth2
+    - GTMHTTPFetcher
+  - gtm-oauth2 (0.0.1):
+    - gtm-oauth2/Core
+    - GTMHTTPFetcher
+    - SBJson
+  - gtm-oauth2/Core (0.0.1):
+    - gtm-oauth2/Core/Mac
+    - gtm-oauth2/Core/Touch
+    - GTMHTTPFetcher
+    - SBJson
+  - gtm-oauth2/Core/Mac (0.0.1):
+    - GTMHTTPFetcher
+    - SBJson
+  - gtm-oauth2/Core/Touch (0.0.1):
+    - GTMHTTPFetcher
+    - SBJson
+  - GTMHTTPFetcher (0.0.1):
+    - SBJson
+  - MBProgressHUD (0.6)
+  - QueryManager (0.0.1)
+  - SBJson (3.2)
+  - SSPullToRefresh (1.1.2)
+
+DEPENDENCIES:
+  - GData (~> 1.9.1)
+  - MBProgressHUD (~> 0.6)
+  - QueryManager (~> 0.0.1)
+  - SSPullToRefresh (~> 1.1.2)
+
+SPEC CHECKSUMS:
+  GData: 211721231a39df9ef7d9ef28242ada695245019e
+  gtm-oauth2: c4824003b569bc9b96446661fb92dbc681335499
+  GTMHTTPFetcher: 99f026c2d7afbcf2a051a64a3e81dcaedd060135
+  MBProgressHUD: 9b55a90566fb5d07df0602f6fd9fa04510ad5d52
+  QueryManager: 41a88cbb96b9258f53424710678cf05b2b257a9b
+  SBJson: e60b4dc22448c2ae1e754b523a4ab53408e85c8d
+  SSPullToRefresh: 8d8360b0ff0dc7b344656b48ddf9732c47e78806
+
+COCOAPODS: 0.20.2

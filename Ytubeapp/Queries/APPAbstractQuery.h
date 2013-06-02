@@ -7,9 +7,9 @@
 
 
 #import <Foundation/Foundation.h>
-#import "Query.h"
 #import "GDataServiceGoogleYouTube.h"
 #import "GDataYouTube.h"
+#import "Query.h"
 
 @interface APPAbstractQuery : Query
 @property (strong, nonatomic) GDataServiceTicket *ticket;

@@ -15,7 +15,7 @@
 {
     NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/users/default/watch_history?v=2"]];
     if ([self service]) {
-        self.ticket = [[self service] feed:feedURL completionHandler:^(GDataServiceTicket *ticket, GDataEntryBase *entry, NSError *error) {
+        self.ticket = [[self service] fetchFeedWithURL:feedURL completionHandler:^(GDataServiceTicket *ticket, GDataEntryBase *entry, NSError *error) {
             [self loadedWithData:entry andError:error];
         }];
 

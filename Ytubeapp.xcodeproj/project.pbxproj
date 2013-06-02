@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		167C90364DDAF1DB4815CCA7 /* APPUserProfileQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9B1A0F3424DD6696F8F2 /* APPUserProfileQuery.m */; };
 		167C90FD62371D247F79B473 /* APPVideoMostPopular.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C97902BF2586326EB9918 /* APPVideoMostPopular.m */; };
+		167C91FBC942DC9AC5BBFA45 /* UITableViewMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9161F12FF7750B536E9E /* UITableViewMaskView.m */; };
 		167C92B23A20FAE8DB6E3A72 /* APPVideoRecentlyFeatured.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9F9C64B16028E82F0328 /* APPVideoRecentlyFeatured.m */; };
 		167C94754BA71F233DDFA741 /* APPCommentLogicHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C905269590029393BA823 /* APPCommentLogicHelper.m */; };
 		167C971E2584C67A635F6023 /* Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9BFC5F71E50CCD092FC6 /* Helpers.m */; };
@@ -236,14 +237,15 @@
 		39EC442C15F6B8D800CE4C0A /* video_cell_menu_icon_arrow_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39EC442715F6B8D600CE4C0A /* video_cell_menu_icon_arrow_up@2x.png */; };
 		39EC442D15F6B8D800CE4C0A /* video_cell_menu_icon_heart_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39EC442815F6B8D700CE4C0A /* video_cell_menu_icon_heart_up@2x.png */; };
 		39EC442E15F6B8D800CE4C0A /* video_cell_menu_icon_info_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39EC442915F6B8D700CE4C0A /* video_cell_menu_icon_info_up@2x.png */; };
-		39ECB23216A81E0100E65E1D /* UITableViewMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 39ECB23116A81E0100E65E1D /* UITableViewMaskView.m */; };
 		39ECB23416A8559300E65E1D /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39ECB23316A8558F00E65E1D /* Default@2x.png */; };
 		39ECB23616A8565D00E65E1D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39ECB23516A8565B00E65E1D /* Default-568h@2x.png */; };
+		9D7ED0C29CC04BFAAF341D65 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D3343BFEBAF4CA0B449026D /* libPods.a */; settings = {}; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		167C905269590029393BA823 /* APPCommentLogicHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPCommentLogicHelper.m; sourceTree = "<group>"; };
 		167C91061D83FD13E27581C3 /* APPVideoRelatedVideos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoRelatedVideos.h; path = Videos/APPVideoRelatedVideos.h; sourceTree = "<group>"; };
+		167C9161F12FF7750B536E9E /* UITableViewMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewMaskView.m; sourceTree = "<group>"; };
 		167C919C4F5F8E810016BFC6 /* APPUserProfileQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPUserProfileQuery.h; sourceTree = "<group>"; };
 		167C922E393B79CDC58A4210 /* APPVideoMostPopular.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoMostPopular.h; path = Videos/APPVideoMostPopular.h; sourceTree = "<group>"; };
 		167C92803E4B563AA9DDC27F /* APPVideoWatchHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPVideoWatchHistory.m; path = Videos/APPVideoWatchHistory.m; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 		167C92C4DE0862F2B8A29348 /* APPCommentLogicHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPCommentLogicHelper.h; sourceTree = "<group>"; };
 		167C93FEA7165AB95AAA92B4 /* APPVideoTopFavorites.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoTopFavorites.h; path = Videos/APPVideoTopFavorites.h; sourceTree = "<group>"; };
 		167C941801F74387F5A00D96 /* APPVideoLogicHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPVideoLogicHelper.m; sourceTree = "<group>"; };
+		167C944729BF6DD28CD601A8 /* UITableViewMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewMaskView.h; sourceTree = "<group>"; };
 		167C953AE36CC1D4A8C47DCA /* APPVideoQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoQuery.h; path = Videos/APPVideoQuery.h; sourceTree = "<group>"; };
 		167C9784251A5566416E524F /* APPVideoRecentlyFeatured.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoRecentlyFeatured.h; path = Videos/APPVideoRecentlyFeatured.h; sourceTree = "<group>"; };
 		167C97902BF2586326EB9918 /* APPVideoMostPopular.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPVideoMostPopular.m; path = Videos/APPVideoMostPopular.m; sourceTree = "<group>"; };
@@ -540,10 +543,10 @@
 		39EC443315F78EAD00CE4C0A /* APPFeaturedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPFeaturedViewController.h; sourceTree = "<group>"; };
 		39EC443415F78EAD00CE4C0A /* APPFeaturedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPFeaturedViewController.m; sourceTree = "<group>"; };
 		39ECB22916A76E6B00E65E1D /* APPProtocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPProtocols.h; sourceTree = "<group>"; };
-		39ECB23016A81E0100E65E1D /* UITableViewMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewMaskView.h; sourceTree = "<group>"; };
-		39ECB23116A81E0100E65E1D /* UITableViewMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewMaskView.m; sourceTree = "<group>"; };
 		39ECB23316A8558F00E65E1D /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../../Default@2x.png"; sourceTree = "<group>"; };
 		39ECB23516A8565B00E65E1D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../../Default-568h@2x.png"; sourceTree = "<group>"; };
+		8D3343BFEBAF4CA0B449026D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libPods.a; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		916ADCFB97E841D48CB69C0C /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -557,6 +560,7 @@
 				395A877115E186F4004F39E2 /* UIKit.framework in Frameworks */,
 				395A877315E186F4004F39E2 /* Foundation.framework in Frameworks */,
 				395A877515E186F4004F39E2 /* CoreGraphics.framework in Frameworks */,
+				9D7ED0C29CC04BFAAF341D65 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -611,6 +615,15 @@
 				167C95D398738B768E34A330 /* Video */,
 			);
 			path = Queries;
+			sourceTree = "<group>";
+		};
+		167C9F1AF85DC62E3A63C564 /* UITableViewMask */ = {
+			isa = PBXGroup;
+			children = (
+				167C944729BF6DD28CD601A8 /* UITableViewMaskView.h */,
+				167C9161F12FF7750B536E9E /* UITableViewMaskView.m */,
+			);
+			name = UITableViewMask;
 			sourceTree = "<group>";
 		};
 		39196AFB165E9A3200F8A461 /* NSDate-TimeAgo */ = {
@@ -793,6 +806,7 @@
 			children = (
 				395823D61691DDDC00FC42C1 /* UITableViewHeaderMenuView.h */,
 				395823D71691DDDC00FC42C1 /* UITableViewHeaderMenuView.m */,
+				167C9F1AF85DC62E3A63C564 /* UITableViewMask */,
 			);
 			name = UITableViewHeaderMenu;
 			sourceTree = "<group>";
@@ -815,6 +829,7 @@
 				395A877615E186F4004F39E2 /* Ytubeapp */,
 				395A876F15E186F4004F39E2 /* Frameworks */,
 				395A876D15E186F4004F39E2 /* Products */,
+				916ADCFB97E841D48CB69C0C /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -833,6 +848,7 @@
 				395A877015E186F4004F39E2 /* UIKit.framework */,
 				395A877215E186F4004F39E2 /* Foundation.framework */,
 				395A877415E186F4004F39E2 /* CoreGraphics.framework */,
+				8D3343BFEBAF4CA0B449026D /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -840,7 +856,6 @@
 		395A877615E186F4004F39E2 /* Ytubeapp */ = {
 			isa = PBXGroup;
 			children = (
-				39ECB22F16A81DC700E65E1D /* UITableViewMask */,
 				39E16B68169DB20100447144 /* Views */,
 				39E16B48169B1A7400447144 /* Pervasive */,
 				395823D91691E25000FC42C1 /* UITableViewAtBottom */,
@@ -1131,15 +1146,6 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
-		39ECB22F16A81DC700E65E1D /* UITableViewMask */ = {
-			isa = PBXGroup;
-			children = (
-				39ECB23016A81E0100E65E1D /* UITableViewMaskView.h */,
-				39ECB23116A81E0100E65E1D /* UITableViewMaskView.m */,
-			);
-			name = UITableViewMask;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1147,9 +1153,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 395A878415E186F4004F39E2 /* Build configuration list for PBXNativeTarget "Ytubeapp" */;
 			buildPhases = (
+				5CC7244286EF4FE5A86F55BE /* Check Pods Manifest.lock */,
 				395A876815E186F4004F39E2 /* Sources */,
 				395A876915E186F4004F39E2 /* Frameworks */,
 				395A876A15E186F4004F39E2 /* Resources */,
+				3BCB5D83BC04405385C6752F /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1184,6 +1192,8 @@
 			mainGroup = 395A876115E186F4004F39E2;
 			productRefGroup = 395A876D15E186F4004F39E2 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+			);
 			projectRoot = "";
 			targets = (
 				395A876B15E186F4004F39E2 /* Ytubeapp */,
@@ -1369,6 +1379,39 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		3BCB5D83BC04405385C6752F /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 1;
+		};
+		5CC7244286EF4FE5A86F55BE /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 1;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		395A876815E186F4004F39E2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -1416,7 +1459,6 @@
 				39B89851169E3B2600D08F5B /* APPSingleTableCustomBarVideoListViewController.m in Sources */,
 				39B89854169E3BE100D08F5B /* APPSingleTableNavigationBarVideoListViewController.m in Sources */,
 				39B89857169E3C4900D08F5B /* APPSingleTableCustomNavigationBarVideoListViewController.m in Sources */,
-				39ECB23216A81E0100E65E1D /* UITableViewMaskView.m in Sources */,
 				167C971E2584C67A635F6023 /* Helpers.m in Sources */,
 				167C9DF7FDBB224ABC4A8D33 /* APPVideoLogicHelper.m in Sources */,
 				167C94754BA71F233DDFA741 /* APPCommentLogicHelper.m in Sources */,
@@ -1432,6 +1474,7 @@
 				167C9EB0DD67E62FB2C3C252 /* APPVideoTopFavorites.m in Sources */,
 				167C9E2AF7715F80F60B2C16 /* APPVideoTopRated.m in Sources */,
 				167C9729B4D3D4B033834F20 /* APPVideoWatchHistory.m in Sources */,
+				167C91FBC942DC9AC5BBFA45 /* UITableViewMaskView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1512,6 +1555,7 @@
 		};
 		395A878515E186F4004F39E2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 916ADCFB97E841D48CB69C0C /* Pods.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Ytubeapp/Ytubeapp-Prefix.pch";
@@ -1527,12 +1571,14 @@
 					"-lxml2",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods\"/**";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
 		};
 		395A878615E186F4004F39E2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 916ADCFB97E841D48CB69C0C /* Pods.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Ytubeapp/Ytubeapp-Prefix.pch";
@@ -1548,6 +1594,7 @@
 					"-lxml2",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods\"/**";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
