@@ -14,4 +14,7 @@
 @interface APPAbstractQuery : Query
 @property (strong, nonatomic) GDataServiceTicket *ticket;
 -(GDataServiceGoogleYouTube*)service;
+// some helpers methods
+-(NSString*)videoID:(GDataEntryYouTubeVideo *)video;
+-(NSString*)timeString:(int)timeKey;
 @end
