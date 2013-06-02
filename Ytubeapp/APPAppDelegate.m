@@ -49,6 +49,8 @@
         [standardUserDefaults synchronize];
     }
 
+
+
     [self.window makeKeyAndVisible];
 
     return YES;

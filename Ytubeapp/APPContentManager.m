@@ -11,10 +11,10 @@
 #import "APPQueryFetchEntryByInsertingEntry.h"
 #import "APPQueryDeleteEntry.h"
 
-#define tTodayStr @"today"
-#define tWeekStr @"this_week"
-#define tMonthStr @"this_month"
-#define tAllStr @"all_time"
+//#define tTodayStr @"today"
+//#define tWeekStr @"this_week"
+//#define tMonthStr @"this_month"
+//#define tAllStr @"all_time"
 
 @interface APPContentManager()
 @property (strong, nonatomic) GDataServiceGoogleYouTube *service;
@@ -30,63 +30,6 @@
 @end
 
 @implementation APPContentManager
-
-static APPContentManager *classInstance = nil;
-
-+(APPContentManager*)classInstance
-{
-    if (classInstance == nil) {
-        classInstance = [[super allocWithZone:NULL] init];
-        classInstance.queryManager = [APPQueryManager initWithService:classInstance.service];
-    }
-    return classInstance;
-}
-
-//////
-// Videos
-//////
-
--(APPQueryTicket*)recentlyFeaturedWithPrio:(int)prio context:(id)context delegate:(id)del didFinishSelector:(SEL)sel
-{
-    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/standardfeeds/recently_featured"]];
-    return [self.queryManager process:[[[APPQueryFetchFeedWithURL alloc] initWithContext:context andDelegate:del andSelector:sel] fetchFeedWithURL:feedURL] prio:prio];
-}
-
--(APPQueryTicket*)mostPopular:(int)time prio:(int)prio context:(id)context delegate:(id)del didFinishSelector:(SEL)sel
-{
-    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/standardfeeds/most_popular?time=%@", [self timeString:time]]];
-    return [self.queryManager process:[[[APPQueryFetchFeedWithURL alloc] initWithContext:context andDelegate:del andSelector:sel] fetchFeedWithURL:feedURL] prio:prio];
-}
-
--(APPQueryTicket*)topRated:(int)time prio:(int)prio context:(id)context delegate:(id)del didFinishSelector:(SEL)sel
-{
-    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/standardfeeds/top_rated?time=%@", [self timeString:time]]];
-    return [self.queryManager process:[[[APPQueryFetchFeedWithURL alloc] initWithContext:context andDelegate:del andSelector:sel] fetchFeedWithURL:feedURL] prio:prio];
-}
-
--(APPQueryTicket*)topFavorites:(int)time prio:(int)prio context:(id)context delegate:(id)del didFinishSelector:(SEL)sel
-{
-    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/standardfeeds/top_favorites?time=%@", [self timeString:time]]];
-    return [self.queryManager process:[[[APPQueryFetchFeedWithURL alloc] initWithContext:context andDelegate:del andSelector:sel] fetchFeedWithURL:feedURL] prio:prio];
-}
-
--(APPQueryTicket*)queryVideos:(NSString*)query prio:(int)prio context:(id)context delegate:(id)del didFinishSelector:(SEL)sel
-{
-    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/videos?q=%@", query]];
-    return [self.queryManager process:[[[APPQueryFetchFeedWithURL alloc] initWithContext:context andDelegate:del andSelector:sel] fetchFeedWithURL:feedURL] prio:prio];
-}
-
--(APPQueryTicket*)historyWithPrio:(int)prio context:(id)context delegate:(id)del didFinishSelector:(SEL)sel
-{
-    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/users/default/watch_history?v=2"]];
-    return [self.queryManager process:[[[APPQueryFetchFeedWithURL alloc] initWithContext:context andDelegate:del andSelector:sel] fetchFeedWithURL:feedURL] prio:prio];
-}
-
--(APPQueryTicket*)relatedVideos:(GDataEntryYouTubeVideo*)video prio:(int)prio context:(id)context delegate:(id)del didFinishSelector:(SEL)sel
-{
-    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/videos/%@/related", [self videoID:video]]];
-    return [self.queryManager process:[[[APPQueryFetchFeedWithURL alloc] initWithContext:context andDelegate:del andSelector:sel] fetchFeedWithURL:feedURL] prio:prio];
-}
 
 //////
 // Like / Dislike
@@ -637,37 +580,37 @@ static APPContentManager *classInstance = nil;
 // private helpers
 //////
 
-- (NSString*)videoID:(GDataEntryYouTubeVideo *)video
-{
-    GDataYouTubeMediaGroup *mediaGroupVideo = [video mediaGroup];
-    return [mediaGroupVideo videoID];
-}
-
-- (NSString*)timeString:(int)timeKey
-{
-    switch (timeKey)
-    {
-        case tToday:
-        {
-            return tTodayStr;
-            break;
-        }
-        case tWeek:
-        {
-            return tWeekStr;
-            break;
-        }
-        case tMonth:
-        {
-            return tMonthStr;
-            break;
-        }
-        default:
-        {
-            return tAllStr;
-            break;
-        }
-    }
-}
+//- (NSString*)videoID:(GDataEntryYouTubeVideo *)video
+//{
+//    GDataYouTubeMediaGroup *mediaGroupVideo = [video mediaGroup];
+//    return [mediaGroupVideo videoID];
+//}
+//
+//- (NSString*)timeString:(int)timeKey
+//{
+//    switch (timeKey)
+//    {
+//        case tToday:
+//        {
+//            return tTodayStr;
+//            break;
+//        }
+//        case tWeek:
+//        {
+//            return tWeekStr;
+//            break;
+//        }
+//        case tMonth:
+//        {
+//            return tMonthStr;
+//            break;
+//        }
+//        default:
+//        {
+//            return tAllStr;
+//            break;
+//        }
+//    }
+//}
 
 @end
