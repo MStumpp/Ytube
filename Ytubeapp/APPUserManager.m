@@ -9,6 +9,7 @@
 #import "APPUserManager.h"
 #import "APPDefaultUserProfileQuery.h"
 #import "APPUserImageQuery.h"
+#import "APPGlobals.h"
 
 @interface APPUserManager()
 @property (strong, nonatomic) GDataEntryYouTubeUserProfile *currentUserProfile;
@@ -40,7 +41,7 @@ static APPUserManager *classInstance = nil;
     // check if auth object can authorize
     if (!auth || !auth.canAuthorize) {
         if (callback)
-            callback(nil, [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"auth is nil or cannot authorize"] code:1 userInfo:nil]);
+            callback(nil, [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"auth is nil or auth cannot authorize"] code:1 userInfo:nil]);
         return;
     }
 
@@ -61,7 +62,7 @@ static APPUserManager *classInstance = nil;
 
         } else {
             if (callback)
-                callback(nil, [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"could not sign you out"] code:1 userInfo:nil]);
+                callback(nil, [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"could not sign user out"] code:1 userInfo:nil]);
         }
     }];
 }
@@ -112,8 +113,11 @@ static APPUserManager *classInstance = nil;
         self.currentUserProfile = nil;
         self.currentUserImage = nil;
 
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
+        NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
+
         // remove the stored Google authentication from the keychain, if any
-        [GTMOAuth2ViewControllerTouch removeAuthFromKeychainForName:kKeychainItemName];
+        [GTMOAuth2ViewControllerTouch removeAuthFromKeychainForName:[settings objectForKey:@"kKeychainItemName"]];
                 
         // remove the token from Google's servers
         [GTMOAuth2ViewControllerTouch revokeTokenForGoogleAuthentication:self.auth];
@@ -169,28 +173,28 @@ static APPUserManager *classInstance = nil;
     if ([self canAuthorize]) {
         // here we have to get the queue
         [[APPDefaultUserProfileQuery instanceWithQueue:nil] process:nil onCompletion:^(int state, id data, NSError *error) {
-                switch (state)
+            switch (state)
+            {
+                case tLoaded:
                 {
-                    case tLoaded:
-                    {
-                        if (error) {
-                            if (callback)
-                                callback(nil, error);
+                    if (!error) {
+                        self.currentUserProfile = (GDataEntryYouTubeUserProfile*) data;
+                        if (callback)
+                            callback(self.currentUserProfile, nil);
 
-                        } else {
-                            self.currentUserProfile = (GDataEntryYouTubeUserProfile*) data;
-                            if (callback)
-                                callback(self.currentUserProfile, nil);
-                        }
-                        break;
+                    } else {
+                        if (callback)
+                            callback(nil, error);
                     }
-
-                    default:
-                    {
-                          NSLog(@"currentUserProfileWithCallback switch default");
-                          break;
-                    }
+                    break;
                 }
+
+                default:
+                {
+                      NSLog(@"currentUserProfileWithCallback switch default");
+                      break;
+                }
+            }
         }];
     } else {
         if (callback)
@@ -212,8 +216,7 @@ static APPUserManager *classInstance = nil;
         return;
     }
 
-    // here we have to get the queue
-    [[APPUserImageQuery instanceWithQueue:nil] process:[self getUserProfile] onCompletion:^(int state, id data, NSError *error) {
+    [[APPUserImageQuery instanceWithQueue:[[APPGlobals getGlobalForKey:@"querymanager"] getQueueWithIdentifier:@"queue1"]] process:[self getUserProfile] onCompletion:^(int state, id data, NSError *error) {
         switch (state)
         {
             case tLoaded:

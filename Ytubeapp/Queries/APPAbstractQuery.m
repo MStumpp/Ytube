@@ -7,14 +7,18 @@
 
 
 #import "APPAbstractQuery.h"
+#import "GTMOAuth2Authentication.h"
 
 @implementation APPAbstractQuery
 
 -(GDataServiceGoogleYouTube*)service
 {
     NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
-    if (standardUserDefaults)
-        return [standardUserDefaults objectForKey:@"service"];
+    if (standardUserDefaults) {
+        GDataServiceGoogleYouTube *ytService = (GDataServiceGoogleYouTube*)[standardUserDefaults objectForKey:@"service"];
+        if ([[ytService authorizer] canAuthorize])
+            return ytService;
+    }
     return nil;
 }
 

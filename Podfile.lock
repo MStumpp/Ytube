@@ -28,14 +28,14 @@ PODS:
   - GTMHTTPFetcher (0.0.1):
     - SBJson
   - MBProgressHUD (0.6)
-  - QueryManager (0.0.1)
+  - QueryManager (0.0.3)
   - SBJson (3.2)
   - SSPullToRefresh (1.1.2)
 
 DEPENDENCIES:
   - GData (~> 1.12.0)
   - MBProgressHUD (~> 0.6)
-  - QueryManager (~> 0.0.1)
+  - QueryManager (~> 0.0.3)
   - SSPullToRefresh (~> 1.1.2)
 
 SPEC CHECKSUMS:
@@ -43,7 +43,7 @@ SPEC CHECKSUMS:
   gtm-oauth2: c4824003b569bc9b96446661fb92dbc681335499
   GTMHTTPFetcher: 99f026c2d7afbcf2a051a64a3e81dcaedd060135
   MBProgressHUD: 9b55a90566fb5d07df0602f6fd9fa04510ad5d52
-  QueryManager: 41a88cbb96b9258f53424710678cf05b2b257a9b
+  QueryManager: 2d2e144cd2458be72d3c93a40819a3b292b3fa5b
   SBJson: e60b4dc22448c2ae1e754b523a4ab53408e85c8d
   SSPullToRefresh: 8d8360b0ff0dc7b344656b48ddf9732c47e78806
 

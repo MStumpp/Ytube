@@ -9,11 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "GDataYouTube.h"
 
-#define tTodayStr @"today"
-#define tWeekStr @"this_week"
-#define tMonthStr @"this_month"
-#define tAllStr @"all_time"
-
 @interface APPContent : NSObject
 +(NSString*)videoID:(GDataEntryYouTubeVideo *)video;
 +(NSString*)timeString:(int)timeKey;

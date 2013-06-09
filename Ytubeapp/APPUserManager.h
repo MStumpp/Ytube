@@ -19,20 +19,22 @@
 
 +(APPUserManager*)classInstance;
 
+// init (async)
 -(void)initWithAuth:(GTMOAuth2Authentication*)auth onCompletion:(void (^)(GDataEntryYouTubeUserProfile *user, NSError *error))callback;
 
-// sign in
+// sign in (async)
 -(void)signIn:(GTMOAuth2Authentication *)auth onCompletion:(void (^)(GDataEntryYouTubeUserProfile *user, NSError *error))callback;
-// sign out
+// sign out (async)
 -(void)signOutOnCompletion:(void (^)(BOOL isSignedOut))callback;
 
+// returns true, if user is signed in, false otherwise (sync)
 -(BOOL)isUserSignedIn;
-// returns Userprofile synchonuously, if available, nil otherwise
+// returns UserProfile, if user is signed in, nil otherwise (sync)
 -(GDataEntryYouTubeUserProfile*)getUserProfile;
-// returns Userprofile asynchonuously
+// returns UserProfile (async)
 -(void)currentUserProfileWithCallback:(void (^)(GDataEntryYouTubeUserProfile *user, NSError *error))callback;
 
-// returns Userprofile asynchonuously, if UseProfile is available, nil otherwise
+// returns UserProfile asynchronuously, if UserProfile is available, nil otherwise
 -(void)imageForCurrentUserWithCallback:(void (^)(UIImage *image))callback;
 
 // observer for UserProfile changes

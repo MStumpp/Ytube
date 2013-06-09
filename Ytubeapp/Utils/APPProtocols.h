@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "GDataYouTube.h"
-#import "APPContentManager.h"
 #import "SSPullToRefreshView.h"
 #import "UITableViewSwipeView.h"
 #import "UITableViewAtBottomView.h"
@@ -25,13 +24,13 @@
 
 // Content
 
-#define tVideos 11
-#define tChannels 12
-#define tPlaylists 13
+//#define tVideos 11
+//#define tChannels 12
+//#define tPlaylists 13
 
 // Buttons
 
-#define tBack 21
+//#define tBack 21
 #define tEdit 22
 #define tAdd 23
 #define tLike 24
@@ -51,6 +50,7 @@
 #define tRelatedVideos 02
 
 @class APPContentManager;
+@class GTMOAuth2Authentication;
 
 @interface APPProtocols : NSObject
 @end

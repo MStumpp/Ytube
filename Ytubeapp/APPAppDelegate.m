@@ -9,6 +9,8 @@
 #import "APPAppDelegate.h"
 #import "APPIndexViewController.h"
 #import "APPUserManager.h"
+#import "QueryManager.h"
+#import "APPGlobals.h"
 
 @interface APPAppDelegate()
 @property (strong, nonatomic) UIWindow *window;
@@ -22,34 +24,37 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = [[APPIndexViewController alloc] init];
     self.window.backgroundColor = [UIColor whiteColor];
-    
-    GTMOAuth2Authentication *auth = [GTMOAuth2ViewControllerTouch authForGoogleFromKeychainForName:kKeychainItemName
-                                                                                          clientID:kMyClientID
-                                                                                      clientSecret:kMyClientSecret];
 
-    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
+    NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
 
-    // init AppUserManager with retrieved auth object, no matter if it can or cannot authorize
-    dispatch_semaphore_t sema = dispatch_semaphore_create(1);
-    [[APPUserManager classInstance] initWithAuth:auth onCompletion:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
-        dispatch_semaphore_signal(sema);
-    }];
-    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+    GTMOAuth2Authentication *auth = [GTMOAuth2ViewControllerTouch authForGoogleFromKeychainForName:[settings objectForKey:@"kKeychainItemName"]
+                                                                                          clientID:[settings objectForKey:@"kMyClientID"]
+                                                                                      clientSecret:[settings objectForKey:@"kMyClientSecret"]];
 
     // set up the service instance
     self.service = [[GDataServiceGoogleYouTube alloc] init];
-    [self.service setYouTubeDeveloperKey:key];
+    [self.service setYouTubeDeveloperKey:[settings objectForKey:@"key"]];
     [self.service setUserAgent:@"AppWhirl-UserApp-1.0"];
     [self.service setShouldCacheDatedData:TRUE];
     //[self.service setServiceShouldFollowNextLinks:FALSE];
     [self.service setAuthorizer:auth];
     [[APPUserManager classInstance] registerUserProfileObserverWithDelegate:self];
-    if (standardUserDefaults) {
-        [standardUserDefaults setObject:self.service forKey:@"service"];
-        [standardUserDefaults synchronize];
-    }
+    [APPGlobals setGlobalObject:self.service forKey:@"service"];
 
+    // set up QueryManager and Queues
+    QueryManager *manager = [QueryManager instance];
+    [manager setNumberOfMaxConcurrentConnections:10];
+    [manager initQueueWithPrio:1 andIdentifier:@"queue1"];
+    [manager initQueueWithPrio:2 andIdentifier:@"queue2"];
+    [APPGlobals setGlobalObject:manager forKey:@"queuemanager"];
 
+    // init APPUserManager with retrieved auth object, no matter if it can or cannot authorize
+    dispatch_semaphore_t sema = dispatch_semaphore_create(1);
+    [[APPUserManager classInstance] initWithAuth:auth onCompletion:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
+        dispatch_semaphore_signal(sema);
+    }];
+    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
 
     [self.window makeKeyAndVisible];
 

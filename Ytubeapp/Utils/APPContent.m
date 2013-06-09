@@ -7,6 +7,12 @@
 
 
 #import "APPContent.h"
+#import "APPProtocols.h"
+
+#define tTodayStr @"today"
+#define tWeekStr @"this_week"
+#define tMonthStr @"this_month"
+#define tAllStr @"all_time"
 
 @implementation APPContent
 
