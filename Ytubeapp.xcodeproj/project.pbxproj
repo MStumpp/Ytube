@@ -7,22 +7,51 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		167C90364DDAF1DB4815CCA7 /* APPUserProfileQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9B1A0F3424DD6696F8F2 /* APPUserProfileQuery.m */; };
+		167C90063D501CD17BD2109E /* APPPlaylistAddVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C94BD67F75AFE2CFEC57A /* APPPlaylistAddVideo.m */; };
+		167C902458E310540CB0E8BA /* APPVideoAddComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C933948764D9EB089FDF6 /* APPVideoAddComment.m */; };
 		167C90FD62371D247F79B473 /* APPVideoMostPopular.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C97902BF2586326EB9918 /* APPVideoMostPopular.m */; };
+		167C9102AD3E50DB17AD2897 /* APPVideoImageOfComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C91A3D99519CCD783BBFB /* APPVideoImageOfComment.m */; };
 		167C91FBC942DC9AC5BBFA45 /* UITableViewMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9161F12FF7750B536E9E /* UITableViewMaskView.m */; };
+		167C925865A99D9A8052C714 /* APPUserImageQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9C325867234333EBA1BE /* APPUserImageQuery.m */; };
 		167C92B23A20FAE8DB6E3A72 /* APPVideoRecentlyFeatured.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9F9C64B16028E82F0328 /* APPVideoRecentlyFeatured.m */; };
+		167C92D16FEF5A54D3AEF694 /* APPFetchFeedWithURLQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C99D7E4E360BE62C7A9BF /* APPFetchFeedWithURLQuery.m */; };
+		167C9310A52C509C4EC7E8A3 /* APPVideoIsFavorite.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C921117F102C8D77D4E6B /* APPVideoIsFavorite.m */; };
+		167C9334C62B7AB97A4CEB64 /* APPVideoMyVideoDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9BBAE49540EB605C4E20 /* APPVideoMyVideoDelete.m */; };
 		167C94754BA71F233DDFA741 /* APPCommentLogicHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C905269590029393BA823 /* APPCommentLogicHelper.m */; };
+		167C95169719B6E81B1361A2 /* APPVideoMyVideos.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C94FBA53CAA5D39D2F718 /* APPVideoMyVideos.m */; };
+		167C95C03A00B833B2E35DB0 /* APPFetchEntryByInsertingEntryQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9F3387CC01C5A2268602 /* APPFetchEntryByInsertingEntryQuery.m */; };
+		167C95F8947010E9240EDD6B /* APPPlaylistRemoveVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9B560D150D96A4C51034 /* APPPlaylistRemoveVideo.m */; };
+		167C967AE2EF1390793A64A5 /* APPFavorites.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9631A12521411EAD42EA /* APPFavorites.m */; };
+		167C970F05DF3CFA68991F8C /* APPVideoUnlikeVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9F269DF0859F1DA9C8F5 /* APPVideoUnlikeVideo.m */; };
 		167C971E2584C67A635F6023 /* Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9BFC5F71E50CCD092FC6 /* Helpers.m */; };
 		167C9729B4D3D4B033834F20 /* APPVideoWatchHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C92803E4B563AA9DDC27F /* APPVideoWatchHistory.m */; };
+		167C97E3D7A089EC1D3615A7 /* APPPlaylistAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C99EF716A8BD8B18545BD /* APPPlaylistAdd.m */; };
+		167C980885A4385BBA329583 /* APPVideoDeleteComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9DF2FEE5BCFC33CB16A0 /* APPVideoDeleteComment.m */; };
 		167C9817D81F2CFF31181508 /* APPUserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C99F8FFDD15C40F270BCA /* APPUserManager.m */; };
+		167C9823B2F24238439063A3 /* APPDeleteEntryQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C98D9ABFE24E506DAAD6D /* APPDeleteEntryQuery.m */; };
 		167C98623CDD3EFCF44705DE /* APPTextLogicHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9A7FA25DFA4084E4B7DE /* APPTextLogicHelper.m */; };
+		167C9884040B77CD6ED2F1B1 /* APPVideoRemoveFromWatchLater.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9AE4C09F82DEBC85402C /* APPVideoRemoveFromWatchLater.m */; };
+		167C990D85277FC6C9DD56A4 /* APPVideoComments.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9C335EDEB4172A23C2DE /* APPVideoComments.m */; };
 		167C9914653146886CF3FA9F /* APPAbstractQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9EDABAB380AF004BA384 /* APPAbstractQuery.m */; };
+		167C994AAE1319FE8753B5A1 /* APPPlaylistQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C933CA3777DF0B7F4E584 /* APPPlaylistQuery.m */; };
 		167C99B97B8186ABA6AEFD71 /* APPVideoQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9E4182561A1D10DFA039 /* APPVideoQuery.m */; };
+		167C9ACA2185C43B6D526420 /* APPVideoAddToFavorites.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C98629F9D6D1C8AB09B06 /* APPVideoAddToFavorites.m */; };
 		167C9B1505C2DB00227CF9AA /* APPVideoRelatedVideos.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9CEC3162649B0ED01E5C /* APPVideoRelatedVideos.m */; };
-		167C9DC21DDE3C72DBE8CC1E /* APPUserImageQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9FCECB8EB89CD87F7ED5 /* APPUserImageQuery.m */; };
+		167C9B4C55B3B69D5A45558D /* APPVideoRemoveFromFavorites.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9B7DC91A77EF7378B5DF /* APPVideoRemoveFromFavorites.m */; };
+		167C9C2DA0C25C9FFDB91ECE /* APPVideoLikeVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9B3E37E2D7478336B282 /* APPVideoLikeVideo.m */; };
+		167C9C81BD9D64D0C3747ED8 /* APPPlaylistVideos.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9A3A73E9E80186C8E6F4 /* APPPlaylistVideos.m */; };
+		167C9C9C8F09DD55FD9B40D2 /* APPPlaylistDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C95A44250BCA8CC208D1E /* APPPlaylistDelete.m */; };
+		167C9D9B7576816E599673AF /* APPVideoAddToWatchLater.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C97BAB818BF155F1B270B /* APPVideoAddToWatchLater.m */; };
+		167C9DBCC0761D6E2EBC5ECD /* APPWatchLater.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C96E7A27A9A9F54FEE60A /* APPWatchLater.m */; };
+		167C9DCD5F88A70FE849044A /* APPContent.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9942D48E80C9FB2D771A /* APPContent.m */; };
 		167C9DF7FDBB224ABC4A8D33 /* APPVideoLogicHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C941801F74387F5A00D96 /* APPVideoLogicHelper.m */; };
 		167C9E2AF7715F80F60B2C16 /* APPVideoTopRated.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9E2230ED5FC3EFCA8876 /* APPVideoTopRated.m */; };
 		167C9EB0DD67E62FB2C3C252 /* APPVideoTopFavorites.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C98313058179335FB82DE /* APPVideoTopFavorites.m */; };
+		167C9EC6292ABB31FE34E187 /* APPPlaylistImageOfPlaylist.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9F1109C333BC647C250C /* APPPlaylistImageOfPlaylist.m */; };
+		167C9ED2EA5871631B859E3A /* APPDefaultUserProfileQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C947787353707BBDF833C /* APPDefaultUserProfileQuery.m */; };
+		167C9FAD8CACF859E67E2119 /* APPFetchEntryWithURLQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9323C84ADDCAA83BD484 /* APPFetchEntryWithURLQuery.m */; };
+		167C9FC4F54434163EEC91DB /* APPPlaylists.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C94635CCE0C02737BA6A3 /* APPPlaylists.m */; };
+		167C9FD93C1A309E20DD7E70 /* APPVideoIsWatchLater.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C94AA8BEF17037AA2F291 /* APPVideoIsWatchLater.m */; };
 		39038E1B15E3B608006CCF19 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39038E1815E3B594006CCF19 /* QuartzCore.framework */; };
 		39039A6A1600303300ED53FF /* main_shadow_left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39039A691600303300ED53FF /* main_shadow_left@2x.png */; };
 		39039A6F1600330900ED53FF /* main_shadow_right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39039A6E1600330900ED53FF /* main_shadow_right@2x.png */; };
@@ -127,7 +156,6 @@
 		39B89857169E3C4900D08F5B /* APPSingleTableCustomNavigationBarVideoListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 39B89856169E3C4700D08F5B /* APPSingleTableCustomNavigationBarVideoListViewController.m */; };
 		39B89858169EC79800D08F5B /* APPPlaylistsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 395C92A71600194E00DD9E55 /* APPPlaylistsViewController.m */; };
 		39CBF179164F192200E23487 /* GTMOAuth2ViewTouch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39CBF178164F192100E23487 /* GTMOAuth2ViewTouch.xib */; };
-		39D0A99E164DD2960073535E /* APPContentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 39D0A99D164DD2960073535E /* APPContentManager.m */; };
 		39D439141658730400D91FC0 /* video_cell_cross@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39D439131658730400D91FC0 /* video_cell_cross@2x.png */; };
 		39D4391B1658766200D91FC0 /* sub_top_bar_edit_down@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39D439191658766200D91FC0 /* sub_top_bar_edit_down@2x.png */; };
 		39D4391C1658766200D91FC0 /* sub_top_bar_edit_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39D4391A1658766200D91FC0 /* sub_top_bar_edit_up@2x.png */; };
@@ -243,38 +271,96 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		167C900F7EEAF16B301A64A2 /* APPVideoDeleteComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPVideoDeleteComment.h; sourceTree = "<group>"; };
+		167C901781E2F15C74735B20 /* APPVideoComments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPVideoComments.h; sourceTree = "<group>"; };
 		167C905269590029393BA823 /* APPCommentLogicHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPCommentLogicHelper.m; sourceTree = "<group>"; };
+		167C90675A8254791C1E6877 /* APPContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPContent.h; sourceTree = "<group>"; };
+		167C9095689C091469ECB909 /* APPVideoUnlikeVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPVideoUnlikeVideo.h; sourceTree = "<group>"; };
+		167C90AE2BFBB57B6FA1BB65 /* APPVideoIsWatchLater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPVideoIsWatchLater.h; sourceTree = "<group>"; };
 		167C91061D83FD13E27581C3 /* APPVideoRelatedVideos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoRelatedVideos.h; path = Videos/APPVideoRelatedVideos.h; sourceTree = "<group>"; };
 		167C9161F12FF7750B536E9E /* UITableViewMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewMaskView.m; sourceTree = "<group>"; };
-		167C919C4F5F8E810016BFC6 /* APPUserProfileQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPUserProfileQuery.h; sourceTree = "<group>"; };
+		167C917A28184F06D4AB81BF /* APPDefaultUserProfileQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPDefaultUserProfileQuery.h; sourceTree = "<group>"; };
+		167C91A3D99519CCD783BBFB /* APPVideoImageOfComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPVideoImageOfComment.m; sourceTree = "<group>"; };
+		167C921117F102C8D77D4E6B /* APPVideoIsFavorite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPVideoIsFavorite.m; sourceTree = "<group>"; };
 		167C922E393B79CDC58A4210 /* APPVideoMostPopular.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoMostPopular.h; path = Videos/APPVideoMostPopular.h; sourceTree = "<group>"; };
 		167C92803E4B563AA9DDC27F /* APPVideoWatchHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPVideoWatchHistory.m; path = Videos/APPVideoWatchHistory.m; sourceTree = "<group>"; };
-		167C928140E8F26054699311 /* APPUserImageQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPUserImageQuery.h; sourceTree = "<group>"; };
+		167C9294D6B227951E9E78ED /* APPPlaylistAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPPlaylistAdd.h; sourceTree = "<group>"; };
 		167C92C4DE0862F2B8A29348 /* APPCommentLogicHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPCommentLogicHelper.h; sourceTree = "<group>"; };
+		167C92C94E40B499A4411512 /* APPVideoAddToWatchLater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoAddToWatchLater.h; path = WatchLater/APPVideoAddToWatchLater.h; sourceTree = "<group>"; };
+		167C9323C84ADDCAA83BD484 /* APPFetchEntryWithURLQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPFetchEntryWithURLQuery.m; sourceTree = "<group>"; };
+		167C933948764D9EB089FDF6 /* APPVideoAddComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPVideoAddComment.m; sourceTree = "<group>"; };
+		167C933CA3777DF0B7F4E584 /* APPPlaylistQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPPlaylistQuery.m; sourceTree = "<group>"; };
+		167C93811D49910E3A5E91D1 /* APPVideoAddToFavorites.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoAddToFavorites.h; path = Favorites/APPVideoAddToFavorites.h; sourceTree = "<group>"; };
+		167C938A40E38DF546E59E30 /* APPDeleteEntryQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPDeleteEntryQuery.h; sourceTree = "<group>"; };
+		167C9391F51DBE09E73E4C25 /* APPPlaylistVideos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPPlaylistVideos.h; sourceTree = "<group>"; };
 		167C93FEA7165AB95AAA92B4 /* APPVideoTopFavorites.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoTopFavorites.h; path = Videos/APPVideoTopFavorites.h; sourceTree = "<group>"; };
 		167C941801F74387F5A00D96 /* APPVideoLogicHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPVideoLogicHelper.m; sourceTree = "<group>"; };
+		167C941FC791DF6F7B73AAC3 /* APPUserImageQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPUserImageQuery.h; sourceTree = "<group>"; };
+		167C9434B034A996F79C8B30 /* APPVideoLikeVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPVideoLikeVideo.h; sourceTree = "<group>"; };
 		167C944729BF6DD28CD601A8 /* UITableViewMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewMaskView.h; sourceTree = "<group>"; };
+		167C94635CCE0C02737BA6A3 /* APPPlaylists.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPPlaylists.m; sourceTree = "<group>"; };
+		167C947787353707BBDF833C /* APPDefaultUserProfileQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPDefaultUserProfileQuery.m; sourceTree = "<group>"; };
+		167C94AA8BEF17037AA2F291 /* APPVideoIsWatchLater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPVideoIsWatchLater.m; sourceTree = "<group>"; };
+		167C94B8E95A26FD36378287 /* APPFetchEntryWithURLQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPFetchEntryWithURLQuery.h; sourceTree = "<group>"; };
+		167C94BD67F75AFE2CFEC57A /* APPPlaylistAddVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPPlaylistAddVideo.m; sourceTree = "<group>"; };
+		167C94FBA53CAA5D39D2F718 /* APPVideoMyVideos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPVideoMyVideos.m; sourceTree = "<group>"; };
 		167C953AE36CC1D4A8C47DCA /* APPVideoQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoQuery.h; path = Videos/APPVideoQuery.h; sourceTree = "<group>"; };
+		167C95A44250BCA8CC208D1E /* APPPlaylistDelete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPPlaylistDelete.m; sourceTree = "<group>"; };
+		167C95C2654C5D15C0D476C9 /* APPPlaylistAddVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPPlaylistAddVideo.h; sourceTree = "<group>"; };
+		167C95E23922632614A17E81 /* APPFetchEntryByInsertingEntryQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPFetchEntryByInsertingEntryQuery.h; sourceTree = "<group>"; };
+		167C9631A12521411EAD42EA /* APPFavorites.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPFavorites.m; path = Favorites/APPFavorites.m; sourceTree = "<group>"; };
+		167C96487A24B067B571723F /* APPPlaylistRemoveVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPPlaylistRemoveVideo.h; sourceTree = "<group>"; };
+		167C9690F44E563C00C59290 /* APPVideoMyVideos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPVideoMyVideos.h; sourceTree = "<group>"; };
+		167C96E7A27A9A9F54FEE60A /* APPWatchLater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPWatchLater.m; path = WatchLater/APPWatchLater.m; sourceTree = "<group>"; };
 		167C9784251A5566416E524F /* APPVideoRecentlyFeatured.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoRecentlyFeatured.h; path = Videos/APPVideoRecentlyFeatured.h; sourceTree = "<group>"; };
 		167C97902BF2586326EB9918 /* APPVideoMostPopular.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPVideoMostPopular.m; path = Videos/APPVideoMostPopular.m; sourceTree = "<group>"; };
+		167C97BAB818BF155F1B270B /* APPVideoAddToWatchLater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPVideoAddToWatchLater.m; path = WatchLater/APPVideoAddToWatchLater.m; sourceTree = "<group>"; };
+		167C982A6C5F1D70359559F9 /* APPFavorites.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPFavorites.h; path = Favorites/APPFavorites.h; sourceTree = "<group>"; };
 		167C98313058179335FB82DE /* APPVideoTopFavorites.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPVideoTopFavorites.m; path = Videos/APPVideoTopFavorites.m; sourceTree = "<group>"; };
+		167C9834ACDAA5CFE053F22C /* APPFetchFeedWithURLQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPFetchFeedWithURLQuery.h; sourceTree = "<group>"; };
+		167C98449B056C68A759DD2D /* APPPlaylistImageOfPlaylist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPPlaylistImageOfPlaylist.h; sourceTree = "<group>"; };
+		167C98629F9D6D1C8AB09B06 /* APPVideoAddToFavorites.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPVideoAddToFavorites.m; path = Favorites/APPVideoAddToFavorites.m; sourceTree = "<group>"; };
+		167C98D9ABFE24E506DAAD6D /* APPDeleteEntryQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPDeleteEntryQuery.m; sourceTree = "<group>"; };
 		167C991D87AC86D82CFCA0A8 /* APPAbstractQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPAbstractQuery.h; sourceTree = "<group>"; };
+		167C99234CB1975061436760 /* APPVideoMyVideoDelete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPVideoMyVideoDelete.h; sourceTree = "<group>"; };
+		167C9942D48E80C9FB2D771A /* APPContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPContent.m; sourceTree = "<group>"; };
+		167C99D7E4E360BE62C7A9BF /* APPFetchFeedWithURLQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPFetchFeedWithURLQuery.m; sourceTree = "<group>"; };
+		167C99ED4CA26C48CB9D1035 /* APPVideoIsFavorite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPVideoIsFavorite.h; sourceTree = "<group>"; };
+		167C99EF716A8BD8B18545BD /* APPPlaylistAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPPlaylistAdd.m; sourceTree = "<group>"; };
 		167C99F8FFDD15C40F270BCA /* APPUserManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPUserManager.m; sourceTree = "<group>"; };
+		167C9A3A73E9E80186C8E6F4 /* APPPlaylistVideos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPPlaylistVideos.m; sourceTree = "<group>"; };
 		167C9A7FA25DFA4084E4B7DE /* APPTextLogicHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPTextLogicHelper.m; sourceTree = "<group>"; };
-		167C9B1A0F3424DD6696F8F2 /* APPUserProfileQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPUserProfileQuery.m; sourceTree = "<group>"; };
+		167C9AE4C09F82DEBC85402C /* APPVideoRemoveFromWatchLater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPVideoRemoveFromWatchLater.m; path = WatchLater/APPVideoRemoveFromWatchLater.m; sourceTree = "<group>"; };
+		167C9AEB986D946CCC48737F /* APPVideoAddComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPVideoAddComment.h; sourceTree = "<group>"; };
+		167C9B0454397A0047B05BBA /* APPVideoImageOfComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPVideoImageOfComment.h; sourceTree = "<group>"; };
+		167C9B3E37E2D7478336B282 /* APPVideoLikeVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPVideoLikeVideo.m; sourceTree = "<group>"; };
+		167C9B560D150D96A4C51034 /* APPPlaylistRemoveVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPPlaylistRemoveVideo.m; sourceTree = "<group>"; };
+		167C9B58525F8FD29CD02917 /* APPWatchLater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPWatchLater.h; path = WatchLater/APPWatchLater.h; sourceTree = "<group>"; };
+		167C9B6FA5904AD62F8DFBD9 /* APPPlaylistQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPPlaylistQuery.h; sourceTree = "<group>"; };
+		167C9B7DC91A77EF7378B5DF /* APPVideoRemoveFromFavorites.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPVideoRemoveFromFavorites.m; sourceTree = "<group>"; };
+		167C9BBAE49540EB605C4E20 /* APPVideoMyVideoDelete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPVideoMyVideoDelete.m; sourceTree = "<group>"; };
 		167C9BFC5F71E50CCD092FC6 /* Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Helpers.m; sourceTree = "<group>"; };
+		167C9C325867234333EBA1BE /* APPUserImageQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPUserImageQuery.m; sourceTree = "<group>"; };
+		167C9C335EDEB4172A23C2DE /* APPVideoComments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPVideoComments.m; sourceTree = "<group>"; };
 		167C9C82605B831B2C3278A5 /* APPTextLogicHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPTextLogicHelper.h; sourceTree = "<group>"; };
 		167C9CB7D0FEFED070A0D5A8 /* APPVideoTopRated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoTopRated.h; path = Videos/APPVideoTopRated.h; sourceTree = "<group>"; };
+		167C9CC1607DB4093151B846 /* APPPlaylistDelete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPPlaylistDelete.h; sourceTree = "<group>"; };
 		167C9CD6A3BC31E1EE469E4B /* APPUserManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPUserManager.h; sourceTree = "<group>"; };
 		167C9CEC3162649B0ED01E5C /* APPVideoRelatedVideos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPVideoRelatedVideos.m; path = Videos/APPVideoRelatedVideos.m; sourceTree = "<group>"; };
 		167C9D73838C576408BE3FAE /* APPVideoWatchHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoWatchHistory.h; path = Videos/APPVideoWatchHistory.h; sourceTree = "<group>"; };
+		167C9DC1175DAEDA5FB34D5E /* APPVideoRemoveFromWatchLater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoRemoveFromWatchLater.h; path = WatchLater/APPVideoRemoveFromWatchLater.h; sourceTree = "<group>"; };
+		167C9DF2FEE5BCFC33CB16A0 /* APPVideoDeleteComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPVideoDeleteComment.m; sourceTree = "<group>"; };
 		167C9E2230ED5FC3EFCA8876 /* APPVideoTopRated.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPVideoTopRated.m; path = Videos/APPVideoTopRated.m; sourceTree = "<group>"; };
 		167C9E4182561A1D10DFA039 /* APPVideoQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPVideoQuery.m; path = Videos/APPVideoQuery.m; sourceTree = "<group>"; };
 		167C9EDABAB380AF004BA384 /* APPAbstractQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPAbstractQuery.m; sourceTree = "<group>"; };
+		167C9F1109C333BC647C250C /* APPPlaylistImageOfPlaylist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPPlaylistImageOfPlaylist.m; sourceTree = "<group>"; };
 		167C9F1F159ADCE9C6D2CB74 /* Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Helpers.h; sourceTree = "<group>"; };
+		167C9F269DF0859F1DA9C8F5 /* APPVideoUnlikeVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPVideoUnlikeVideo.m; sourceTree = "<group>"; };
+		167C9F3387CC01C5A2268602 /* APPFetchEntryByInsertingEntryQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPFetchEntryByInsertingEntryQuery.m; sourceTree = "<group>"; };
+		167C9F53438B676B8D959528 /* APPVideoRemoveFromFavorites.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPVideoRemoveFromFavorites.h; sourceTree = "<group>"; };
 		167C9F6706AC0E649C6FC9D6 /* APPVideoLogicHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPVideoLogicHelper.h; sourceTree = "<group>"; };
 		167C9F9C64B16028E82F0328 /* APPVideoRecentlyFeatured.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPVideoRecentlyFeatured.m; path = Videos/APPVideoRecentlyFeatured.m; sourceTree = "<group>"; };
-		167C9FCECB8EB89CD87F7ED5 /* APPUserImageQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPUserImageQuery.m; sourceTree = "<group>"; };
+		167C9FF8AD6743B763BE2BCF /* APPPlaylists.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPPlaylists.h; sourceTree = "<group>"; };
 		39038E1815E3B594006CCF19 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		39039A691600303300ED53FF /* main_shadow_left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "main_shadow_left@2x.png"; sourceTree = "<group>"; };
 		39039A6E1600330900ED53FF /* main_shadow_right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "main_shadow_right@2x.png"; sourceTree = "<group>"; };
@@ -413,7 +499,6 @@
 		39B89855169E3C4600D08F5B /* APPSingleTableCustomNavigationBarVideoListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPSingleTableCustomNavigationBarVideoListViewController.h; sourceTree = "<group>"; };
 		39B89856169E3C4700D08F5B /* APPSingleTableCustomNavigationBarVideoListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPSingleTableCustomNavigationBarVideoListViewController.m; sourceTree = "<group>"; };
 		39CBF178164F192100E23487 /* GTMOAuth2ViewTouch.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GTMOAuth2ViewTouch.xib; path = "gdata-objectivec-client-read-only/Source/OAuth2/Touch/GTMOAuth2ViewTouch.xib"; sourceTree = SOURCE_ROOT; };
-		39D0A99D164DD2960073535E /* APPContentManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPContentManager.m; sourceTree = "<group>"; };
 		39D439131658730400D91FC0 /* video_cell_cross@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "video_cell_cross@2x.png"; sourceTree = "<group>"; };
 		39D439191658766200D91FC0 /* sub_top_bar_edit_down@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sub_top_bar_edit_down@2x.png"; sourceTree = "<group>"; };
 		39D4391A1658766200D91FC0 /* sub_top_bar_edit_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sub_top_bar_edit_up@2x.png"; sourceTree = "<group>"; };
@@ -499,7 +584,6 @@
 		39DB07371659D3160059CE52 /* APPCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPCommentCell.m; sourceTree = "<group>"; };
 		39DB073F165A9A2C0059CE52 /* APPBaseListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPBaseListViewController.h; sourceTree = "<group>"; };
 		39DB0740165A9A2E0059CE52 /* APPBaseListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPBaseListViewController.m; sourceTree = "<group>"; };
-		39DB0742165A9C200059CE52 /* APPContentManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APPContentManager.h; sourceTree = "<group>"; };
 		39DB0755165A9EB20059CE52 /* APPTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPTableCell.h; sourceTree = "<group>"; };
 		39DB0756165A9EBA0059CE52 /* APPTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPTableCell.m; sourceTree = "<group>"; };
 		39DE00411653127B00DC28BD /* sub_top_bar_search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sub_top_bar_search@2x.png"; sourceTree = "<group>"; };
@@ -582,7 +666,18 @@
 			name = Helpers;
 			sourceTree = "<group>";
 		};
-		167C95D398738B768E34A330 /* Video */ = {
+		167C94397095DAA61C10E0CB /* MyVideo */ = {
+			isa = PBXGroup;
+			children = (
+				167C94FBA53CAA5D39D2F718 /* APPVideoMyVideos.m */,
+				167C9690F44E563C00C59290 /* APPVideoMyVideos.h */,
+				167C9BBAE49540EB605C4E20 /* APPVideoMyVideoDelete.m */,
+				167C99234CB1975061436760 /* APPVideoMyVideoDelete.h */,
+			);
+			path = MyVideo;
+			sourceTree = "<group>";
+		};
+		167C95D398738B768E34A330 /* Videos */ = {
 			isa = PBXGroup;
 			children = (
 				167C922E393B79CDC58A4210 /* APPVideoMostPopular.h */,
@@ -599,22 +694,116 @@
 				167C9E2230ED5FC3EFCA8876 /* APPVideoTopRated.m */,
 				167C9D73838C576408BE3FAE /* APPVideoWatchHistory.h */,
 				167C92803E4B563AA9DDC27F /* APPVideoWatchHistory.m */,
+				167C9B58525F8FD29CD02917 /* APPWatchLater.h */,
+				167C96E7A27A9A9F54FEE60A /* APPWatchLater.m */,
+				167C982A6C5F1D70359559F9 /* APPFavorites.h */,
+				167C9631A12521411EAD42EA /* APPFavorites.m */,
 			);
-			name = Video;
+			name = Videos;
 			sourceTree = "<group>";
 		};
 		167C98C43060A0F7286C824C /* Queries */ = {
 			isa = PBXGroup;
 			children = (
-				167C9B1A0F3424DD6696F8F2 /* APPUserProfileQuery.m */,
-				167C919C4F5F8E810016BFC6 /* APPUserProfileQuery.h */,
 				167C9EDABAB380AF004BA384 /* APPAbstractQuery.m */,
 				167C991D87AC86D82CFCA0A8 /* APPAbstractQuery.h */,
-				167C9FCECB8EB89CD87F7ED5 /* APPUserImageQuery.m */,
-				167C928140E8F26054699311 /* APPUserImageQuery.h */,
-				167C95D398738B768E34A330 /* Video */,
+				167C95D398738B768E34A330 /* Videos */,
+				167C9C8FEAD6AECEFC246614 /* Video */,
+				167C94397095DAA61C10E0CB /* MyVideo */,
+				167C98F412132968AF00F71B /* Playlists */,
+				167C98D9ABFE24E506DAAD6D /* APPDeleteEntryQuery.m */,
+				167C938A40E38DF546E59E30 /* APPDeleteEntryQuery.h */,
+				167C99D7E4E360BE62C7A9BF /* APPFetchFeedWithURLQuery.m */,
+				167C9834ACDAA5CFE053F22C /* APPFetchFeedWithURLQuery.h */,
+				167C9F3387CC01C5A2268602 /* APPFetchEntryByInsertingEntryQuery.m */,
+				167C95E23922632614A17E81 /* APPFetchEntryByInsertingEntryQuery.h */,
+				167C9EE703BBD80D5319FA6E /* User */,
+				167C9323C84ADDCAA83BD484 /* APPFetchEntryWithURLQuery.m */,
+				167C94B8E95A26FD36378287 /* APPFetchEntryWithURLQuery.h */,
+				167C9DC8FD11798A411FAE1F /* Comment */,
 			);
 			path = Queries;
+			sourceTree = "<group>";
+		};
+		167C98E5290FCFEA6866F253 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				167C9942D48E80C9FB2D771A /* APPContent.m */,
+				167C90675A8254791C1E6877 /* APPContent.h */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		167C98F412132968AF00F71B /* Playlists */ = {
+			isa = PBXGroup;
+			children = (
+				167C94635CCE0C02737BA6A3 /* APPPlaylists.m */,
+				167C9FF8AD6743B763BE2BCF /* APPPlaylists.h */,
+				167C99EF716A8BD8B18545BD /* APPPlaylistAdd.m */,
+				167C9294D6B227951E9E78ED /* APPPlaylistAdd.h */,
+				167C95A44250BCA8CC208D1E /* APPPlaylistDelete.m */,
+				167C9CC1607DB4093151B846 /* APPPlaylistDelete.h */,
+				167C9A3A73E9E80186C8E6F4 /* APPPlaylistVideos.m */,
+				167C9391F51DBE09E73E4C25 /* APPPlaylistVideos.h */,
+				167C94BD67F75AFE2CFEC57A /* APPPlaylistAddVideo.m */,
+				167C95C2654C5D15C0D476C9 /* APPPlaylistAddVideo.h */,
+				167C9B560D150D96A4C51034 /* APPPlaylistRemoveVideo.m */,
+				167C96487A24B067B571723F /* APPPlaylistRemoveVideo.h */,
+				167C933CA3777DF0B7F4E584 /* APPPlaylistQuery.m */,
+				167C9B6FA5904AD62F8DFBD9 /* APPPlaylistQuery.h */,
+				167C9F1109C333BC647C250C /* APPPlaylistImageOfPlaylist.m */,
+				167C98449B056C68A759DD2D /* APPPlaylistImageOfPlaylist.h */,
+			);
+			path = Playlists;
+			sourceTree = "<group>";
+		};
+		167C9C8FEAD6AECEFC246614 /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				167C9434B034A996F79C8B30 /* APPVideoLikeVideo.h */,
+				167C9B3E37E2D7478336B282 /* APPVideoLikeVideo.m */,
+				167C9F269DF0859F1DA9C8F5 /* APPVideoUnlikeVideo.m */,
+				167C9095689C091469ECB909 /* APPVideoUnlikeVideo.h */,
+				167C93811D49910E3A5E91D1 /* APPVideoAddToFavorites.h */,
+				167C98629F9D6D1C8AB09B06 /* APPVideoAddToFavorites.m */,
+				167C92C94E40B499A4411512 /* APPVideoAddToWatchLater.h */,
+				167C9AE4C09F82DEBC85402C /* APPVideoRemoveFromWatchLater.m */,
+				167C9DC1175DAEDA5FB34D5E /* APPVideoRemoveFromWatchLater.h */,
+				167C97BAB818BF155F1B270B /* APPVideoAddToWatchLater.m */,
+				167C9B7DC91A77EF7378B5DF /* APPVideoRemoveFromFavorites.m */,
+				167C9F53438B676B8D959528 /* APPVideoRemoveFromFavorites.h */,
+				167C921117F102C8D77D4E6B /* APPVideoIsFavorite.m */,
+				167C99ED4CA26C48CB9D1035 /* APPVideoIsFavorite.h */,
+				167C94AA8BEF17037AA2F291 /* APPVideoIsWatchLater.m */,
+				167C90AE2BFBB57B6FA1BB65 /* APPVideoIsWatchLater.h */,
+			);
+			name = Video;
+			sourceTree = "<group>";
+		};
+		167C9DC8FD11798A411FAE1F /* Comment */ = {
+			isa = PBXGroup;
+			children = (
+				167C9C335EDEB4172A23C2DE /* APPVideoComments.m */,
+				167C901781E2F15C74735B20 /* APPVideoComments.h */,
+				167C900F7EEAF16B301A64A2 /* APPVideoDeleteComment.h */,
+				167C9AEB986D946CCC48737F /* APPVideoAddComment.h */,
+				167C933948764D9EB089FDF6 /* APPVideoAddComment.m */,
+				167C9DF2FEE5BCFC33CB16A0 /* APPVideoDeleteComment.m */,
+				167C91A3D99519CCD783BBFB /* APPVideoImageOfComment.m */,
+				167C9B0454397A0047B05BBA /* APPVideoImageOfComment.h */,
+			);
+			path = Comment;
+			sourceTree = "<group>";
+		};
+		167C9EE703BBD80D5319FA6E /* User */ = {
+			isa = PBXGroup;
+			children = (
+				167C9C325867234333EBA1BE /* APPUserImageQuery.m */,
+				167C947787353707BBDF833C /* APPDefaultUserProfileQuery.m */,
+				167C917A28184F06D4AB81BF /* APPDefaultUserProfileQuery.h */,
+				167C941FC791DF6F7B73AAC3 /* APPUserImageQuery.h */,
+			);
+			path = User;
 			sourceTree = "<group>";
 		};
 		167C9F1AF85DC62E3A63C564 /* UITableViewMask */ = {
@@ -875,12 +1064,11 @@
 				395A878815E18710004F39E2 /* APPIndexViewController.m */,
 				397641A716010B60007C6996 /* APPSliderViewController.h */,
 				394B928F15F01E4100AE10E4 /* APPSliderViewController.m */,
-				39DB0742165A9C200059CE52 /* APPContentManager.h */,
-				39D0A99D164DD2960073535E /* APPContentManager.m */,
 				39ECB22916A76E6B00E65E1D /* APPProtocols.h */,
 				167C99F8FFDD15C40F270BCA /* APPUserManager.m */,
 				167C9CD6A3BC31E1EE469E4B /* APPUserManager.h */,
 				167C98C43060A0F7286C824C /* Queries */,
+				167C98E5290FCFEA6866F253 /* Utils */,
 			);
 			path = Ytubeapp;
 			sourceTree = "<group>";
@@ -1438,7 +1626,6 @@
 				395A87B115E1A627004F39E2 /* APPVideoCell.m in Sources */,
 				394B928815F0103400AE10E4 /* APPMostViewedViewController.m in Sources */,
 				394B929015F01E4200AE10E4 /* APPSliderViewController.m in Sources */,
-				39D0A99E164DD2960073535E /* APPContentManager.m in Sources */,
 				39DAB94A164FD668004156C2 /* GDataFeedYouTubeWatchHistory.m in Sources */,
 				39DAB94D164FD681004156C2 /* GDataEntryYouTubeWatchHistory.m in Sources */,
 				39DB07351659D2F20059CE52 /* APPTextCell.m in Sources */,
@@ -1464,9 +1651,7 @@
 				167C94754BA71F233DDFA741 /* APPCommentLogicHelper.m in Sources */,
 				167C98623CDD3EFCF44705DE /* APPTextLogicHelper.m in Sources */,
 				167C9817D81F2CFF31181508 /* APPUserManager.m in Sources */,
-				167C90364DDAF1DB4815CCA7 /* APPUserProfileQuery.m in Sources */,
 				167C9914653146886CF3FA9F /* APPAbstractQuery.m in Sources */,
-				167C9DC21DDE3C72DBE8CC1E /* APPUserImageQuery.m in Sources */,
 				167C90FD62371D247F79B473 /* APPVideoMostPopular.m in Sources */,
 				167C99B97B8186ABA6AEFD71 /* APPVideoQuery.m in Sources */,
 				167C92B23A20FAE8DB6E3A72 /* APPVideoRecentlyFeatured.m in Sources */,
@@ -1475,6 +1660,37 @@
 				167C9E2AF7715F80F60B2C16 /* APPVideoTopRated.m in Sources */,
 				167C9729B4D3D4B033834F20 /* APPVideoWatchHistory.m in Sources */,
 				167C91FBC942DC9AC5BBFA45 /* UITableViewMaskView.m in Sources */,
+				167C9DCD5F88A70FE849044A /* APPContent.m in Sources */,
+				167C9C2DA0C25C9FFDB91ECE /* APPVideoLikeVideo.m in Sources */,
+				167C970F05DF3CFA68991F8C /* APPVideoUnlikeVideo.m in Sources */,
+				167C95169719B6E81B1361A2 /* APPVideoMyVideos.m in Sources */,
+				167C9334C62B7AB97A4CEB64 /* APPVideoMyVideoDelete.m in Sources */,
+				167C9FC4F54434163EEC91DB /* APPPlaylists.m in Sources */,
+				167C97E3D7A089EC1D3615A7 /* APPPlaylistAdd.m in Sources */,
+				167C9C9C8F09DD55FD9B40D2 /* APPPlaylistDelete.m in Sources */,
+				167C9C81BD9D64D0C3747ED8 /* APPPlaylistVideos.m in Sources */,
+				167C90063D501CD17BD2109E /* APPPlaylistAddVideo.m in Sources */,
+				167C95F8947010E9240EDD6B /* APPPlaylistRemoveVideo.m in Sources */,
+				167C994AAE1319FE8753B5A1 /* APPPlaylistQuery.m in Sources */,
+				167C9823B2F24238439063A3 /* APPDeleteEntryQuery.m in Sources */,
+				167C92D16FEF5A54D3AEF694 /* APPFetchFeedWithURLQuery.m in Sources */,
+				167C95C03A00B833B2E35DB0 /* APPFetchEntryByInsertingEntryQuery.m in Sources */,
+				167C925865A99D9A8052C714 /* APPUserImageQuery.m in Sources */,
+				167C9ED2EA5871631B859E3A /* APPDefaultUserProfileQuery.m in Sources */,
+				167C9FAD8CACF859E67E2119 /* APPFetchEntryWithURLQuery.m in Sources */,
+				167C990D85277FC6C9DD56A4 /* APPVideoComments.m in Sources */,
+				167C902458E310540CB0E8BA /* APPVideoAddComment.m in Sources */,
+				167C980885A4385BBA329583 /* APPVideoDeleteComment.m in Sources */,
+				167C9102AD3E50DB17AD2897 /* APPVideoImageOfComment.m in Sources */,
+				167C9EC6292ABB31FE34E187 /* APPPlaylistImageOfPlaylist.m in Sources */,
+				167C9ACA2185C43B6D526420 /* APPVideoAddToFavorites.m in Sources */,
+				167C9884040B77CD6ED2F1B1 /* APPVideoRemoveFromWatchLater.m in Sources */,
+				167C9D9B7576816E599673AF /* APPVideoAddToWatchLater.m in Sources */,
+				167C9B4C55B3B69D5A45558D /* APPVideoRemoveFromFavorites.m in Sources */,
+				167C9310A52C509C4EC7E8A3 /* APPVideoIsFavorite.m in Sources */,
+				167C9FD93C1A309E20DD7E70 /* APPVideoIsWatchLater.m in Sources */,
+				167C9DBCC0761D6E2EBC5ECD /* APPWatchLater.m in Sources */,
+				167C967AE2EF1390793A64A5 /* APPFavorites.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

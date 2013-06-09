@@ -15,16 +15,8 @@
 {
     NSDictionary *dict = (NSDictionary*) data;
     NSString *query = [dict objectForKey:@"query"];
-
     NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/videos?q=%@", query]];
-    if ([self service]) {
-        self.ticket = [[self service] fetchFeedWithURL:feedURL completionHandler:^(GDataServiceTicket *ticket, GDataEntryBase *entry, NSError *error) {
-            [self loadedWithData:entry andError:error];
-        }];
-
-    } else {
-        [self loadedWithData:nil andError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil]];
-    }
+    [self fetchFeedWithURL:feedURL];
 }
 
 @end

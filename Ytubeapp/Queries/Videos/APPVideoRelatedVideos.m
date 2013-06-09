@@ -14,17 +14,9 @@
 -(void)load:(id)data
 {
     NSDictionary *dict = (NSDictionary*) data;
-    GDataEntryYouTubeVideo *video = [dict objectForKey:@"time"];
-
+    GDataEntryYouTubeVideo *video = [dict objectForKey:@"video"];
     NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/videos/%@/related", [self videoID:video]]];
-    if ([self service]) {
-        self.ticket = [[self service] fetchFeedWithURL:feedURL completionHandler:^(GDataServiceTicket *ticket, GDataEntryBase *entry, NSError *error) {
-            [self loadedWithData:entry andError:error];
-        }];
-
-    } else {
-        [self loadedWithData:nil andError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil]];
-    }
+    [self fetchFeedWithURL:feedURL];
 }
 
 @end

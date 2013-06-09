@@ -7,10 +7,7 @@
 
 
 #import <Foundation/Foundation.h>
-#import "APPAbstractQuery.h"
+#import "APPFetchFeedWithURLQuery.h"
 
-@interface APPVideoQuery : APPAbstractQuery
-
-
-
+@interface APPVideoQuery : APPFetchFeedWithURLQuery
 @end

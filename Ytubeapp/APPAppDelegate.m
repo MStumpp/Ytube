@@ -40,7 +40,7 @@
     self.service = [[GDataServiceGoogleYouTube alloc] init];
     [self.service setYouTubeDeveloperKey:key];
     [self.service setUserAgent:@"AppWhirl-UserApp-1.0"];
-    [self.service setShouldCacheResponseData:TRUE];
+    [self.service setShouldCacheDatedData:TRUE];
     //[self.service setServiceShouldFollowNextLinks:FALSE];
     [self.service setAuthorizer:auth];
     [[APPUserManager classInstance] registerUserProfileObserverWithDelegate:self];

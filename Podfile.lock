@@ -1,13 +1,13 @@
 PODS:
-  - GData (1.9.1):
+  - GData (1.12.0):
     - GData/Core
     - GData/XMLNode
     - gtm-oauth2
     - GTMHTTPFetcher
-  - GData/Core (1.9.1):
+  - GData/Core (1.12.0):
     - gtm-oauth2
     - GTMHTTPFetcher
-  - GData/XMLNode (1.9.1):
+  - GData/XMLNode (1.12.0):
     - gtm-oauth2
     - GTMHTTPFetcher
   - gtm-oauth2 (0.0.1):
@@ -33,13 +33,13 @@ PODS:
   - SSPullToRefresh (1.1.2)
 
 DEPENDENCIES:
-  - GData (~> 1.9.1)
+  - GData (~> 1.12.0)
   - MBProgressHUD (~> 0.6)
   - QueryManager (~> 0.0.1)
   - SSPullToRefresh (~> 1.1.2)
 
 SPEC CHECKSUMS:
-  GData: 211721231a39df9ef7d9ef28242ada695245019e
+  GData: 8bd2d2883a084cf9d3fb75c083413df7c036f63e
   gtm-oauth2: c4824003b569bc9b96446661fb92dbc681335499
   GTMHTTPFetcher: 99f026c2d7afbcf2a051a64a3e81dcaedd060135
   MBProgressHUD: 9b55a90566fb5d07df0602f6fd9fa04510ad5d52

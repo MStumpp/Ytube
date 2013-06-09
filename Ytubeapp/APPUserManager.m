@@ -7,7 +7,7 @@
 //
 
 #import "APPUserManager.h"
-#import "APPUserProfileQuery.h"
+#import "APPDefaultUserProfileQuery.h"
 #import "APPUserImageQuery.h"
 
 @interface APPUserManager()
@@ -168,7 +168,7 @@ static APPUserManager *classInstance = nil;
 
     if ([self canAuthorize]) {
         // here we have to get the queue
-        [[APPUserProfileQuery instanceWithQueue:nil] process:nil onCompletion:^(int state, id data, NSError *error) {
+        [[APPDefaultUserProfileQuery instanceWithQueue:nil] process:nil onCompletion:^(int state, id data, NSError *error) {
                 switch (state)
                 {
                     case tLoaded:

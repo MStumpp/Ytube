@@ -7,8 +7,7 @@
 
 
 #import <Foundation/Foundation.h>
-#import "APPAbstractQuery.h"
+#import "APPFetchFeedWithURLQuery.h"
 
-
-@interface APPVideoTopFavorites : APPAbstractQuery
+@interface APPVideoTopFavorites : APPFetchFeedWithURLQuery
 @end
