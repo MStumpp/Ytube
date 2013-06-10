@@ -49,7 +49,6 @@
 //#define tComments 01
 #define tRelatedVideos 02
 
-@class APPContentManager;
 @class GTMOAuth2Authentication;
 
 @interface APPProtocols : NSObject
@@ -57,7 +56,6 @@
 
 @protocol UserProfileChangeDelegate
 @required
-@property (nonatomic, strong) GDataEntryYouTubeUserProfile *userProfile;
 -(void)userSignedIn:(GDataEntryYouTubeUserProfile*)user andAuth:(GTMOAuth2Authentication*)auth;
 -(void)userSignedOut;
 @end
@@ -77,7 +75,6 @@
 
 @protocol Base <UserProfileChangeDelegate, APPSliderViewConrollerDelegate, State>
 @required
-@property (nonatomic, strong) APPContentManager *contentManager;
 -(TVNavigationController*)getNavigationController;
 @end
 

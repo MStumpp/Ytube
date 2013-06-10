@@ -32,7 +32,7 @@
     if (self) {
         [self initUI];
         [self allowToOpen:NO];
-        [self setTextPic:[[Helpers classInstance] noPreviewImage]];
+        [self setTextPic:[[ViewHelpers classInstance] noPreviewImage]];
     }
     return self;
 }
@@ -59,7 +59,7 @@
 {
     [super prepareForReuse];
     [self allowToOpen:NO];
-    [self setTextPic:[[Helpers classInstance] noPreviewImage]];
+    [self setTextPic:[[ViewHelpers classInstance] noPreviewImage]];
 }
 
 - (void)setText:(NSString *)n {

@@ -20,18 +20,16 @@
 #import "APPWatchLaterViewController.h"
 #import "APPMyVideosViewController.h"
 
-#import "TVNavigationController.h"
-
+#import "APPUserManager.h"
 #import "MBProgressHUD.h"
 
 @interface APPSliderViewController ()
-
 @property (strong, nonatomic) UIView *mainView;
 @property (strong, nonatomic) UIControl *leftImageView;
 @property (strong, nonatomic) UIControl *rightImageView;
 @property (strong, nonatomic) UIView *centerView;
-@property (strong, nonatomic) TVNavigationController *navController;
 
+@property (strong, nonatomic) TVNavigationController *navController;
 @property (strong, nonatomic) UITableViewMaskView *maskView;
 
 @property (strong, nonatomic) UIImageView *leftShadow;
@@ -43,12 +41,11 @@
 
 @property NSDictionary *buttons;
 @property NSDictionary *controllers;
-
 @end
 
 @implementation APPSliderViewController
 
-- (id)init
+-(id)init
 {
     self = [super init];
     if (self) {
@@ -69,23 +66,22 @@
     return self;
 }
 
-- (void)loadView
+-(void)loadView
 {
     CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
     UIView *contentView = [[UIView alloc] initWithFrame:applicationFrame];
     self.view = contentView;
     
     // view structure
-    
     self.mainView = [[UIView alloc] initWithFrame:CGRectMake(-82, 0, self.view.frame.size.width+82+82, self.view.frame.size.height)];
     [self.view addSubview:self.mainView];
-    
+
+    // left image view
     self.leftImageView = [[UIControl alloc] initWithFrame:CGRectMake(0, 0, 82, self.view.frame.size.height)];
     [self.leftImageView addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"nav_left"]]];
     [self.mainView addSubview:self.leftImageView];
     
     // set up left buttons
-    
     UIButton *buttonSearch = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 82, 60) ];
     [buttonSearch addTarget:self action:@selector(navbarButtonPress:) forControlEvents:UIControlEventTouchUpInside];
     [buttonSearch setImage:[UIImage imageNamed:@"nav_left_search_up"] forState:UIControlStateNormal];
@@ -125,13 +121,13 @@
     [buttonRecentlyFeatured setImage:[UIImage imageNamed:@"nav_left_featured_down"] forState:UIControlStateSelected];
     [buttonRecentlyFeatured setTag:tRecentlyFeaturedButton];
     [self.leftImageView addSubview:buttonRecentlyFeatured];
-        
+
+    // right image view
     self.rightImageView = [[UIControl alloc] initWithFrame:CGRectMake(402, 0, 82, self.view.frame.size.height)];
     [self.rightImageView addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"nav_right"]]];
     [self.mainView addSubview:self.rightImageView];
     
     // set up right buttons
-    
     UIButton *buttonFavorites = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 82, 60) ];
     [buttonFavorites addTarget:self action:@selector(navbarButtonPress:) forControlEvents:UIControlEventTouchUpInside];
     [buttonFavorites setImage:[UIImage imageNamed:@"nav_right_favorites_up"] forState:UIControlStateNormal];
@@ -217,14 +213,12 @@
     self.view = self.maskView;
 }
 
-- (void)viewDidLoad
+-(void)viewDidLoad
 {
     [super viewDidLoad];
-    
     CGRect frame = self.view.frame;
     frame.origin.y = frame.origin.y - 20.0;
     self.view.frame = frame;
-    
     if (self.currentFocus) {
         [self show:self.currentFocus];
     } else {
@@ -240,7 +234,7 @@
 
 - (void)show:(int)tag
 {
-    if (![[APPContentManager classInstance] isUserSignedIn] && !(tag == tMostPopularButton || tag == tRecentlyFeaturedButton || tag == tSearchButton || tag == ttopFavoritesButton || tag == ttopRatedButton)) {
+    if (![[APPUserManager classInstance] isUserSignedIn] && !(tag == tMostPopularButton || tag == tRecentlyFeaturedButton || tag == tSearchButton || tag == ttopFavoritesButton || tag == ttopRatedButton)) {
         self.currentFocus = tMostPopularButton;
     } else {
         self.currentFocus = tag;

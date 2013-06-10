@@ -31,7 +31,7 @@
         [self initUI];
         self.showFullComment = FALSE;
         [self allowToOpen:NO];
-        [self setProfilePic:[[Helpers classInstance] silhouetteImage]];
+        [self setProfilePic:[[ViewHelpers classInstance] silhouetteImage]];
     }
     return self;
 }
@@ -73,7 +73,7 @@
     [super prepareForReuse];
     self.showFullComment = FALSE;
     [self allowToOpen:NO];
-    [self setProfilePic:[[Helpers classInstance] silhouetteImage]];
+    [self setProfilePic:[[ViewHelpers classInstance] silhouetteImage]];
 }
 
 /*- (void)layoutSubviews

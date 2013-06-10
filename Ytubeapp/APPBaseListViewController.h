@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "APPProtocols.h"
 #import "PervasiveViewController.h"
-#import "Helpers.h"
+#import "ViewHelpers.h"
 #import "APPContentManager.h"
 #import "GDataYouTube.h"
 #import "APPTableCell.h"

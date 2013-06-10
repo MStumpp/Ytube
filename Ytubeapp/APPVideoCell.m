@@ -47,7 +47,7 @@
         [self allowToOpen:YES];
         [self.favoritesButton setSelected:NO];
         [self.watchLaterButton setSelected:NO];
-        [self setThumbnail:[[Helpers classInstance] noPreviewImage]];
+        [self setThumbnail:[[ViewHelpers classInstance] noPreviewImage]];
     }
     return self;
 }
@@ -138,7 +138,7 @@
     [self allowToOpen:YES];
     [self.favoritesButton setSelected:NO];
     [self.watchLaterButton setSelected:NO];
-    [self setThumbnail:[[Helpers classInstance] noPreviewImage]];
+    [self setThumbnail:[[ViewHelpers classInstance] noPreviewImage]];
 }
 
 - (void)setTitle:(NSString *)n {

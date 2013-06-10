@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Helpers.h"
+#import "ViewHelpers.h"
 #import "APPProtocols.h"
 
 @class APPTableCell;
