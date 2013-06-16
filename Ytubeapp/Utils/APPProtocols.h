@@ -12,7 +12,7 @@
 #import "UITableViewSwipeView.h"
 #import "UITableViewAtBottomView.h"
 #import "UITableViewMaskView.h"
-#import "TVNavigationController.h"
+#import "SmartNavigationController.h"
 
 // Time scopes
 
@@ -51,21 +51,19 @@
 
 @class GTMOAuth2Authentication;
 
-@interface APPProtocols : NSObject
+@interface APPProtocols
 @end
 
 @protocol UserProfileChangeDelegate
-@required
+@optional
 -(void)userSignedIn:(GDataEntryYouTubeUserProfile*)user andAuth:(GTMOAuth2Authentication*)auth;
 -(void)userSignedOut;
 @end
 
-@protocol APPSliderViewConrollerDelegate <TVNavigationControllerDelegate>
+@protocol APPSliderViewControllerDelegate
 @required
-@property BOOL isInFullscreenMode;
--(void)didFullScreenModeInitially:(void (^)(void))callback;
--(void)willSplitScreenMode:(void (^)(void))callback;
--(void)didFullScreenModeAfterSplitScreen:(void (^)(void))callback;
+-(void)undoDefaultMode:(void (^)(void))callback;
+-(void)doDefaultMode:(void (^)(void))callback;
 @end
 
 @protocol State
@@ -73,9 +71,7 @@
 -(void)toInitialState;
 @end
 
-@protocol Base <UserProfileChangeDelegate, APPSliderViewConrollerDelegate, State>
-@required
--(TVNavigationController*)getNavigationController;
+@protocol Base <UserProfileChangeDelegate, APPSliderViewControllerDelegate, State>
 @end
 
 @protocol HasTableView <UITableViewDataSource, UITableViewDelegate, SSPullToRefreshViewDelegate, UITableViewSwipeViewDelegate, UITableViewAtBottomViewDelegate, UITableViewMaskViewDelegate>

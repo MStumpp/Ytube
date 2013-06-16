@@ -37,6 +37,9 @@
 // returns UserProfile asynchronuously, if UserProfile is available, nil otherwise
 -(void)imageForCurrentUserWithCallback:(void (^)(UIImage *image))callback;
 
+// true if user is allowed to visit this context without signed in, false otherwise
+-(BOOL)allowedToVisit:(int)context;
+
 // observer for UserProfile changes
 -(void)registerUserProfileObserverWithDelegate:(id<UserProfileChangeDelegate>) observer;
 -(void)unregisterUserProfileObserverWithDelegate:(id<UserProfileChangeDelegate>) observer;

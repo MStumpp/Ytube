@@ -10,17 +10,16 @@
 
 @implementation APPBaseListViewController
 
-@synthesize contentManager;
-@synthesize isInFullscreenMode;
+@synthesize isInFullScreenMode;
 @synthesize userProfile;
 
-- (id)init
+-(id)init
 {
     self = [super init];
     if (self) {
         self.contentManager = [APPContentManager classInstance];
             
-        self.isInFullscreenMode = FALSE;
+        self.isInFullScreenMode = FALSE;
         
         // synchronously get current user profile
         self.userProfile = [self.contentManager getUserProfile];
@@ -31,7 +30,7 @@
     return self;
 }
 
-- (void)viewWillAppear:(BOOL)animated
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
@@ -39,36 +38,36 @@
 
 // "UserProfileChangeDelegate" Protocol
 
-- (void)userProfileChanged:(GDataEntryYouTubeUserProfile*)user
+-(void)userProfileChanged:(GDataEntryYouTubeUserProfile*)user
 {
     self.userProfile = user;
     [self toInitialState];
 }
 
-// "APPSliderViewConrollerDelegate" Protocol
+// "APPSliderViewControllerDelegate" Protocol
 
-- (void)didFullScreenModeInitially:(void (^)(void))callback
+-(void)didFullScreenModeInitially:(void (^)(void))callback
 {
-    if (!self.isInFullscreenMode)
-        self.isInFullscreenMode = TRUE;
+    if (!self.isInFullScreenMode)
+        self.isInFullScreenMode = TRUE;
 
     if (callback)
         callback();
 }
 
-- (void)willSplitScreenMode:(void (^)(void))callback
+-(void)willSplitScreenMode:(void (^)(void))callback
 {
-    if (self.isInFullscreenMode)
-        self.isInFullscreenMode = FALSE;
+    if (self.isInFullScreenMode)
+        self.isInFullScreenMode = FALSE;
         
     if (callback)
         callback();
 }
 
-- (void)didFullScreenModeAfterSplitScreen:(void (^)(void))callback
+-(void)didFullScreenModeAfterSplitScreen:(void (^)(void))callback
 {
-    if (!self.isInFullscreenMode)
-        self.isInFullscreenMode = TRUE;
+    if (!self.isInFullScreenMode)
+        self.isInFullScreenMode = TRUE;
     
     if (callback)
         callback();
@@ -76,48 +75,44 @@
 
 // "TVNavigationControllerDelegate" protocol
 
-- (void)willBePushed:(void (^)(void))callback controller:(UIViewController *)controller context:(id)context
+-(void)willBePushed:(void (^)(void))callback controller:(UIViewController*)controller context:(id)context
 {
-    if (self.isInFullscreenMode)
-        self.isInFullscreenMode = FALSE;
-    
+    if (self.isInFullScreenMode)
+        self.isInFullScreenMode = FALSE;
     if (callback)
         callback();
 }
 
-- (void)willBePopped:(void (^)(void))callback controller:(UIViewController *)controller context:(id)context
+-(void)didPush:(void (^)(void))callback controller:(UIViewController*)controller context:(id)context
 {
-    if (self.isInFullscreenMode)
-        self.isInFullscreenMode = FALSE;
-    
+    if (!self.isInFullScreenMode)
+        self.isInFullScreenMode = TRUE;
     if (callback)
         callback();
 }
 
-- (void)didFullScreenAfterPush:(void (^)(void))callback controller:(UIViewController *)controller context:(id)context
+-(void)willBePopped:(void (^)(void))callback controller:(UIViewController*)controller context:(id)context
 {
-    if (!self.isInFullscreenMode)
-        self.isInFullscreenMode = TRUE;
-    
+    if (self.isInFullScreenMode)
+        self.isInFullScreenMode = FALSE;
     if (callback)
         callback();
 }
 
-- (void)didFullScreenAfterPop:(void (^)(void))callback controller:(UIViewController *)controller context:(id)context
+-(void)didPop:(void (^)(void))callback controller:(UIViewController*)controller context:(id)context
 {
-    if (!self.isInFullscreenMode)
-        self.isInFullscreenMode = TRUE;
-    
+    if (!self.isInFullScreenMode)
+        self.isInFullScreenMode = TRUE;
     if (callback)
         callback();
 }
 
 // "Base" Protocol
-
-- (TVNavigationController*)getNavigationController
-{
-    return (TVNavigationController*)self.navigationController;
-}
+//
+//- (TVNavigationController*)getNavigationController
+//{
+//    return (TVNavigationController*)self.navigationController;
+//}
 
 // other stuff
 

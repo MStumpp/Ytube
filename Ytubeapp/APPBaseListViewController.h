@@ -10,7 +10,6 @@
 #import "APPProtocols.h"
 #import "PervasiveViewController.h"
 #import "ViewHelpers.h"
-#import "APPContentManager.h"
 #import "GDataYouTube.h"
 #import "APPTableCell.h"
 #import "UITableViewHeaderFormView.h"

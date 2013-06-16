@@ -5,18 +5,17 @@
 // To change the template use AppCode | Preferences | File Templates.
 //
 
-
 #import "APPGlobals.h"
-
 
 @implementation APPGlobals
 
-
 +(id)getGlobalForKey:(NSString*)key
 {
-
-
-
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    if (standardUserDefaults) {
+        return [standardUserDefaults objectForKey:key];
+    }
+    return nil;
 }
 
 +(void)setGlobalObject:(id)object forKey:(NSString*)key

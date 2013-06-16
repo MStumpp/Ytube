@@ -10,6 +10,7 @@
 #import "APPDefaultUserProfileQuery.h"
 #import "APPUserImageQuery.h"
 #import "APPGlobals.h"
+#import "APPSliderViewController.h"
 
 @interface APPUserManager()
 @property (strong, nonatomic) GDataEntryYouTubeUserProfile *currentUserProfile;
@@ -240,6 +241,17 @@ static APPUserManager *classInstance = nil;
             }
         }
     }];
+}
+
+// allowed to visit when not signed in
+-(BOOL)allowedToVisit:(int)context
+{
+    return [[NSArray arrayWithObjects:[NSNumber numberWithInt:tNone],
+                    [NSNumber numberWithInt:tSearch],
+                    [NSNumber numberWithInt:tRecentlyFeatured],
+                    [NSNumber numberWithInt:tMostPopular],
+                    [NSNumber numberWithInt:ttopRated],
+                    [NSNumber numberWithInt:ttopFavorites], nil] containsObject:[NSNumber numberWithInt:context]];
 }
 
 -(void)registerUserProfileObserverWithDelegate:(id<UserProfileChangeDelegate>) observer

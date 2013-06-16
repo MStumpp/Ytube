@@ -15,7 +15,7 @@
 #define tRightButton 1
 
 @interface APPIndexViewController ()
-@property (strong, nonatomic) TVNavigationController *mainView;
+@property (strong, nonatomic) UINavigationController *mainController;
 @property (strong, nonatomic) APPSliderViewController *sliderViewController;
 @property (strong, nonatomic) GTMOAuth2ViewControllerTouch *loginController;
 
@@ -64,12 +64,12 @@
     // right button
     // TODO: Examplarily implement reactive pattern for pervasive here
     self.rightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 32, 31)];
+    [[APPUserManager classInstance] registerUserProfileObserverWithDelegate:self];
     if ([[APPUserManager classInstance] isUserSignedIn])
         [self setRightButtonForUserSignedIn];
     else
         [self setRightButtonForUserSignedOut];
     // register controller for UserProfile changes
-    [[APPUserManager classInstance] registerUserProfileObserverWithDelegate:self];
     [self.rightButton addTarget:self action:@selector(topbarButtonPress:) forControlEvents:UIControlEventTouchUpInside];
     [self.rightButton setTag:tRightButton];
     UIBarButtonItem *rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
@@ -88,11 +88,11 @@
     self.sliderViewController = [[APPSliderViewController alloc] init];
     self.sliderViewController.controller = self;
     
-    self.mainView = [[TVNavigationController alloc] initWithRootViewController:self.sliderViewController];
-    self.mainView.view.frame = CGRectMake(0, 44, self.view.frame.size.width, self.view.frame.size.height-44);
-    self.mainView.navigationBar.hidden = YES;
-    self.mainView._delegate_ = self;
-    [self.view addSubview:self.mainView.view];
+    self.mainController = [[UINavigationController alloc] initWithRootViewController:self.sliderViewController];
+    self.mainController.view.frame = CGRectMake(0, 44, self.view.frame.size.width, self.view.frame.size.height-44);
+    self.mainController.navigationBar.hidden = YES;
+    self.mainController.delegate = self;
+    [self.view addSubview:self.mainController.view];
 }
 
 -(void)topbarButtonPress:(UIButton*)sender
@@ -110,33 +110,24 @@
                                                                   keychainItemName:[settings objectForKey:@"kKeychainItemName"]
                                                                           delegate:self
                                                                   finishedSelector:@selector(viewController:finishedWithAuth:error:)];
-        
-        [self.mainView pushViewController:self.loginController onCompletion:nil context:nil animated:YES];
-        
+
+        [self.mainController pushViewController:self.loginController animated:YES];
+
     } else {
         if ([sender isSelected]) {
             [sender setSelected:NO];
-            
-            [self.mainView popViewControllerOnCompletion:^(BOOL isPopped) {
-                [self.sliderViewController moveToCenter:nil];
-            } context:[NSNumber numberWithInt:tMoveToCenter] animated:YES];
-                        
+            [self.sliderViewController moveToCenter:nil];
+
         } else {
             if ([sender tag] == tLeftButton) {                
                 [sender setSelected:YES];
                 [self.rightButton setSelected:NO];
-                
-                [self.mainView popViewControllerOnCompletion:^(BOOL isPopped) {
-                    [self.sliderViewController moveToLeft:nil];
-                } context:[NSNumber numberWithInt:tMoveToLeft] animated:YES];
-                                
+                [self.sliderViewController moveToLeft:nil];
+
             } else {
                 [sender setSelected:YES];
                 [self.leftButton setSelected:NO];
-                
-                [self.mainView popViewControllerOnCompletion:^(BOOL isPopped) {
-                    [self.sliderViewController moveToRight:nil];
-                } context:[NSNumber numberWithInt:tMoveToRight] animated:YES];
+                [self.sliderViewController moveToRight:nil];
             }
         }
     }
@@ -149,50 +140,60 @@
         [[APPUserManager classInstance] signIn:auth onCompletion:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
             // received user profile, successfully signed in
             if (user) {
-                [self.sliderViewController mask:NO onCompletion:^{
-                    [self.sliderViewController moveToRight:nil];
-                }];
+                [self.sliderViewController moveToRight:nil];
 
             // not received user profile, not successfully logged in
             } else {
                 [self.rightButton setSelected:NO];
-                [self.sliderViewController mask:NO onCompletion:^{
-                    [self.sliderViewController didFullScreenAfterPop:^{
-                        [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                                    message:[NSString stringWithFormat:@"Unable to sign you in. Please try again later."]
-                                                   delegate:nil
-                                          cancelButtonTitle:@"OK"
-                                          otherButtonTitles:nil] show];
-                    } controller:viewController context:[NSNumber numberWithInt:tMoveToCenter]];
-                }];
+                [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                            message:[NSString stringWithFormat:@"Unable to sign you in. Please try again later."]
+                                           delegate:nil
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil] show];
             }
         }];
 
     } else if ([error code] != kGTMOAuth2ErrorWindowClosed) {
-
         [self.rightButton setSelected:NO];
-        [self.mainView popViewControllerOnCompletion:^(BOOL isPopped) {
-            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                        message:[NSString stringWithFormat:@"Unable to sign you in. Please try again later."]
-                                       delegate:nil
-                              cancelButtonTitle:@"OK"
-                              otherButtonTitles:nil] show];
-        } context:[NSNumber numberWithInt:tMoveToCenter] animated:YES];
+        [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                    message:[NSString stringWithFormat:@"Unable to sign you in. Please try again later."]
+                                   delegate:nil
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil] show];
     }
 }
 
-// when signing in, replace the current toolbar background image with the sign in image
-// change the image back once the user is signed in
 -(void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
+    // login controller shows up
     if (viewController != self.sliderViewController) {
+
+        // when signing in, replace the current toolbar background image with the sign in image
+        // change the image back once the user is signed in
         self.tmpTopBarBackImage = [ViewHelpers getBackgroundImageForToolbar:self.toolbar];
         [ViewHelpers setToolbar:self.toolbar withBackgroundImage:[UIImage imageNamed:@"top_bar_back_sign_in"]];
+
+        // call willBePushed on slider controller
+        dispatch_semaphore_t sema = dispatch_semaphore_create(1);
+        [self.sliderViewController navigationController:self.mainController willBePushed:self.loginController context:nil onCompletion:^{
+            dispatch_semaphore_signal(sema);
+        }];
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+
+    // slider controller shows up
     } else {
+        // reset background image
         if (self.tmpTopBarBackImage) {
             [ViewHelpers setToolbar:self.toolbar withBackgroundImage:self.tmpTopBarBackImage];
             self.tmpTopBarBackImage = nil;
         }
+
+        // call didPop on slider controller
+        dispatch_semaphore_t sema = dispatch_semaphore_create(1);
+        [self.sliderViewController navigationController:self.mainController didPop:self.loginController context:nil onCompletion:^{
+            dispatch_semaphore_signal(sema);
+        }];
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     }
 }
 
