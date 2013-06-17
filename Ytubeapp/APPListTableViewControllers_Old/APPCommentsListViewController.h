@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Matthias Stumpp. All rights reserved.
 //
 
-#import "APPBaseListViewController.h"
+#import "APPContentBaseController.h"
 #import "APPSingleTableCustomNavigationBarViewController.h"
 
 @interface APPCommentsListViewController : APPSingleTableCustomNavigationBarViewController <VideoDependenceDelegate>

@@ -426,10 +426,10 @@
 {
     // to change the toolbar image/title of the index controller
     // prefer topbarImage over topbarTitle, so check if topbarImage is provided first
-    if ([(APPBaseListViewController*)viewController topbarImage]) {
-        [self.controller setToolbarBackgroundImage:[(APPBaseListViewController*)viewController topbarImage]];
-    } else if ([(APPBaseListViewController*)viewController topbarTitle]) {
-        [self.controller setToolbarTitle:[(APPBaseListViewController*)viewController topbarTitle]];
+    if ([(APPContentBaseController *)viewController topbarImage]) {
+        [self.controller setToolbarBackgroundImage:[(APPContentBaseController *)viewController topbarImage]];
+    } else if ([(APPContentBaseController *)viewController topbarTitle]) {
+        [self.controller setToolbarTitle:[(APPContentBaseController *)viewController topbarTitle]];
     } else {
         NSLog(@"neither toolbar image nor title defined");
     }

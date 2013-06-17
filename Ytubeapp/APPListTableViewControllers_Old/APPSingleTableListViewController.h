@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 Matthias Stumpp. All rights reserved.
 //
 
-#import "APPBaseListViewController.h"
+#import "APPContentBaseController.h"
 
-@interface APPSingleTableListViewController : APPBaseListViewController <HasTableView>
+@interface APPSingleTableListViewController : APPContentBaseController <HasTableView>
 
 @end

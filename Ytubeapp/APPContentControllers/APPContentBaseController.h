@@ -1,5 +1,5 @@
 //
-//  APPBaseListViewController.h
+//  APPContentBaseController.h
 //  Ytubeapp
 //
 //  Created by Matthias Stumpp on 19.11.12.
@@ -14,7 +14,8 @@
 #import "APPTableCell.h"
 #import "UITableViewHeaderFormView.h"
 
-@interface APPBaseListViewController : PervasiveViewController <Base>
+@interface APPContentBaseController : PervasiveViewController <Base>
 @property (strong, nonatomic) UIImage *topbarImage;
 @property (strong, nonatomic) NSString *topbarTitle;
+@property BOOL isDefaultMode;
 @end
