@@ -10,20 +10,5 @@
 #import "APPTableCell.h"
 
 @interface APPVideoCell : APPTableCell
-
-@property (copy, nonatomic) NSString *title;
-@property (copy, nonatomic) NSString *subtitle;
-@property (nonatomic) UIImage *thumbnail;
-@property (nonatomic) int numberlikes;
-@property (nonatomic) int numberdislikes;
-@property (nonatomic) int views;
-@property (nonatomic) int durationinseconds;
-
-@property (strong, nonatomic) UIButton *addToPlaylistButton;
-@property (strong, nonatomic) UIButton *watchLaterButton;
-@property (strong, nonatomic) UIButton *favoritesButton;
-@property (strong, nonatomic) UIButton *commentsButton;
-
-- (void)setHD:(BOOL)n;
-
+-(void)setVideo:(GDataEntryYouTubeVideo*)video;
 @end

@@ -7,9 +7,27 @@
 
 
 #import "APPContentVideoListController.h"
+#import "APPVideoDetailViewController.h"
+#import "APPVideoCell.h"
 
+@implementation APPContentVideoListController
 
-@implementation APPContentVideoListController {
-
+-(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    APPVideoCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPVideoCell"];
+    if (cell == nil) {
+        cell = [[APPVideoCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPVideoCell"];
+    }
+    [cell setVideo:(GDataEntryYouTubeVideo *)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]]];
+    return cell;
 }
+
+-(void)tableView:(UITableView *)tableView didSelectEntry:(GDataEntryBase*)entry
+{
+    if (!self.isDefaultMode) {
+        APPVideoDetailViewController *videoDetailController = [[APPVideoDetailViewController alloc] initWithVideo:entry];
+        [self.navigationController pushViewController:videoDetailController animated:YES];
+    }
+}
+
 @end

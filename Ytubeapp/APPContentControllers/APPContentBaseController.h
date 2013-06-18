@@ -13,9 +13,13 @@
 #import "GDataYouTube.h"
 #import "APPTableCell.h"
 #import "UITableViewHeaderFormView.h"
+#import "QueryTicket.h"
+#import "APPVideoLogicHelper.h"
 
 @interface APPContentBaseController : PervasiveViewController <Base>
 @property (strong, nonatomic) UIImage *topbarImage;
 @property (strong, nonatomic) NSString *topbarTitle;
 @property BOOL isDefaultMode;
+-(void)didShow:(void (^)(void))callback;
+-(void)willHide:(void (^)(void))callback;
 @end

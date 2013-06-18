@@ -11,56 +11,14 @@
 #import "APPCommentsListViewController.h"
 #import "APPVideoDetailViewController.h"
 #import "APPVideoCell.h"
+#import "APPGlobals.h"
+#import "QueryManager.h"
+#import "APPPlaylistAddVideo.h"
 
 @implementation APPVideoLogicHelper
 
-+ (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath delegate:(id<Base, HasTableView>)delegate
++(void)videoAction:(GDataEntryYouTubeVideo*)video button:(UIButton*)button delegate:(id<Base, HasTableView, VideoDependenceDelegate>)delegate
 {
-    APPVideoCell *cell = [delegate.tableView dequeueReusableCellWithIdentifier:@"APPVideoCell"];
-    if (cell == nil) {
-        cell = [[APPVideoCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPVideoCell"];
-        cell.touchButtonDelegate = delegate;
-    }
-    
-    if (delegate.openCell && [delegate.openCell row] == [indexPath row])
-        [cell openOnCompletion:NULL animated:NO];
-    
-    cell.touchButtonIndexPath = indexPath;
-    
-    GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo *) [[delegate currentCustomFeed] objectAtIndex:[indexPath row]];
-    
-    [delegate.contentManager isVideoFavorite:video callback:^(GDataEntryYouTubeFavorite *fav, NSError *error) {
-        if (fav)
-            [cell.favoritesButton setSelected:YES];
-    }];
-    
-    [delegate.contentManager isVideoWatchLater:video callback:^(GDataEntryYouTubeVideo *video, NSError *error) {
-        if (video)
-            [cell.watchLaterButton setSelected:YES];
-    }];
-    
-    cell.title = [[video title] stringValue];
-    cell.subtitle = [[video title] stringValue];
-    
-    cell.numberlikes = [[[video rating] numberOfLikes] intValue];
-    cell.numberdislikes = [[[video rating] numberOfDislikes] intValue];
-    cell.views = [[[video statistics] viewCount] intValue];
-    
-    GDataYouTubeMediaGroup *mediaGroup = [video mediaGroup];
-    cell.durationinseconds = [[mediaGroup duration] intValue];
-    
-    [delegate.contentManager imageForVideo:video callback:^(UIImage *image) {
-        if (image) {
-            cell.thumbnail = image;
-            [cell setNeedsLayout];
-        }
-    }];
-    
-    return cell;
-}
-
-+ (void)videoAction:(GDataEntryYouTubeVideo*)video button:(UIButton*)button delegate:(id<Base, HasTableView, VideoDependenceDelegate>)delegate
-{    
     switch (button.tag)
     {
         case tAddToPlaylist:
@@ -68,7 +26,8 @@
             APPPlaylistsViewController *playlistController = [[APPPlaylistsViewController alloc] init];
             playlistController.callback = ^(GDataEntryYouTubePlaylistLink *playlist) {
                 [[delegate getNavigationController] popViewControllerAnimated:YES];
-                [delegate.contentManager addVideoToPlaylist:video playlist:playlist callback:^(GDataEntryYouTubePlaylist *playlist, NSError *error) {
+                QueryTicket *ticket = [[APPPlaylistAddVideo instanceWithQueue:[APPGlobals getGlobalForKey:@"queue1"]] process:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", playlist, @"playlist", nil] onCompletion:^(int state, id data, NSError *error) {
+                    GDataEntryYouTubePlaylist *playlist = (GDataEntryYouTubePlaylist*)data;
                     if (playlist && !error) {
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"addedVideoToPlaylist" object:playlist];
                         [[[UIAlertView alloc] initWithTitle:@"Video Added"
@@ -76,7 +35,7 @@
                                                    delegate:nil
                                           cancelButtonTitle:@"OK"
                                           otherButtonTitles:nil] show];
-                        
+
                     } else
                         [[[UIAlertView alloc] initWithTitle:@"Video Not Added"
                                                     message:[NSString stringWithFormat:@"Something went wrong. Video not added to playlist: %@", [[playlist title] stringValue]]
@@ -88,7 +47,7 @@
             [[delegate getNavigationController] pushViewController:playlistController onCompletion:nil context:nil animated:YES];
             break;
         }
-            
+
         case tWatchLater:
         {
             if ([button isSelected]) {
@@ -100,7 +59,7 @@
                         [button setSelected:TRUE];
                     }
                 }];
-                
+
             } else {
                 [button setSelected:TRUE];
                 [delegate.contentManager addVideoToWatchLater:video callback:^(GDataEntryYouTubePlaylist *tmp_video, NSError *error) {
@@ -113,7 +72,7 @@
             }
             break;
         }
-            
+
         case tFavorites:
         {
             if ([button isSelected]) {
@@ -125,7 +84,7 @@
                         [button setSelected:TRUE];
                     }
                 }];
-                
+
             } else {
                 [button setSelected:TRUE];
                 [delegate.contentManager addVideoToFavorites:video callback:^(GDataEntryYouTubeFavorite *tmp_video, NSError *error) {
@@ -138,13 +97,13 @@
             }
             break;
         }
-            
+
         case tComments:
         {
             [[delegate getNavigationController] pushViewController:[[APPCommentsListViewController alloc] initWithVideo:video] onCompletion:nil context:nil animated:YES];
             break;
         }
-            
+
         case tLike:
         {
             if (![button isSelected]) {
@@ -162,7 +121,7 @@
             }
             break;
         }
-            
+
         case tLikeLike:
         {
             if ([button isSelected]) {
@@ -182,7 +141,7 @@
             }
             break;
         }
-            
+
         case tLikeDislike:
         {
             if ([button isSelected]) {
@@ -205,7 +164,7 @@
     }
 }
 
-+ (void)removeVideo:(GDataEntryYouTubePlaylist*)video fromPlaylist:(GDataEntryYouTubePlaylistLink*)playlist delegate:(id<Base, HasTableView, PlaylistDependenceDelegate>)delegate;
++(void)removeVideo:(GDataEntryYouTubePlaylist*)video fromPlaylist:(GDataEntryYouTubePlaylistLink*)playlist delegate:(id<Base, HasTableView, PlaylistDependenceDelegate>)delegate;
 {
     [delegate.contentManager removeVideoFromPlaylist:video callback:^(BOOL removed, NSError *error) {
         if (removed && !error) {
@@ -222,7 +181,7 @@
     }];
 }
 
-+ (void)removeVideoFromFavorites:favorite delegate:(id<Base, HasTableView, VideoDependenceDelegate>)delegate
++(void)removeVideoFromFavorites:favorite delegate:(id<Base, HasTableView, VideoDependenceDelegate>)delegate
 {
     [delegate.contentManager removeVideoFromFavorites:favorite callback:^(BOOL deleted, NSError *error) {
         if (deleted && !error) {
@@ -239,7 +198,7 @@
     }];
 }
 
-+ (void)deleteMyVideo:(GDataEntryYouTubeVideo*)video delegate:(id<Base, HasTableView>)delegate
++(void)deleteMyVideo:(GDataEntryYouTubeVideo*)video delegate:(id<Base, HasTableView>)delegate
 {
     [delegate.contentManager deleteMyVideo:video callback:^(BOOL deleted, NSError *error) {
         if (deleted && !error) {
@@ -256,7 +215,7 @@
     }];
 }
 
-+ (void)removeVideoFromWatchLater:(GDataEntryYouTubeVideo*)video delegate:(id<Base, HasTableView>)delegate
++(void)removeVideoFromWatchLater:(GDataEntryYouTubeVideo*)video delegate:(id<Base, HasTableView>)delegate
 {
     [delegate.contentManager removeVideoFromWatchLater:video callback:^(BOOL deleted, NSError *error) {
         if (deleted && !error) {
@@ -271,24 +230,6 @@
                               otherButtonTitles:nil] show];
         }
     }];
-}
-
-+ (NSIndexPath*)tableView:(UITableView*)tableView willSelectRowAtIndexPath:(NSIndexPath*)indexPath delegate:(id<Base, HasTableView>)delegate
-{
-    APPVideoCell *selectedCell = (APPVideoCell*) [delegate.tableView cellForRowAtIndexPath:indexPath];
-    if (![selectedCell isOpened])
-        return indexPath;
-    else
-        return nil;
-}
-
-+ (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath delegate:(id<Base, HasTableView>)delegate
-{
-    if (delegate.isInFullscreenMode)
-    {
-        APPVideoDetailViewController *detailController = [[APPVideoDetailViewController alloc] initWithVideo:[[delegate currentCustomFeed] objectAtIndex:[indexPath row]]];
-        [[delegate getNavigationController] pushViewController:detailController onCompletion:nil context:nil animated:YES];
-    }
 }
 
 @end

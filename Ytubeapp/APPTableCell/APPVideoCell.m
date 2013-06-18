@@ -7,9 +7,23 @@
 //
 
 #import "APPVideoCell.h"
+#import "APPVideoLogicHelper.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface APPVideoCell ()
+@property (strong, nonatomic) GDataEntryYouTubeVideo *video;
+@property (copy, nonatomic) NSString *title;
+@property (copy, nonatomic) NSString *subtitle;
+@property (nonatomic) UIImage *thumbnail;
+@property (nonatomic) int numberlikes;
+@property (nonatomic) int numberdislikes;
+@property (nonatomic) int views;
+@property (nonatomic) int durationinseconds;
+
+@property (strong, nonatomic) UIButton *addToPlaylistButton;
+@property (strong, nonatomic) UIButton *watchLaterButton;
+@property (strong, nonatomic) UIButton *favoritesButton;
+@property (strong, nonatomic) UIButton *commentsButton;
 
 @property (strong, nonatomic) UILabel *titleLabel;
 @property (strong, nonatomic) UILabel *subtitleLabel;
@@ -39,20 +53,17 @@
 @synthesize durationLabel;
 @synthesize thumbnailImage;
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+-(id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         [self initUI];
-        [self allowToOpen:YES];
-        [self.favoritesButton setSelected:NO];
-        [self.watchLaterButton setSelected:NO];
-        [self setThumbnail:[[ViewHelpers classInstance] noPreviewImage]];
+        [self prepareForReuse];
     }
     return self;
 }
 
-- (void)initUI
+-(void)initUI
 {
     self.addToPlaylistButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.addToPlaylistButton.frame = CGRectMake(10.0, 0, 77.0, 88.0);
@@ -85,7 +96,7 @@
     [self.commentsButton setImage:[UIImage imageNamed:@"video_cell_menu_icon_comment_down"] forState:UIControlStateSelected];
     [self.commentsButton setImage:[UIImage imageNamed:@"video_cell_menu_icon_comment_down"] forState:UIControlStateHighlighted];
     [self.tableCellSubMenu addSubview:self.commentsButton];
-    
+
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(140.0, 20.0, 170.0, 18.0)];
     [self.titleLabel setFont:[UIFont fontWithName:@"Nexa Bold" size:13]];
     [self.titleLabel setTextColor:[UIColor whiteColor]];
@@ -132,7 +143,7 @@
     [self.tableCellMain addSubview:self.playImage];
 }
 
-- (void)prepareForReuse
+-(void)prepareForReuse
 {
     [super prepareForReuse];
     [self allowToOpen:YES];
@@ -141,59 +152,59 @@
     [self setThumbnail:[[ViewHelpers classInstance] noPreviewImage]];
 }
 
-- (void)setTitle:(NSString *)n {
+-(void)setTitle:(NSString *)n {
     if (![n isEqualToString:title]) {
         title = [n copy];
         titleLabel.text = title;
     }
 }
 
-- (void)setSubtitle:(NSString *)n {
+-(void)setSubtitle:(NSString *)n {
     if (![n isEqualToString:subtitle]) {
         subtitle = [n copy];
         subtitleLabel.text = subtitle;
     }
 }
 
-- (void)setNumberlikes:(NSInteger)n {
+-(void)setNumberlikes:(NSInteger)n {
     if (!(n == numberlikes)) {
         numberlikes = n;
         [self updateStatisticsLabel];
     }
 }
 
-- (void)setNumberdislikes:(int)n {
+-(void)setNumberdislikes:(int)n {
     if (!(n == numberdislikes)) {
         numberdislikes = n;
         [self updateStatisticsLabel];
     }
 }
 
-- (void)setViews:(int)n {
+-(void)setViews:(int)n {
     if (!(n == views)) {
         views = n;
         [self updateStatisticsLabel];
     }
 }
 
-- (void)updateStatisticsLabel
+-(void)updateStatisticsLabel
 {
     statisticsLabel.text = [NSString stringWithFormat:@"%1.2f %%    %u views", ((float) numberlikes / (numberlikes + numberdislikes)) * 100.0, views];
 }
 
-- (void)setDurationinseconds:(int)n {
+-(void)setDurationinseconds:(int)n {
     if (!(n == durationinseconds)) {
         durationinseconds = n;
         durationLabel.text = [NSString stringWithFormat:@"%02d:%02d", durationinseconds/60, durationinseconds%60];
     }
 }
 
-- (void)setThumbnail:(UIImage *)n {
+-(void)setThumbnail:(UIImage *)n {
     thumbnail = n;
     [thumbnailImage setImage:thumbnail];
 }
 
-- (void)setHD:(BOOL)n
+-(void)setHD:(BOOL)n
 {
     if (n == YES) {
         [self.hdImage setHidden:NO];
@@ -202,19 +213,51 @@
     }
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     [super touchesEnded:touches withEvent:event];
     if ([self isOpened]) {
         CGPoint location = [((UITouch *)[touches anyObject]) locationInView:self];
         if (CGRectContainsPoint(self.addToPlaylistButton.frame, location))
-            [self.touchButtonDelegate tableViewCellButtonTouched:self button:(UIButton*)self.addToPlaylistButton indexPath:self.touchButtonIndexPath];
+            [APPVideoLogicHelper videoAction:self.video button:self.addToPlaylistButton delegate:self.touchButtonDelegate];
         if (CGRectContainsPoint(self.watchLaterButton.frame, location))
-            [self.touchButtonDelegate tableViewCellButtonTouched:self button:(UIButton*)self.watchLaterButton indexPath:self.touchButtonIndexPath];
+            [APPVideoLogicHelper videoAction:self.video button:self.watchLaterButton delegate:self.touchButtonDelegate];
         if (CGRectContainsPoint(self.favoritesButton.frame, location))
-            [self.touchButtonDelegate tableViewCellButtonTouched:self button:(UIButton*)self.favoritesButton indexPath:self.touchButtonIndexPath];
+            [APPVideoLogicHelper videoAction:self.video button:self.favoritesButton delegate:self.touchButtonDelegate];
         if (CGRectContainsPoint(self.commentsButton.frame, location))
-            [self.touchButtonDelegate tableViewCellButtonTouched:self button:(UIButton*)self.commentsButton indexPath:self.touchButtonIndexPath];    
+            [APPVideoLogicHelper videoAction:self.video button:self.commentsButton delegate:self.touchButtonDelegate];
     }
+}
+
+-(void)setVideo:(GDataEntryYouTubeVideo *)video
+{
+    self.video = video;
+
+    [contentManager isVideoFavorite:self.video callback:^(GDataEntryYouTubeFavorite *fav, NSError *error) {
+        if (fav)
+            [self.favoritesButton setSelected:YES];
+    }];
+
+    [contentManager isVideoWatchLater:self.video callback:^(GDataEntryYouTubeVideo *video, NSError *error) {
+        if (video)
+            [self.watchLaterButton setSelected:YES];
+    }];
+
+    self.title = [[self.video title] stringValue];
+    self.subtitle = [[self.video title] stringValue];
+
+    self.numberlikes = [[[self.video rating] numberOfLikes] intValue];
+    self.numberdislikes = [[[self.video rating] numberOfDislikes] intValue];
+    self.views = [[[self.video statistics] viewCount] intValue];
+
+    GDataYouTubeMediaGroup *mediaGroup = [self.video mediaGroup];
+    self.durationinseconds = [[mediaGroup duration] intValue];
+
+    [contentManager imageForVideo:self.video callback:^(UIImage *image) {
+        if (image) {
+            self.thumbnail = image;
+            [self setNeedsLayout];
+        }
+    }]
 }
 
 @end

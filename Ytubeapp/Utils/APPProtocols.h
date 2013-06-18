@@ -13,6 +13,8 @@
 #import "UITableViewAtBottomView.h"
 #import "UITableViewMaskView.h"
 #import "SmartNavigationController.h"
+#import "APPTableCell.h"
+#import "APPTableView.h";
 
 // Time scopes
 
@@ -50,6 +52,7 @@
 #define tRelatedVideos 02
 
 @class GTMOAuth2Authentication;
+@class UITableViewHeaderFormView;
 
 @interface APPProtocols
 @end
@@ -74,9 +77,9 @@
 @protocol Base <UserProfileChangeDelegate, APPSliderViewControllerDelegate, State>
 @end
 
-@protocol HasTableView <UITableViewDataSource, UITableViewDelegate, SSPullToRefreshViewDelegate, UITableViewSwipeViewDelegate, UITableViewAtBottomViewDelegate, UITableViewMaskViewDelegate>
+@protocol HasTableView
 @required
-@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) APPTableView *tableView;
 @property (nonatomic, strong) SSPullToRefreshView *pullToRefreshView;
 @property (nonatomic, strong) UITableViewSwipeView *tableViewSwipeView;
 @property (nonatomic, strong) UITableViewAtBottomView *tableViewAtBottomView;

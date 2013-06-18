@@ -11,7 +11,6 @@
 
 @implementation APPContentBaseController
 
-//@synthesize isInFullScreenMode;
 //@synthesize userProfile;
 
 -(id)init
@@ -52,20 +51,49 @@
 
 -(void)doDefaultMode:(void (^)(void))callback;
 {
-    if (!self.isDefaultMode)
-        self.isDefaultMode = TRUE;
-        
-    if (callback)
-        callback();
+    if (self.isDefaultMode) {
+        if (callback)
+            callback();
+        return;
+    }
+
+    [self willHide:^{
+        if (callback)
+            callback();
+    }];
+
+    self.isDefaultMode = TRUE;
 }
 
 -(void)undoDefaultMode:(void (^)(void))callback;
 {
-    if (self.isDefaultMode)
-        self.isDefaultMode = FALSE;
-    
-    if (callback)
-        callback();
+    if (!self.isDefaultMode) {
+        if (callback)
+            callback();
+        return;
+    }
+
+    [self didShow:^{
+        if (callback)
+            callback();
+    }];
+
+    self.isDefaultMode = FALSE;
+}
+
+-(void)willHide:(void (^)(void))callback
+{
+    callback();
+}
+
+-(void)didShow:(void (^)(void))callback
+{
+    callback();
+}
+
+-(void)didFinishView:(NSNotification*)notification
+{
+    NSLog(@"Method didFinishView must be overwritten in subclass!");
 }
 
 // other stuff

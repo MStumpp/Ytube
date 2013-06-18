@@ -11,11 +11,7 @@
 #import "GDataYouTube.h"
 
 @interface APPCommentLogicHelper : NSObject
-
-+ (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath delegate:(id<Base, HasTableView>)delegate;
-
-+ (void)addComment:(GDataEntryYouTubeComment*)comment ToVideo:(GDataEntryYouTubeVideo*)video delegate:(id<Base, HasTableView>)delegate;
-
-+ (void)deleteComment:(GDataEntryYouTubeComment*)comment FromVideo:(GDataEntryYouTubeVideo*)video delegate:(id<Base, HasTableView>)delegate;
-
++(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath delegate:(id<Base, HasTableView>)delegate;
++(void)addComment:(GDataEntryYouTubeComment*)comment ToVideo:(GDataEntryYouTubeVideo*)video delegate:(id<Base, HasTableView>)delegate;
++(void)deleteComment:(GDataEntryYouTubeComment*)comment FromVideo:(GDataEntryYouTubeVideo*)video delegate:(id<Base, HasTableView>)delegate;
 @end

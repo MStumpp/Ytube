@@ -18,7 +18,7 @@
 
 @implementation APPTableCell
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+-(id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -64,13 +64,13 @@
     return self;
 }
 
-- (void)prepareForReuse
+-(void)prepareForReuse
 {
     [super prepareForReuse];
-    [self closeOnCompletion:NULL animated:NO];
+    [self closeOnCompletion:nil animated:NO];
 }
 
-- (void)layoutSubviews
+-(void)layoutSubviews
 {
     [super layoutSubviews];
     
@@ -83,7 +83,7 @@
     self.bottomBack.frame = rect;
 }
 
-- (void)openOnCompletion:(void (^)(BOOL isOpened))callback animated:(BOOL)animated
+-(void)openOnCompletion:(void (^)(BOOL isOpened))callback animated:(BOOL)animated
 {
     if (self.allowToOpen) {
     
@@ -138,7 +138,7 @@
     }
 }
 
-- (void)closeOnCompletion:(void (^)(BOOL isClosed))callback animated:(BOOL)animated
+-(void)closeOnCompletion:(void (^)(BOOL isClosed))callback animated:(BOOL)animated
 {
     if (self.tableCellMain.frame.origin.x == -320.0)
     {
@@ -238,24 +238,24 @@
         callback();
 }*/
 
-- (BOOL)isOpened
+-(BOOL)isOpened
 {
     if (self.tableCellMain.frame.origin.x == 0)
         return FALSE;
     return TRUE;
 }
 
-- (BOOL)isClosed
+-(BOOL)isClosed
 {
     return ![self isOpened];
 }
 
-- (void)allowToOpen:(BOOL)value
+-(void)allowToOpen:(BOOL)value
 {
     self.allowToOpen = value;
 }
 
-- (void)mask:(BOOL)value
+-(void)mask:(BOOL)value
 {
     if (value)
         [self.shadowImage setHidden:NO];
