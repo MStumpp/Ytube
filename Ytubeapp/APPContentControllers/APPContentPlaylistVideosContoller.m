@@ -6,15 +6,16 @@
 //
 
 
-#import "APPContentFavoritesController.h"
+#import "APPContentPlaylistVideosContoller.h"
 
-@implementation APPContentFavoritesController
+@implementation APPContentPlaylistVideosContoller
+@synthesize playlist;
 
-- (id)init
+-(id)init
 {
     self = [super init];
     if (self) {
-        self.topbarImage = [UIImage imageNamed:@"top_bar_back_favorites"];
+        self.topbarImage = [UIImage imageNamed:@"top_bar_back_playlists"];
 
         id this = self;
         [[[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tDidInit do:^() {
@@ -23,6 +24,15 @@
         }];
 
         [self toInitialState];
+    }
+    return self;
+}
+
+-(id)initWithPlaylist:(GDataEntryYouTubePlaylistLink *)pl
+{
+    self = [self init];
+    if (self) {
+        self.playlist = pl;
     }
     return self;
 }
@@ -44,8 +54,9 @@
 // TODO: Remove table cell locally
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle didSelectEntry:(GDataEntryBase*)entry
 {
-    GDataEntryYouTubeFavorite *favorite = (GDataEntryYouTubeFavorite *)entry;
-    [APPVideoLogicHelper removeVideoFromFavorites:favorite delegate:self];
+    GDataEntryYouTubePlaylist *pl = (GDataEntryYouTubePlaylist*) entry;
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+        [APPVideoLogicHelper removeVideo:pl fromPlaylist:self.playlist delegate:self];
 }
 
 @end

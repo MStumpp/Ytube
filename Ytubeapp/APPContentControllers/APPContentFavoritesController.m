@@ -6,15 +6,15 @@
 //
 
 
-#import "APPContentWatchLaterController.h"
+#import "APPContentFavoritesController.h"
 
-@implementation APPContentWatchLaterController
+@implementation APPContentFavoritesController
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        self.topbarImage = [UIImage imageNamed:@"top_bar_back_watch_later"];
+        self.topbarImage = [UIImage imageNamed:@"top_bar_back_favorites"];
 
         id this = self;
         [[[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tDidInit do:^() {
@@ -44,8 +44,9 @@
 // TODO: Remove table cell locally
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle didSelectEntry:(GDataEntryBase*)entry
 {
-    GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo *)entry;
-    [APPVideoLogicHelper removeVideoFromWatchLater:video delegate:self];
+    GDataEntryYouTubeFavorite *favorite = (GDataEntryYouTubeFavorite *)entry;
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+        [APPVideoLogicHelper removeVideoFromFavorites:favorite delegate:self];
 }
 
 @end

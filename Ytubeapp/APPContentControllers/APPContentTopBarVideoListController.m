@@ -9,6 +9,7 @@
 #import "APPContentTopBarVideoListController.h"
 
 @interface APPContentTopBarVideoListController ()
+// TODO: shown initially wirklich notwendig
 @property BOOL subtopbarShownInitially;
 @property BOOL subtopbarWasVisible;
 @end

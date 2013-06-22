@@ -57,6 +57,12 @@
         self.backButton.hidden = YES;
 }
 
+-(void)back
+{
+    if ([self.navigationController.viewControllers count] > 1)
+        [self.navigationController popViewControllerAnimated:YES];
+}
+
 -(void)editButtonPress:(id)sender
 {
     if ([sender isSelected]) {
@@ -74,12 +80,6 @@
 
         [self.editButton setSelected:YES];
     }
-}
-
--(void)back
-{
-    if ([self.navigationController.viewControllers count] > 1)
-        [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

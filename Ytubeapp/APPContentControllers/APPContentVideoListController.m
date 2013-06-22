@@ -24,10 +24,15 @@
 
 -(void)tableView:(UITableView *)tableView didSelectEntry:(GDataEntryBase*)entry
 {
-    if (!self.isDefaultMode) {
-        APPVideoDetailViewController *videoDetailController = [[APPVideoDetailViewController alloc] initWithVideo:entry];
-        [self.navigationController pushViewController:videoDetailController animated:YES];
-    }
+    if (!self.isDefaultMode)
+        return;
+
+    GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo *)entry;
+
+    if (self.callback)
+        self.callback(video);
+    else
+        [self.navigationController pushViewController:[[APPVideoDetailViewController alloc] initWithVideo:video] animated:YES];
 }
 
 @end

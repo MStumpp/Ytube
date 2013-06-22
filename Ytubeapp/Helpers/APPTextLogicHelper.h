@@ -11,6 +11,5 @@
 #import "GDataYouTube.h"
 
 @interface APPTextLogicHelper : NSObject
-+(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath delegate:(id<Base, HasTableView>)delegate;
 +(void)deletePlaylist:(GDataEntryYouTubePlaylistLink*)playlist delegate:(id<Base, HasTableView>)delegate;
 @end

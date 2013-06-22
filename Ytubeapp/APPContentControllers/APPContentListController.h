@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "APPContentBaseController.h"
 
-@interface APPContentListController : APPContentBaseController <APPTableViewDelegate>
+@interface APPContentListController : APPContentBaseController <APPTableViewDelegate, SelectDelegate>
 @property (nonatomic, strong) APPTableView *tableView;
 @end

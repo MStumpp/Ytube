@@ -1,27 +1,29 @@
 //
-//  APPSingleTableCustomNavigationBarViewController.m
-//  Ytubeapp
+// Created by Matthias Stumpp on 18.06.13.
+// Copyright (c) 2013 Matthias Stumpp. All rights reserved.
 //
-//  Created by Matthias Stumpp on 09.01.13.
-//  Copyright (c) 2013 Matthias Stumpp. All rights reserved.
+// To change the template use AppCode | Preferences | File Templates.
 //
 
-#import "APPSingleTableCustomNavigationBarViewController.h"
 
-@interface APPSingleTableCustomNavigationBarViewController ()
-@property BOOL form1WasVisible;
-@property BOOL form2WasVisible;
+#import "APPContentTopToggleBarVideoListController.h"
+
+@interface APPContentTopToggleBarVideoListController ()
+// TODO: shown initially wirklich notwendig
+@property BOOL subtopbarShownInitially;
+@property BOOL subtopbarWasVisible1;
+@property BOOL subtopbarWasVisible2;
 @end
 
-@implementation APPSingleTableCustomNavigationBarViewController
+@implementation APPContentTopToggleBarVideoListController
 
-- (id)init
+-(id)init
 {
     self = [super init];
     if (self) {
         [[[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tDidInit do:^() {
-            self.form1WasVisible = FALSE;
-            self.form2WasVisible = FALSE;
+            self.subtopbarWasVisible1 = FALSE;
+            self.subtopbarWasVisible2 = FALSE;
         }] onViewState:tDidAppear do:^{
             [self.tableViewHeaderFormView2 hideOnCompletion:^(BOOL isHidden) {
                 if (isHidden)
@@ -33,15 +35,15 @@
     return self;
 }
 
-- (void)loadView
+-(void)loadView
 {
     [super loadView];
-    
-    self.tableViewHeaderFormView2 = [[UITableViewHeaderFormView alloc] initWithRootView:self.tableViewMaskView headerView:nil delegate:self];
-    
+
+    self.tableViewHeaderFormView2 = [[UITableViewHeaderFormView alloc] initWithRootView:self.tableView headerView:nil delegate:self];
+
     UIControl *subtopbarContainer = [[UIControl alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0)];
     [subtopbarContainer addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sub_top_bar_back"]]];
-        
+
     self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.backButton.frame = CGRectMake(0.0, 0.0, 49.0, 44.0);
     [self.backButton setImage:[UIImage imageNamed:@"sub_top_bar_arrow_left_up"] forState:UIControlStateNormal];
@@ -49,7 +51,7 @@
     [self.backButton setImage:[UIImage imageNamed:@"sub_top_bar_arrow_left_down"] forState:UIControlStateHighlighted];
     [self.backButton addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
     [subtopbarContainer addSubview:self.backButton];
-    
+
     self.editButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.editButton.frame = CGRectMake(227.0, 0.0, 49.0, 44.0);
     [self.editButton addTarget:self action:@selector(editButtonPress:) forControlEvents:UIControlEventTouchUpInside];
@@ -58,7 +60,7 @@
     [self.editButton setImage:[UIImage imageNamed:@"sub_top_bar_edit_down"] forState:UIControlStateSelected];
     [self.editButton setTag:tEdit];
     [subtopbarContainer addSubview:self.editButton];
-    
+
     UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
     addButton.frame = CGRectMake(276.0, 0.0, 44.0, 44.0);
     [addButton addTarget:self action:@selector(addButtonPress:) forControlEvents:UIControlEventTouchUpInside];
@@ -67,18 +69,53 @@
     [addButton setImage:[UIImage imageNamed:@"sub_top_bar_plus_down"] forState:UIControlStateSelected];
     [addButton setTag:tAdd];
     [subtopbarContainer addSubview:addButton];
-    
+
     self.tableViewHeaderFormView1 = [[UITableViewHeaderFormView alloc] initWithRootView:self.tableViewHeaderFormView2 headerView:subtopbarContainer delegate:self];
 }
 
-- (void)viewDidUnload
+-(void)viewDidUnload
 {
     [super viewDidUnload];
     self.tableViewHeaderFormView1 = nil;
     self.tableViewHeaderFormView2 = nil;
 }
 
-- (void)addButtonPress:(id)sender
+// TODO: Brauchen wir das hier?
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if ([self.navigationController.viewControllers count] > 1)
+        self.backButton.hidden = NO;
+    else
+        self.backButton.hidden = YES;
+}
+
+-(void)back
+{
+    if ([self.navigationController.viewControllers count] > 1)
+        [self.navigationController popViewControllerAnimated:YES];
+}
+
+-(void)editButtonPress:(id)sender
+{
+    if ([sender isSelected]) {
+        [self.tableView setEditing:NO animated:YES];
+        [self.editButton setSelected:NO];
+
+    } else {
+        self.tmpEditingCell = nil;
+        if ([self.tableView isEditing]) {
+            [self.tableView setEditing:NO animated:NO];
+            [self.tableView setEditing:YES animated:NO];
+        } else {
+            [self.tableView setEditing:YES animated:YES];
+        }
+
+        [self.editButton setSelected:YES];
+    }
+}
+
+-(void)addButtonPress:(id)sender
 {
     if ([self.tableViewHeaderFormView1 isHeaderShown]) {
         [self.tableViewHeaderFormView1 hideOnCompletion:^(BOOL isHidden) {
@@ -88,75 +125,49 @@
     }
 }
 
-- (void)cancelButtonPress:(id)sender
+-(void)willHide:(void (^)(void))callback
 {
-    if ([self.tableViewHeaderFormView2 isHeaderShown]) {
-        self.textField.text = @"";
-        [self.tableViewHeaderFormView2 hideOnCompletion:^(BOOL isHidden) {
-            if (isHidden) {
-                [self.tableViewHeaderFormView1 showOnCompletion:nil animated:YES];
-            }
-        } animated:YES];
-    }
-}
-
-// "APPSliderViewConrollerDelegate" Protocol
-
-- (void)didFullScreenMode:(void (^)(void))callback
-{
-    if (!self.isInFullscreenMode) {
-        self.isInFullscreenMode = TRUE;
-
-        [self onViewState:tDidAppear when:self.form1WasVisible doOnce:^(){
-            [self.tableViewHeaderFormView1 showOnCompletion:nil animated:YES];
-        }];
-        
-        [self onViewState:tDidAppear when:self.form2WasVisible doOnce:^(){
-            [self.tableViewHeaderFormView2 showOnCompletion:nil animated:YES];
-        }];
-    }
-    
-    if (callback)
-        callback();
-}
-
-- (void)willSplitScreenMode:(void (^)(void))callback
-{
-    [self modeChange:callback];
-}
-
-- (void)willBeToppedMode:(void (^)(void))callback
-{
-    [self modeChange:callback];
-}
-
-- (void)modeChange:(void (^)(void))callback
-{
-    if (self.isInFullscreenMode) {
-        self.isInFullscreenMode = FALSE;
-        
-        // slide sub header menu up and
+    if (!self.isDefaultMode) {
         if ([self.tableViewHeaderFormView1 isHeaderShown]) {
-            self.form1WasVisible = TRUE;
+            self.subtopbarWasVisible1 = TRUE;
             [self.tableViewHeaderFormView1 hideOnCompletion:^(BOOL isHidden) {
                 if (callback)
                     callback();
             } animated:YES];
-            
+
         } else if ([self.tableViewHeaderFormView2 isHeaderShown]) {
-            self.form2WasVisible = TRUE;
+            self.subtopbarWasVisible2 = TRUE;
             [self.tableViewHeaderFormView2 hideOnCompletion:^(BOOL isHidden) {
                 if (callback)
                     callback();
             } animated:YES];
-            
+
         } else {
-            self.form1WasVisible = FALSE;
-            self.form2WasVisible = FALSE;
+            self.subtopbarWasVisible1 = FALSE;
+            self.subtopbarWasVisible2 = FALSE;
             if (callback)
                 callback();
         }
-        
+
+    } else {
+        if (callback)
+            callback();
+    }
+}
+
+-(void)didShow:(void (^)(void))callback
+{
+    if (self.isDefaultMode) {
+        [self onViewState:tDidAppear when:!self.subtopbarWasVisible1 doOnce:^{
+            [self.tableViewHeaderFormView1 showOnCompletion:^(BOOL isShown){
+                if (isShown)
+                    self.subtopbarShownInitially = TRUE;
+            } animated:YES];
+        }];
+
+        [self onViewState:tDidAppear when:self.subtopbarWasVisible2 doOnce:^{
+            [self.tableViewHeaderFormView2 showOnCompletion:nil animated:YES];
+        }];
     } else {
         if (callback)
             callback();

@@ -6,16 +6,15 @@
 //
 
 
-#import "APPContentPlaylistVideosContoller.h"
+#import "APPContentMyVideoController.h"
 
-@implementation APPContentPlaylistVideosContoller
-@synthesize playlist;
+@implementation APPContentMyVideoController
 
 -(id)init
 {
     self = [super init];
     if (self) {
-        self.topbarImage = [UIImage imageNamed:@"top_bar_back_playlists"];
+        self.topbarImage = [UIImage imageNamed:@"top_bar_back_my_videos"];
 
         id this = self;
         [[[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tDidInit do:^() {
@@ -24,15 +23,6 @@
         }];
 
         [self toInitialState];
-    }
-    return self;
-}
-
--(id)initWithPlaylist:(GDataEntryYouTubePlaylistLink *)pl
-{
-    self = [self init];
-    if (self) {
-        self.playlist = pl;
     }
     return self;
 }
@@ -54,8 +44,9 @@
 // TODO: Remove table cell locally
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle didSelectEntry:(GDataEntryBase*)entry
 {
-    GDataEntryYouTubePlaylist *pl = (GDataEntryYouTubePlaylist*) entry;
-    [APPVideoLogicHelper removeVideo:pl fromPlaylist:self.playlist delegate:self];
+    GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo *)entry;
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+        [APPVideoLogicHelper deleteMyVideo:video delegate:self];
 }
 
 @end

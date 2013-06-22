@@ -10,10 +10,8 @@
 #import "APPTableCell.h"
 
 @interface APPTextCell : APPTableCell
-
 @property (copy, nonatomic) NSString *text;
 @property (copy, nonatomic) NSString *description;
 @property (copy, nonatomic) UIImage *textPic;
 @property (nonatomic) int numberItems;
-
 @end

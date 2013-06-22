@@ -6,15 +6,15 @@
 //
 
 
-#import "APPContentMyVideoController.h"
+#import "APPContentWatchLaterController.h"
 
-@implementation APPContentMyVideoController
+@implementation APPContentWatchLaterController
 
--(id)init
+- (id)init
 {
     self = [super init];
     if (self) {
-        self.topbarImage = [UIImage imageNamed:@"top_bar_back_my_videos"];
+        self.topbarImage = [UIImage imageNamed:@"top_bar_back_watch_later"];
 
         id this = self;
         [[[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tDidInit do:^() {
@@ -45,7 +45,8 @@
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle didSelectEntry:(GDataEntryBase*)entry
 {
     GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo *)entry;
-    [APPVideoLogicHelper deleteMyVideo:video delegate:self];
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+        [APPVideoLogicHelper removeVideoFromWatchLater:video delegate:self];
 }
 
 @end

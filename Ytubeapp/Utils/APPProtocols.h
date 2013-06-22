@@ -54,6 +54,8 @@
 @class GTMOAuth2Authentication;
 @class UITableViewHeaderFormView;
 
+@protocol SelectDelegate;
+
 @interface APPProtocols
 @end
 
@@ -110,11 +112,18 @@
 @protocol VideoDependenceDelegate
 @required
 @property (nonatomic, retain) GDataEntryYouTubeVideo *video;
-- (id)initWithVideo:(GDataEntryYouTubeVideo *)video;
+-(id)initWithVideo:(GDataEntryYouTubeVideo *)video;
 @end
 
 @protocol PlaylistDependenceDelegate
 @required
 @property (nonatomic, retain) GDataEntryYouTubePlaylistLink *playlist;
-- (id)initWithPlaylist:(GDataEntryYouTubePlaylistLink *)playlist;
+-(id)initWithPlaylist:(GDataEntryYouTubePlaylistLink *)playlist;
 @end
+
+typedef void(^APPSelectDelegateCallback)(GDataEntryBase *entryBase);
+@protocol SelectDelegate
+@required
+@property (nonatomic, copy) APPSelectDelegateCallback callback;
+@end
+
