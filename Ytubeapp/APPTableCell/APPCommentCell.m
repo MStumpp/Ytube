@@ -7,36 +7,42 @@
 //
 
 #import "APPCommentCell.h"
-#import <QuartzCore/QuartzCore.h>
 #import "NSDate+TimeAgo.h"
+#import "APPGlobals.h"
+#import "APPVideoImageOfComment.h"
 
-@interface APPCommentCell ()
+@interface APPCommentCell()
+@property (strong, nonatomic) GDataEntryYouTubeComment *comment;
+@property (copy, nonatomic) NSString *name;
+@property (copy, nonatomic) NSString *text;
+@property (copy, nonatomic) UIImage *profilePic;
+@property (copy, nonatomic) NSDate *date;
+@property BOOL showFullComment;
 @property (strong, nonatomic) UILabel *nameLabel;
 @property (strong, nonatomic) UILabel *commentLabel;
 @property (strong, nonatomic) UILabel *timeagoLabel;
 @property (strong, nonatomic) UIImageView *profilePicImage;
+-(NSUInteger)cellHeightFullComment;
 @end
 
 @implementation APPCommentCell
-
 @synthesize name;
-@synthesize comment;
-@synthesize date;
+@synthesize text;
 @synthesize profilePic;
+@synthesize date;
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+-(id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
+    if (self)
+    {
         [self initUI];
-        self.showFullComment = FALSE;
-        [self allowToOpen:NO];
-        [self setProfilePic:[[ViewHelpers classInstance] silhouetteImage]];
+        [self prepareForReuse];
     }
     return self;
 }
 
-- (void)initUI
+-(void)initUI
 {  
     self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(16.0, 12.0, 200.0, 12.0)];
     [self.nameLabel setFont:[UIFont fontWithName:@"Nexa Bold" size:10]];
@@ -56,7 +62,7 @@
     self.commentLabel = [[UILabel alloc] initWithFrame:CGRectMake(85.0, 30.0, 215.0, 48.0)];
     [self.commentLabel setFont:[UIFont fontWithName: @"Nexa Light" size:12]];
     [self.commentLabel setTextColor:[UIColor whiteColor]];
-    self.commentLabel.adjustsLetterSpacingToFitWidth = NO;
+    //self.commentLabel.adjustsLetterSpacingToFitWidth = NO;
     self.commentLabel.numberOfLines = 4;
     //[self.commentLabel sizeToFit];
     
@@ -68,12 +74,12 @@
     [self.tableCellMain addSubview:self.commentLabel];
 }
 
-- (void)prepareForReuse
+-(void)prepareForReuse
 {
     [super prepareForReuse];
     self.showFullComment = FALSE;
     [self allowToOpen:NO];
-    [self setProfilePic:[[ViewHelpers classInstance] silhouetteImage]];
+    [self setProfilePic:[APPGlobals getGlobalForKey:@"silhouetteImage"]];
 }
 
 /*- (void)layoutSubviews
@@ -83,16 +89,18 @@
     //self.commentLabel.frame = CGRectMake(85.0, 30.0, s.width, s.height);
 }*/
 
-- (void)setName:(NSString *)n {
+-(void)setName:(NSString*)n
+{
     if (![n isEqualToString:name]) {
         name = [n copy];
         self.nameLabel.text = name;
     }
 }
 
-- (void)setComment:(NSString *)n {
-    comment = [n copy];
-    self.commentLabel.text = comment;
+-(void)setText:(NSString*)n
+{
+    text = [n copy];
+    self.commentLabel.text = text;
     if (self.showFullComment) {
         [self.commentLabel setNumberOfLines:0];
         [self.commentLabel sizeToFit];
@@ -104,28 +112,67 @@
     }
 }
 
-- (void)setDate:(NSDate *)n {
+-(void)setDate:(NSDate*)n
+{
     if (!(n == date)) {
         date = n;
         self.timeagoLabel.text = [date timeAgo];
     }
 }
 
-- (void)setProfilePic:(UIImage *)n {
+-(void)setProfilePic:(UIImage*)n
+{
     profilePic = n;
     [self.profilePicImage setImage:profilePic];
 }
 
-- (NSUInteger)cellHeightFullComment
+-(NSUInteger)cellHeightFullComment
 {
     //CGSize maximumSize = CGSizeMake(300, 9999);
     /*CGSize dateStringSize = [comment sizeWithFont:[UIFont fontWithName: @"Nexa Light" size:12]
                                    constrainedToSize:maximumSize
                                        lineBreakMode:self.commentLabel.lineBreakMode];*/
     
-    NSUInteger cellHeight = ([comment length] / 27.0) * 12.0 + 30.0 + 16.0;
+    NSUInteger cellHeight = ([text length] / 27.0) * 12.0 + 30.0 + 16.0;
     //NSUInteger cellHeight = dateStringSize.height + 30.0 + 16.0;
     return cellHeight > 88.0 ? cellHeight : 88.0;
+}
+
+-(void)setComment:(GDataEntryYouTubeComment*)comment
+{
+    self.comment = comment;
+
+    self.name = [(GDataPerson*)[[comment authors] objectAtIndex:0] name];
+    self.text = [[comment content] stringValue];
+
+//    if (delegate.openCell && [delegate.openCell row] == [indexPath row])
+//        self.showFullComment = TRUE;
+//    else
+//        self.showFullComment = FALSE;
+
+    self.date = [[comment updatedDate] date];
+
+    [[APPVideoImageOfComment instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:self.comment, @"comment", nil] onCompletion:^(int state, id data, NSError *error) {
+        switch (state)
+        {
+            case tLoaded:
+            {
+                if (data && !error) {
+                    UIImage *image = (UIImage*)data;
+                    if (image)
+                        self.profilePic = image;
+                } else {
+                    NSLog(@"APPVideoImageOfComment: error");
+                }
+                break;
+            }
+            default:
+            {
+                NSLog(@"APPVideoImageOfComment: default");
+                break;
+            }
+        }
+    }];
 }
 
 @end

@@ -34,6 +34,7 @@
     [self.backButton setImage:[UIImage imageNamed:@"sub_top_bar_arrow_left_up"] forState:UIControlStateNormal];
     [self.backButton setImage:[UIImage imageNamed:@"sub_top_bar_arrow_left_down"] forState:UIControlStateSelected];
     [self.backButton setImage:[UIImage imageNamed:@"sub_top_bar_arrow_left_down"] forState:UIControlStateHighlighted];
+    [self.backButton setTag:tBack];
     [subtopbarContainer addSubview:self.backButton];
 
     self.editButton = [[UIButton alloc] initWithFrame:CGRectMake(271.0, 0.0, 49.0, 44.0)];

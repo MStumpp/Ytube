@@ -16,7 +16,7 @@
 #import "APPTableCell.h"
 #import "APPTableView.h";
 
-// Time scopes
+// showMode
 
 #define tToday 01
 #define tWeek 02
@@ -32,7 +32,7 @@
 
 // Buttons
 
-//#define tBack 21
+#define tBack 21
 #define tEdit 22
 #define tAdd 23
 #define tLike 24
@@ -45,8 +45,6 @@
 
 // States
 #define tInitialState 01
-
-// Show modes
 
 //#define tComments 01
 #define tRelatedVideos 02
@@ -79,36 +77,6 @@
 @protocol Base <UserProfileChangeDelegate, APPSliderViewControllerDelegate, State>
 @end
 
-@protocol HasTableView
-@required
-@property (nonatomic, strong) APPTableView *tableView;
-@property (nonatomic, strong) SSPullToRefreshView *pullToRefreshView;
-@property (nonatomic, strong) UITableViewSwipeView *tableViewSwipeView;
-@property (nonatomic, strong) UITableViewAtBottomView *tableViewAtBottomView;
-@property (nonatomic, strong) UITableViewMaskView *tableViewMaskView;
-@property (nonatomic, strong) NSIndexPath *openCell;
-@property int showMode;
-@property (strong, nonatomic) NSMutableDictionary *reloadDataQueryTickets;
-@property (strong, nonatomic) NSMutableDictionary *loadMoreDataQueryTickets;
-@property (strong, nonatomic) NSMutableDictionary *feeds;
-@property (strong, nonatomic) NSMutableDictionary *customFeeds;
--(void)addShowMode:(int)mode;
--(void)toShowMode:(int)mode;
--(GDataFeedBase*)currentFeedForShowMode:(int)mode;
--(GDataFeedBase*)currentFeed:(GDataFeedBase*)feed forShowMode:(int)mode;
--(NSMutableArray*)currentCustomFeedForShowMode:(int)mode;
--(NSMutableArray*)currentCustomFeed:(NSMutableArray*)feed forShowMode:(int)mode;
--(void)reloadDataForShowMode:(int)mode withPrio:(int)prio;
--(APPQueryTicket*)reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio;
--(void)reloadDataResponse:(NSDictionary*)args;
--(void)loadMoreDataForShowMode:(int)mode withPrio:(int)prio;
--(APPQueryTicket*)loadMoreDataConcreteForShowMode:(int)mode withPrio:(int)prio;
--(void)loadMoreDataResponse:(NSDictionary*)args;
-@optional
--(void)beforeShowModeChange;
--(void)afterShowModeChange;
-@end
-
 @protocol VideoDependenceDelegate
 @required
 @property (nonatomic, retain) GDataEntryYouTubeVideo *video;
@@ -124,6 +92,6 @@
 typedef void(^APPSelectDelegateCallback)(GDataEntryBase *entryBase);
 @protocol SelectDelegate
 @required
-@property (nonatomic, copy) APPSelectDelegateCallback callback;
+@property (nonatomic, copy) APPSelectDelegateCallback afterSelect;
 @end
 

@@ -9,7 +9,6 @@
 #import "APPIndexViewController.h"
 #import "APPSliderViewController.h"
 #import "APPUserManager.h"
-#import "ViewHelpers.h"
 
 #define tLeftButton 0
 #define tRightButton 1

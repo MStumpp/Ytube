@@ -7,7 +7,7 @@
 
 
 #import <Foundation/Foundation.h>
+#import "APPContentTopToggleBarVideoListController.h"
 
-
-@interface APPContentCommentListController : NSObject
+@interface APPContentCommentListController : APPContentTopToggleBarVideoListController <VideoDependenceDelegate, UITextFieldDelegate>
 @end

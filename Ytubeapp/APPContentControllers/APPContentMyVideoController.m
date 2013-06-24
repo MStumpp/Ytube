@@ -46,7 +46,7 @@
 {
     GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo *)entry;
     if (editingStyle == UITableViewCellEditingStyleDelete)
-        [APPVideoLogicHelper deleteMyVideo:video delegate:self];
+        [APPVideoQueryHelper deleteMyVideo:video];
 }
 
 @end

@@ -49,6 +49,10 @@
     [manager initQueueWithPrio:2 andIdentifier:@"queue2"];
     [APPGlobals setGlobalObject:manager forKey:@"queuemanager"];
 
+    // set up other stuff in globals
+    [APPGlobals setGlobalObject:[UIImage imageNamed:@"silhouette"] forKey:@"silhouetteImage"];
+    [APPGlobals setGlobalObject:[UIImage imageNamed:@"no_preview"] forKey:@"noPreviewImage"];
+
     // init APPUserManager with retrieved auth object, no matter if it can or cannot authorize
     dispatch_semaphore_t sema = dispatch_semaphore_create(1);
     [[APPUserManager classInstance] initWithAuth:auth onCompletion:^(GDataEntryYouTubeUserProfile *user, NSError *error) {

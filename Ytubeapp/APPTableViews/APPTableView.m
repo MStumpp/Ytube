@@ -74,9 +74,9 @@ typedef void(^APPTableViewCallback)();
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    APPTableCell *cell = [self._delegate tableView:tableView cellForRowAtIndexPath:indexPath];
-    cell.touchButtonIndexPath = indexPath;
-    cell.touchButtonDelegate = self;
+    APPTableCell *cell = [self._delegate tableView:tableView forMode:self.showMode cellForRowAtIndexPath:indexPath];
+    cell.indexPath = indexPath;
+    cell.tableView = self;
     if (self.openCell && [self.openCell row] == [indexPath row])
         [cell openOnCompletion:nil animated:NO];
     return cell;
@@ -112,37 +112,57 @@ typedef void(^APPTableViewCallback)();
 
 -(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return [self._delegate tableView:tableView didSelectEntry:[[self currentCustomFeed] objectAtIndex:[indexPath row]]];
+    return [self._delegate tableView:tableView forMode:self.showMode didSelectRowAtIndexPath:(NSIndexPath*)indexPath];
+}
+
+-(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    if ([self._delegate respondsToSelector:@selector(tableView:canEditRowAtIndexPath:)])
+        return [self._delegate tableView:tableView canEditRowAtIndexPath:indexPath];
+    return YES;
+
+    //    if (self.tmpEditingCell) {
+    //        if ([self.tmpEditingCell row] == [indexPath row])
+    //            return TRUE;
+    //        else
+    //            return FALSE;
+    //    } else {
+    //        return TRUE;
+    //    }
 }
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self._delegate tableView:tableView commitEditingStyle:editingStyle didSelectEntry:[[self currentCustomFeed] objectAtIndex:[indexPath row]]];
+    return [self._delegate tableView:tableView forMode:self.showMode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath];
 }
 
 // "UITableViewAtBottomViewDelegate" Protocol
 
 -(BOOL)tableViewCanBottom:(UITableView *)view
 {
-    return [self._delegate tableViewCanBottom:view];
+    if ([self._delegate respondsToSelector:@selector(tableViewCanBottom:)])
+        return [self._delegate tableViewCanBottom:view];
+    return YES;
 }
 
 -(void)tableViewDidBottom:(UITableView *)view
 {
-    [self loadMoreDataForShowMode:self.showMode withPrio:tHighest];
+    [self loadMoreDataForShowMode:self.showMode withPrio:tVisibleload];
 }
 
 // "SSPullToRefreshViewDelegate" Protocol
 
 -(BOOL)pullToRefreshViewShouldStartLoading:(SSPullToRefreshView *)view
 {
-    return [self._delegate pullToRefreshViewShouldStartLoading:view];
+    if ([self._delegate respondsToSelector:@selector(pullToRefreshViewShouldStartLoading:)])
+        return [self._delegate pullToRefreshViewShouldStartLoading:view];
+    return YES;
 }
 
 -(void)pullToRefreshViewDidStartLoading:(SSPullToRefreshView *)view
 {
     [self.pullToRefreshView startLoading];
-    [self reloadDataForShowMode:self.showMode withPrio:tHighest];
+    [self reloadDataForShowMode:self.showMode withPrio:tVisibleload];
 }
 
 // TODO: Possibly move that to UITableCell
@@ -155,8 +175,8 @@ typedef void(^APPTableViewCallback)();
         if ([self.openCell row] == [indexPath row])
             return;
 
-        APPTableCell *openCellCurrent = (APPTableCell*) [self cellForRowAtIndexPath:self.openCell];
-        [openCellCurrent closeOnCompletion:^(BOOL isClosed) {
+        APPTableCell *currentOpenCell = (APPTableCell*) [self cellForRowAtIndexPath:self.openCell];
+        [currentOpenCell closeOnCompletion:^(BOOL isClosed) {
             if (isClosed) {
                 [cell openOnCompletion:^(BOOL isOpened) {
                     if (isOpened)
@@ -171,6 +191,15 @@ typedef void(^APPTableViewCallback)();
                 self.openCell = indexPath;
         } animated:YES];
     }
+
+//    APPTableCell *cell = (APPTableCell*) [self.tableView cellForRowAtIndexPath:indexPath];
+//    if ([cell isClosed] && self.tmpEditingCell && [self.tmpEditingCell row] == [indexPath row]) {
+//        self.tmpEditingCell = nil;
+//        [self.tableView setEditing:NO animated:YES];
+//
+//    } else {
+//        [super tableViewSwipeViewDidSwipeLeft:view rowAtIndexPath:indexPath];
+//    }
 }
 
 -(void)tableViewSwipeViewDidSwipeRight:(UITableView *)view rowAtIndexPath:(NSIndexPath *)indexPath
@@ -181,9 +210,27 @@ typedef void(^APPTableViewCallback)();
             self.openCell = nil;
         }
     } animated:YES];
+
+//    APPTableCell *cell = (APPTableCell*) [self.tableView cellForRowAtIndexPath:indexPath];
+//    if (![self.tableView isEditing] && [cell isClosed] && !self.tmpEditingCell) {
+//        self.tmpEditingCell = indexPath;
+//        [self.tableView setEditing:YES animated:YES];
+//
+//    } else if ([self.tableView isEditing] && [cell isClosed] && self.tmpEditingCell && [self.tmpEditingCell row] != [indexPath row]) {
+//        self.tmpEditingCell = indexPath;
+//        [self.tableView setEditing:NO animated:YES];
+//        [self.tableView setEditing:YES animated:YES];
+//
+//    } else {
+//        [super tableViewSwipeViewDidSwipeRight:view rowAtIndexPath:indexPath];
+//    }
 }
 
-// "HasTableView" Protocol
+// reloads data
+-(void)reloadShowMode
+{
+
+}
 
 -(void)reloadDataForShowMode:(int)mode withPrio:(int)prio
 {
@@ -213,20 +260,15 @@ typedef void(^APPTableViewCallback)();
             // make a new request and store returned ticket
         default:
         {
-            [self setQueryTicket:[self reloadDataConcreteForShowMode:mode withPrio:prio] forMode:mode forType:self.reloadDataQueryTickets];
+            [self setQueryTicket:[self._delegate tableView:self reloadDataConcreteForShowMode:mode withPrio:prio] forMode:mode forType:self.reloadDataQueryTickets];
             break;
         }
     }
 }
 
--(QueryTicket*)reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio
-{
-    [NSException raise:NSInvalidArgumentException format:@"Method reloadData must be overwritten in subclass!"];
-}
-
 -(void)reloadDataResponse:(NSDictionary*)args
 {
-    int mode = [[args objectForKey:tContext] intValue];
+    int mode = [[args objectForKey:tMode] intValue];
     if (![args objectForKey:tError]) {
 
         // replace current feed for mode
@@ -300,20 +342,15 @@ typedef void(^APPTableViewCallback)();
         default:
         {
             if ([self currentFeedForShowMode:mode])
-                [self setQueryTicket:[self loadMoreDataConcreteForShowMode:mode withPrio:prio] forMode:mode forType:self.loadMoreDataQueryTickets];
+                [self setQueryTicket:[self._delegate tableView:self loadMoreDataConcreteForShowMode:mode forFeed:[self currentFeedForShowMode:mode] withPrio:prio] forMode:mode forType:self.reloadDataQueryTickets];
             break;
         }
     }
 }
 
--(QueryTicket*)loadMoreDataConcreteForShowMode:(int)mode withPrio:(int)prio
-{
-    [NSException raise:NSInvalidArgumentException format:@"Method reloadData must be overwritten in subclass!"];
-}
-
 -(void)loadMoreDataResponse:(NSDictionary*)args
 {
-    int mode = [[args objectForKey:tContext] intValue];
+    int mode = [[args objectForKey:tMode] intValue];
     if (![args objectForKey:tError]) {
 
         // replace current feed for mode
@@ -375,7 +412,7 @@ typedef void(^APPTableViewCallback)();
         {
             [self.tableViewMaskView maskOnCompletion:^(BOOL isMasked) {
                 if (isMasked) {
-                    [self reloadDataForShowMode:mode withPrio:tHighest];
+                    [self reloadDataForShowMode:mode withPrio:tVisibleload];
                 }
             }];
             break;
@@ -409,6 +446,11 @@ typedef void(^APPTableViewCallback)();
 -(int)showMode
 {
     return self.showMode;
+}
+
+-(GDataFeedBase*)currentFeed
+{
+    return [self currentFeedForShowMode:self.showMode];
 }
 
 -(GDataFeedBase*)currentFeedForShowMode:(int)mode

@@ -1,5 +1,5 @@
 //
-//  APPCommentCell.h
+//  APPPlaylistCell.h
 //  Ytubeapp
 //
 //  Created by Matthias Stumpp on 19.11.12.
@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "APPTableCell.h"
 
-@interface APPCommentCell : APPTableCell
--(void)setComment:(GDataEntryYouTubeComment*)comment;
+@interface APPPlaylistCell : APPTableCell
+-(void)setPlaylist:(GDataEntryYouTubePlaylistLink*)playlist;
 @end

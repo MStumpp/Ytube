@@ -10,5 +10,4 @@
 #import "APPContentTopToggleBarVideoListController.h"
 
 @interface APPPlaylistListController : APPContentTopToggleBarVideoListController <UITextFieldDelegate>
-@property (nonatomic, strong) UITextField *textField;
 @end

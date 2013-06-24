@@ -7,8 +7,12 @@
 //
 
 #import "APPVideoCell.h"
-#import "APPVideoLogicHelper.h"
-#import <QuartzCore/QuartzCore.h>
+#import "APPVideoQueryHelper.h"
+#import "APPContent.h"
+#import "APPVideoIsFavorite.h"
+#import "APPVideoIsWatchLater.h"
+#import "APPContentCommentListController.h"
+#import "APPPlaylistListController.h"
 
 @interface APPVideoCell ()
 @property (strong, nonatomic) GDataEntryYouTubeVideo *video;
@@ -24,7 +28,6 @@
 @property (strong, nonatomic) UIButton *watchLaterButton;
 @property (strong, nonatomic) UIButton *favoritesButton;
 @property (strong, nonatomic) UIButton *commentsButton;
-
 @property (strong, nonatomic) UILabel *titleLabel;
 @property (strong, nonatomic) UILabel *subtitleLabel;
 @property (strong, nonatomic) UILabel *statisticsLabel;
@@ -34,11 +37,9 @@
 @property (strong, nonatomic) UIImageView *hdImage;
 @property (strong, nonatomic) UIImageView *durationImage;
 @property (strong, nonatomic) UIImageView *playImage;
-
 @end
 
 @implementation APPVideoCell
-
 @synthesize title;
 @synthesize subtitle;
 @synthesize thumbnail;
@@ -47,18 +48,18 @@
 @synthesize views;
 @synthesize durationinseconds;
 
-@synthesize titleLabel;
-@synthesize subtitleLabel;
-@synthesize statisticsLabel;
-@synthesize durationLabel;
-@synthesize thumbnailImage;
-
--(id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+-(id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
+    if (self)
+    {
         [self initUI];
         [self prepareForReuse];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToFavorites object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromFavorites object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToWatchLater object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromWatchLater object:nil];
     }
     return self;
 }
@@ -149,38 +150,43 @@
     [self allowToOpen:YES];
     [self.favoritesButton setSelected:NO];
     [self.watchLaterButton setSelected:NO];
-    [self setThumbnail:[[ViewHelpers classInstance] noPreviewImage]];
+    [self setThumbnail:[APPGlobals getGlobalForKey:@"noPreviewImage"]];
 }
 
--(void)setTitle:(NSString *)n {
+-(void)setTitle:(NSString*)n
+{
     if (![n isEqualToString:title]) {
         title = [n copy];
-        titleLabel.text = title;
+        self.titleLabel.text = title;
     }
 }
 
--(void)setSubtitle:(NSString *)n {
+-(void)setSubtitle:(NSString*)n
+{
     if (![n isEqualToString:subtitle]) {
         subtitle = [n copy];
-        subtitleLabel.text = subtitle;
+        self.subtitleLabel.text = subtitle;
     }
 }
 
--(void)setNumberlikes:(NSInteger)n {
+-(void)setNumberlikes:(NSInteger)n
+{
     if (!(n == numberlikes)) {
         numberlikes = n;
         [self updateStatisticsLabel];
     }
 }
 
--(void)setNumberdislikes:(int)n {
+-(void)setNumberdislikes:(int)n
+{
     if (!(n == numberdislikes)) {
         numberdislikes = n;
         [self updateStatisticsLabel];
     }
 }
 
--(void)setViews:(int)n {
+-(void)setViews:(int)n
+{
     if (!(n == views)) {
         views = n;
         [self updateStatisticsLabel];
@@ -189,19 +195,21 @@
 
 -(void)updateStatisticsLabel
 {
-    statisticsLabel.text = [NSString stringWithFormat:@"%1.2f %%    %u views", ((float) numberlikes / (numberlikes + numberdislikes)) * 100.0, views];
+    self.statisticsLabel.text = [NSString stringWithFormat:@"%1.2f %%    %u views", ((float) numberlikes / (numberlikes + numberdislikes)) * 100.0, views];
 }
 
--(void)setDurationinseconds:(int)n {
+-(void)setDurationinseconds:(int)n
+{
     if (!(n == durationinseconds)) {
         durationinseconds = n;
-        durationLabel.text = [NSString stringWithFormat:@"%02d:%02d", durationinseconds/60, durationinseconds%60];
+        self.durationLabel.text = [NSString stringWithFormat:@"%02d:%02d", durationinseconds/60, durationinseconds%60];
     }
 }
 
--(void)setThumbnail:(UIImage *)n {
+-(void)setThumbnail:(UIImage*)n
+{
     thumbnail = n;
-    [thumbnailImage setImage:thumbnail];
+    [self.thumbnailImage setImage:thumbnail];
 }
 
 -(void)setHD:(BOOL)n
@@ -213,34 +221,9 @@
     }
 }
 
--(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    [super touchesEnded:touches withEvent:event];
-    if ([self isOpened]) {
-        CGPoint location = [((UITouch *)[touches anyObject]) locationInView:self];
-        if (CGRectContainsPoint(self.addToPlaylistButton.frame, location))
-            [APPVideoLogicHelper videoAction:self.video button:self.addToPlaylistButton delegate:self.touchButtonDelegate];
-        if (CGRectContainsPoint(self.watchLaterButton.frame, location))
-            [APPVideoLogicHelper videoAction:self.video button:self.watchLaterButton delegate:self.touchButtonDelegate];
-        if (CGRectContainsPoint(self.favoritesButton.frame, location))
-            [APPVideoLogicHelper videoAction:self.video button:self.favoritesButton delegate:self.touchButtonDelegate];
-        if (CGRectContainsPoint(self.commentsButton.frame, location))
-            [APPVideoLogicHelper videoAction:self.video button:self.commentsButton delegate:self.touchButtonDelegate];
-    }
-}
-
--(void)setVideo:(GDataEntryYouTubeVideo *)video
+-(void)setVideo:(GDataEntryYouTubeVideo*)video
 {
     self.video = video;
-
-    [contentManager isVideoFavorite:self.video callback:^(GDataEntryYouTubeFavorite *fav, NSError *error) {
-        if (fav)
-            [self.favoritesButton setSelected:YES];
-    }];
-
-    [contentManager isVideoWatchLater:self.video callback:^(GDataEntryYouTubeVideo *video, NSError *error) {
-        if (video)
-            [self.watchLaterButton setSelected:YES];
-    }];
 
     self.title = [[self.video title] stringValue];
     self.subtitle = [[self.video title] stringValue];
@@ -252,12 +235,114 @@
     GDataYouTubeMediaGroup *mediaGroup = [self.video mediaGroup];
     self.durationinseconds = [[mediaGroup duration] intValue];
 
-    [contentManager imageForVideo:self.video callback:^(UIImage *image) {
+    [APPContent smallImageOfVideo:self.video callback:^(UIImage *image) {
         if (image) {
             self.thumbnail = image;
             [self setNeedsLayout];
         }
-    }]
+    }];
+
+    // sub view set up
+
+    [[APPVideoIsFavorite instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil] onCompletion:^(int state, id data, NSError *error) {
+        switch (state)
+        {
+            case tLoaded:
+            {
+                if (data && !error) {
+                    [self.favoritesButton setSelected:YES];
+                } else {
+                    NSLog(@"APPVideoIsFavorite: error");
+                }
+                break;
+            }
+            default:
+            {
+                NSLog(@"APPVideoIsFavorite: default");
+                break;
+            }
+        }
+    }];
+
+    [[APPVideoIsWatchLater instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil] onCompletion:^(int state, id data, NSError *error) {
+        switch (state)
+        {
+            case tLoaded:
+            {
+                if (data && !error) {
+                    [self.watchLaterButton setSelected:YES];
+                } else {
+                    NSLog(@"APPVideoIsWatchLater: error");
+                }
+                break;
+            }
+            default:
+            {
+                NSLog(@"APPVideoIsWatchLater: default");
+                break;
+            }
+        }
+    }];
+}
+
+-(void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event
+{
+    [super touchesEnded:touches withEvent:event];
+    if ([self isOpened]) {
+        CGPoint location = [((UITouch *)[touches anyObject]) locationInView:self];
+        if (CGRectContainsPoint(self.addToPlaylistButton.frame, location)) {
+            APPPlaylistListController *select = [[APPPlaylistListController alloc] init];
+            select.afterSelect = ^(GDataEntryYouTubePlaylistLink *playlist) {
+                [APPVideoQueryHelper addVideo:self.video toPlaylist:playlist];
+            };
+            [[self.tableView _delegate] pushViewController:select];
+
+        } else if (CGRectContainsPoint(self.watchLaterButton.frame, location)) {
+            if ([self.watchLaterButton isSelected]) {
+                [self.watchLaterButton setSelected:NO];
+                [APPVideoQueryHelper removeVideoFromWatchLater:self.video];
+            } else {
+                [self.watchLaterButton setSelected:YES];
+                [APPVideoQueryHelper addVideoToWatchLater:self.video];
+            }
+
+        } else if (CGRectContainsPoint(self.favoritesButton.frame, location)) {
+            if ([self.favoritesButton isSelected]) {
+                [self.favoritesButton setSelected:NO];
+                [APPVideoQueryHelper removeVideoFromFavorites:self.video];
+            } else {
+                [self.favoritesButton setSelected:YES];
+                [APPVideoQueryHelper addVideoToFavorites:self.video];
+            }
+
+        } else if (CGRectContainsPoint(self.commentsButton.frame, location)) {
+            APPContentCommentListController *select = [[APPContentCommentListController alloc] initWithVideo:self.video];
+            [[self.tableView _delegate] pushViewController:select];
+        }
+    }
+}
+
+-(void)processEvent:(NSNotification*)notification
+{
+    if (![[(NSDictionary*)[notification object] objectForKey:@"video"] isEqual:self.video])
+        return;
+
+    if ([[notification name] isEqualToString:eventAddedVideoToFavorites]) {
+        if ([(NSDictionary*)[notification object] objectForKey:@"error"])
+            [self.favoritesButton setSelected:NO];
+
+    } else if ([[notification name] isEqualToString:eventRemovedVideoFromFavorites]) {
+        if ([(NSDictionary*)[notification object] objectForKey:@"error"])
+            [self.favoritesButton setSelected:YES];
+
+    } else if ([[notification name] isEqualToString:eventAddedVideoToWatchLater]) {
+        if ([(NSDictionary*)[notification object] objectForKey:@"error"])
+            [self.watchLaterButton setSelected:NO];
+
+    } else if ([[notification name] isEqualToString:eventRemovedVideoFromWatchLater]) {
+        if ([(NSDictionary*)[notification object] objectForKey:@"error"])
+            [self.watchLaterButton setSelected:YES];
+    }
 }
 
 @end

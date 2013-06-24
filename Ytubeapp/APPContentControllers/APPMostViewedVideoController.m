@@ -50,8 +50,6 @@
             buttonToday, [NSNumber numberWithInt:tToday],
             buttonAll, [NSNumber numberWithInt:tAll],
             nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didFinishView:) name:@"removedVideoFromWatchLater" object:nil];
 }
 
 -(QueryTicket*)reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio
@@ -64,32 +62,6 @@
     if ([self currentFeedForShowMode:mode])
         return [self.contentManager loadMoreData:[self currentFeedForShowMode:mode] prio:prio context:[NSNumber numberWithInt:mode] delegate:self didFinishSelector:@selector(loadMoreDataResponse:)];
     return nil;
-}
-
-- (void)didFinishView:(NSNotification*)notification
-{
-    if ([notification name] == @"removedVideoFromWatchLater")
-    {
-        if (self.showMode == tAll) {
-            [self.tableViewMaskView maskOnCompletion:^(BOOL isMasked) {
-                if (isMasked) {
-                    [self reloadDataForShowMode:tAll withPrio:tHighest];
-                }
-            }];
-        } else {
-            [self reloadDataForShowMode:tAll withPrio:tDefault];
-        }
-
-        if (self.showMode == tToday) {
-            [self.tableViewMaskView maskOnCompletion:^(BOOL isMasked) {
-                if (isMasked) {
-                    [self reloadDataForShowMode:tToday withPrio:tHighest];
-                }
-            }];
-        } else {
-            [self reloadDataForShowMode:tToday withPrio:tDefault];
-        }
-    }
 }
 
 @end

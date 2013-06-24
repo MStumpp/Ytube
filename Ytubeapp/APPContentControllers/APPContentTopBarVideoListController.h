@@ -10,7 +10,5 @@
 #import "APPContentVideoListController.h"
 
 @interface APPContentTopBarVideoListController : APPContentVideoListController <UITableViewHeaderFormViewDelegate>
-@property BOOL downAtTopOnly;
-@property int downAtTopDistance;
 @property (nonatomic, strong) UITableViewHeaderFormView *tableViewHeaderFormView;
 @end

@@ -15,6 +15,8 @@
     self = [super init];
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_favorites"];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToFavorites object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromFavorites object:nil];
 
         id this = self;
         [[[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tDidInit do:^() {
@@ -46,7 +48,14 @@
 {
     GDataEntryYouTubeFavorite *favorite = (GDataEntryYouTubeFavorite *)entry;
     if (editingStyle == UITableViewCellEditingStyleDelete)
-        [APPVideoLogicHelper removeVideoFromFavorites:favorite delegate:self];
+        [APPVideoQueryHelper removeVideoFromFavorites:favorite];
+}
+
+-(void)processEvent:(NSNotification*)notification
+{
+    if (![(NSDictionary*)[notification object] objectForKey:@"error"]) {
+        [self.tableView reloadShowMode];
+    }
 }
 
 @end

@@ -14,7 +14,8 @@
 #import "APPTableCell.h"
 #import "UITableViewHeaderFormView.h"
 #import "QueryTicket.h"
-#import "APPVideoLogicHelper.h"
+#import "APPVideoQueryHelper.h"
+#import "APPGlobals.h"
 
 @interface APPContentBaseController : PervasiveViewController <Base>
 @property (strong, nonatomic) UIImage *topbarImage;
@@ -22,4 +23,5 @@
 @property BOOL isDefaultMode;
 -(void)didShow:(void (^)(void))callback;
 -(void)willHide:(void (^)(void))callback;
+-(void)processEvent:(NSNotification*)notification;
 @end

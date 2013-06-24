@@ -6,8 +6,9 @@
 //  Copyright (c) 2012 Matthias Stumpp. All rights reserved.
 //
 
-#import "APPSingleTableListViewController.h"
 
-@interface APPVideoDetailViewController : APPSingleTableListViewController <UITableViewHeaderFormViewDelegate, TouchButtonTableViewCellDelegate, VideoDependenceDelegate>
+#import "APPContentBaseController.h"
+
+@interface APPVideoDetailViewController : APPContentBaseController <VideoDependenceDelegate, APPTableViewDelegate, SelectDelegate>
 
 @end

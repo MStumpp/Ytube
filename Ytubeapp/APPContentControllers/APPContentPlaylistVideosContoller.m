@@ -56,7 +56,7 @@
 {
     GDataEntryYouTubePlaylist *pl = (GDataEntryYouTubePlaylist*) entry;
     if (editingStyle == UITableViewCellEditingStyleDelete)
-        [APPVideoLogicHelper removeVideo:pl fromPlaylist:self.playlist delegate:self];
+        [APPVideoQueryHelper removeVideo:pl fromPlaylist:self.playlist];
 }
 
 @end

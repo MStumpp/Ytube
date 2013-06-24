@@ -91,9 +91,9 @@
     callback();
 }
 
--(void)didFinishView:(NSNotification*)notification
+-(void)processEvent:(NSNotification*)notification
 {
-    NSLog(@"Method didFinishView must be overwritten in subclass!");
+    NSLog(@"Method processEvent must be overwritten in subclass!");
 }
 
 // other stuff

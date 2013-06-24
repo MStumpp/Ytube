@@ -8,8 +8,12 @@
 
 #import "APPPlaylistListController.h"
 #import "APPContentPlaylistVideosContoller.h"
-#import "APPTextCell.h"
-#import "APPTextLogicHelper.h"
+#import "APPPlaylistCell.h"
+#import "APPQueryHelper.h"
+
+@interface APPPlaylistListController()
+@property (nonatomic, strong) UITextField *textField;
+@end
 
 @implementation APPPlaylistListController
 
@@ -18,10 +22,11 @@
     self = [super init];
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_playlists"];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedPlaylist object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventDeletedPlaylist object:nil];
 
         id this = self;
         [[[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tDidInit do:^() {
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didFinishView:) name:@"addedVideoToWatchLater" object:nil];
         }] onViewState:tDidLoad do:^() {
             [this toShowMode:tDefault];
         }];
@@ -63,19 +68,7 @@
         [self.textField resignFirstResponder];
         GDataEntryYouTubePlaylistLink *playlist = [[GDataEntryYouTubePlaylistLink alloc] init];
         [playlist setTitleWithString:self.textField.text];
-        id this = self;
-        [self.contentManager addPlaylist:playlist callback:^(GDataEntryYouTubePlaylistLink *playlist, NSError *error) {
-            if (playlist && !error) {
-                [this toInitialState];
-
-            } else {
-                [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                            message:[NSString stringWithFormat:@"We could not add your playlist. Please try again later."]
-                                           delegate:nil
-                                  cancelButtonTitle:@"OK"
-                                  otherButtonTitles:nil] show];
-            }
-        }];
+        [APPQueryHelper addPlaylist:playlist];
         self.textField.text = @"";
         [self.tableViewHeaderFormView2 hideOnCompletion:^(BOOL isHidden) {
             if (isHidden)
@@ -97,87 +90,57 @@
     }
 }
 
--(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
+-(QueryTicket*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio
 {
-    APPTextCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPTextCell"];
+    return [APPQueryHelper playlistsOnShowMode:mode withPrio:prio delegate:tableView];
+}
+
+-(QueryTicket*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)prio
+{
+    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:prio delegate:tableView];
+}
+
+-(APPTableCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    APPPlaylistCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPPlaylistCell"];
     if (cell == nil) {
-        cell = [[APPTextCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPTextCell"];
+        cell = [[APPPlaylistCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPPlaylistCell"];
     }
 
-    GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink *) [[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]]];
-    cell.text = [[playlist title] stringValue];
-    cell.description = [[playlist summary] stringValue];
-
-    [delegate.contentManager imageForPlaylist:playlist callback:^(UIImage *image) {
-        if (image)
-            cell.textPic = image;
-    }];
-
+    [cell setPlaylist:(GDataEntryYouTubePlaylistLink *)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]]];
     return cell;
-}
-
-- (void)tableViewSwipeViewDidSwipeLeft:(UITableView *)view rowAtIndexPath:(NSIndexPath *)indexPath
-{
-    APPTableCell *cell = (APPTableCell*) [self.tableView cellForRowAtIndexPath:indexPath];
-    if ([cell isClosed] && self.tmpEditingCell && [self.tmpEditingCell row] == [indexPath row]) {
-        self.tmpEditingCell = nil;
-        [self.tableView setEditing:NO animated:YES];
-
-    } else {
-        [super tableViewSwipeViewDidSwipeLeft:view rowAtIndexPath:indexPath];
-    }
-}
-
-- (void)tableViewSwipeViewDidSwipeRight:(UITableView *)view rowAtIndexPath:(NSIndexPath *)indexPath
-{
-    APPTableCell *cell = (APPTableCell*) [self.tableView cellForRowAtIndexPath:indexPath];
-    if (![self.tableView isEditing] && [cell isClosed] && !self.tmpEditingCell) {
-        self.tmpEditingCell = indexPath;
-        [self.tableView setEditing:YES animated:YES];
-
-    } else if ([self.tableView isEditing] && [cell isClosed] && self.tmpEditingCell && [self.tmpEditingCell row] != [indexPath row]) {
-        self.tmpEditingCell = indexPath;
-        [self.tableView setEditing:NO animated:YES];
-        [self.tableView setEditing:YES animated:YES];
-
-    } else {
-        [super tableViewSwipeViewDidSwipeRight:view rowAtIndexPath:indexPath];
-    }
-}
-
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (self.tmpEditingCell) {
-        if ([self.tmpEditingCell row] == [indexPath row])
-            return TRUE;
-        else
-            return FALSE;
-    } else {
-        return TRUE;
-    }
 }
 
 #pragma mark -
 #pragma mark Table View Data Source Methods
 // TODO: Remove table cell locally
--(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle didSelectEntry:(GDataEntryBase*)entry
+-(void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-    GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink *)entry;
+    GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink *)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
     if (editingStyle == UITableViewCellEditingStyleDelete)
-        [APPTextLogicHelper deletePlaylist:playlist delegate:self];
+        [APPQueryHelper deletePlaylist:playlist];
 }
 
--(void)tableView:(UITableView *)tableView didSelectEntry:(GDataEntryBase*)entry
+-(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    if (!self.isDefaultMode)
+    if (self.isDefaultMode)
         return;
 
-    GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink *)entry;
+    GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
 
-    if (self.callback)
-        self.callback(playlist);
-    else
+    if (self.afterSelect) {
+        [self.navigationController popViewControllerAnimated:YES];
+        self.afterSelect(playlist);
+    } else {
         [self.navigationController pushViewController:[[APPContentPlaylistVideosContoller alloc] initWithPlaylist:playlist] animated:YES];
+    }
+}
+
+-(void)processEvent:(NSNotification*)notification
+{
+    if (![(NSDictionary*)[notification object] objectForKey:@"error"]) {
+        [self.tableView reloadShowMode];
+    }
 }
 
 @end

@@ -22,7 +22,6 @@
 
 #import "APPUserManager.h"
 #import "MBProgressHUD.h"
-#import "SmartNavigationController.h"
 
 @interface APPSliderViewController ()
 // left, center and right area on this contoller
