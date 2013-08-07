@@ -53,7 +53,7 @@
     self.tableViewHeaderFormView = nil;
 }
 
--(BOOL)tableViewHeaderFormViewShouldShow:(UITableViewHeaderFormView *)view
+-(BOOL)tableViewHeaderFormViewShouldShow:(UITableViewHeaderFormView*)view
 {
     if (!self.isDefaultMode) {
         return TRUE;

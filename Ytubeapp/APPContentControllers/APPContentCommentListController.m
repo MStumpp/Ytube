@@ -9,8 +9,6 @@
 #import "APPContentCommentListController.h"
 #import "APPVideoAddComment.h"
 #import "APPCommentCell.h"
-#import "APPUserManager.h"
-#import "APPQueryHelper.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface APPContentCommentListController ()
@@ -45,11 +43,11 @@
     return self;
 }
 
--(id)initWithVideo:(GDataEntryYouTubeVideo*)vid
+-(id)initWithVideo:(GDataEntryYouTubeVideo*)video
 {
     self = [self init];
     if (self) {
-        self.video = vid;
+        self.video = video;
     }
     return self;
 }
@@ -123,12 +121,11 @@
     return [APPQueryHelper fetchMore:feed showMode:mode withPrio:prio delegate:tableView];
 }
 
--(APPTableCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
+-(APPTableCell*)tableView:(UITableView*)tableView forMode:(int)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
     APPCommentCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPCommentCell"];
-    if (cell == nil) {
+    if (cell == nil)
         cell = [[APPCommentCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPCommentCell"];
-    }
 
     [cell setComment:(GDataEntryYouTubeComment*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]]];
     return cell;
@@ -154,14 +151,14 @@
 #pragma mark -
 #pragma mark Table View Data Source Methods
 // TODO: Remove table cell locally
--(void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+-(void)tableView:(UITableView*)tableView forMode:(int)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
     if (editingStyle == UITableViewCellEditingStyleDelete)
         [APPQueryHelper deleteComment:comment FromVideo:self.video];
 }
 
--(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
+-(void)tableView:(UITableView*)tableView forMode:(int)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     if (self.isDefaultMode)
         return;
@@ -194,11 +191,9 @@
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if ([[(NSDictionary*)[notification object] objectForKey:@"video"] isEqual:self.video]) {
-        if (![(NSDictionary*)[notification object] objectForKey:@"error"]) {
+    if ([[(NSDictionary*)[notification object] objectForKey:@"video"] isEqual:self.video])
+        if (![(NSDictionary*)[notification object] objectForKey:@"error"])
             [self.tableView reloadShowMode];
-        }
-    }
 }
 
 @end

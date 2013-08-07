@@ -6,16 +6,15 @@
 //
 
 
-#import "APPPlaylistListController.h"
-#import "APPContentPlaylistVideosContoller.h"
+#import "APPContentPlaylistListController.h"
+#import "APPContentPlaylistVideosController.h"
 #import "APPPlaylistCell.h"
-#import "APPQueryHelper.h"
 
-@interface APPPlaylistListController()
+@interface APPContentPlaylistListController ()
 @property (nonatomic, strong) UITextField *textField;
 @end
 
-@implementation APPPlaylistListController
+@implementation APPContentPlaylistListController
 
 -(id)init
 {
@@ -100,12 +99,11 @@
     return [APPQueryHelper fetchMore:feed showMode:mode withPrio:prio delegate:tableView];
 }
 
--(APPTableCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
+-(APPTableCell*)tableView:(UITableView*)tableView forMode:(int)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     APPPlaylistCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPPlaylistCell"];
-    if (cell == nil) {
+    if (cell == nil)
         cell = [[APPPlaylistCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPPlaylistCell"];
-    }
 
     [cell setPlaylist:(GDataEntryYouTubePlaylistLink *)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]]];
     return cell;
@@ -114,14 +112,14 @@
 #pragma mark -
 #pragma mark Table View Data Source Methods
 // TODO: Remove table cell locally
--(void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath;
+-(void)tableView:(UITableView*)tableView forMode:(int)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink *)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
     if (editingStyle == UITableViewCellEditingStyleDelete)
         [APPQueryHelper deletePlaylist:playlist];
 }
 
--(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
+-(void)tableView:(UITableView*)tableView forMode:(int)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     if (self.isDefaultMode)
         return;
@@ -132,15 +130,14 @@
         [self.navigationController popViewControllerAnimated:YES];
         self.afterSelect(playlist);
     } else {
-        [self.navigationController pushViewController:[[APPContentPlaylistVideosContoller alloc] initWithPlaylist:playlist] animated:YES];
+        [self.navigationController pushViewController:[[APPContentPlaylistVideosController alloc] initWithPlaylist:playlist] animated:YES];
     }
 }
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if (![(NSDictionary*)[notification object] objectForKey:@"error"]) {
+    if (![(NSDictionary*)[notification object] objectForKey:@"error"])
         [self.tableView reloadShowMode];
-    }
 }
 
 @end

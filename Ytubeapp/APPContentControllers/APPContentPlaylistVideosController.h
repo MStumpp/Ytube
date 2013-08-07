@@ -7,7 +7,7 @@
 
 
 #import <Foundation/Foundation.h>
-#import "APPContentTopButtonBarVideoListController.h"
+#import "APPContentTopEditBarController.h"
 
-@interface APPMostViewedVideoController : APPContentTopButtonBarVideoListController
+@interface APPContentPlaylistVideosController : APPContentTopEditBarController <PlaylistDependenceDelegate>
 @end

@@ -15,6 +15,8 @@
     self = [super init];
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_watch_later"];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToWatchLater object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromWatchLater object:nil];
 
         id this = self;
         [[[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tDidInit do:^() {
@@ -27,26 +29,30 @@
     return self;
 }
 
--(QueryTicket*)reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio
+-(QueryTicket*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio
 {
-    return [self.contentManager mostPopular:mode prio:prio context:[NSNumber numberWithInt:mode] delegate:self didFinishSelector:@selector(reloadDataResponse:)];
+    return [APPQueryHelper watchLaterVideosOnShowMode:mode withPrio:prio delegate:tableView];
 }
 
--(QueryTicket*)loadMoreDataConcreteForShowMode:(int)mode withPrio:(int)prio
+-(QueryTicket*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)prio
 {
-    if ([self currentFeedForShowMode:mode])
-        return [self.contentManager loadMoreData:[self currentFeedForShowMode:mode] prio:prio context:[NSNumber numberWithInt:mode] delegate:self didFinishSelector:@selector(loadMoreDataResponse:)];
-    return nil;
+    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:prio delegate:tableView];
 }
 
 #pragma mark -
 #pragma mark Table View Data Source Methods
 // TODO: Remove table cell locally
--(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle didSelectEntry:(GDataEntryBase*)entry
+-(void)tableView:(UITableView*)tableView forMode:(int)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo *)entry;
+    GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo*) [[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
     if (editingStyle == UITableViewCellEditingStyleDelete)
-        [APPVideoQueryHelper removeVideoFromWatchLater:video];
+        [APPQueryHelper removeVideoFromWatchLater:video];
+}
+
+-(void)processEvent:(NSNotification*)notification
+{
+    if (![(NSDictionary*)[notification object] objectForKey:@"error"])
+        [self.tableView reloadShowMode];
 }
 
 @end

@@ -7,7 +7,6 @@
 //
 
 #import "APPTableCell.h"
-#import "APPTableView.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface APPTableCell ()

@@ -15,7 +15,7 @@
 {
     NSDictionary *dict = (NSDictionary*) data;
     GDataEntryYouTubeVideo *video = [dict objectForKey:@"video"];
-    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/videos/%@/related", [self videoID:video]]];
+    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/videos/%@/related", [video videoID]]];
     [self fetchFeedWithURL:feedURL];
 }
 

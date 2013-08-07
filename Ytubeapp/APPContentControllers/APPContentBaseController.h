@@ -8,16 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import "APPProtocols.h"
-#import "PervasiveViewController.h"
 #import "ViewHelpers.h"
 #import "GDataYouTube.h"
 #import "APPTableCell.h"
 #import "UITableViewHeaderFormView.h"
 #import "QueryTicket.h"
-#import "APPVideoQueryHelper.h"
+#import "APPQueryHelper.h"
 #import "APPGlobals.h"
+#import "APPUserManager.h"
 
-@interface APPContentBaseController : PervasiveViewController <Base>
+@interface APPContentBaseController : UIViewController<State>
 @property (strong, nonatomic) UIImage *topbarImage;
 @property (strong, nonatomic) NSString *topbarTitle;
 @property BOOL isDefaultMode;

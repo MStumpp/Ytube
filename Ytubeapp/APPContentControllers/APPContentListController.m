@@ -17,7 +17,7 @@
     self.tableView._delegate = self;
 }
 
--(BOOL)tableViewCanBottom:(UITableView *)view
+-(BOOL)tableViewCanBottom:(UITableView*)view
 {
     if (!self.isDefaultMode)
         return TRUE;

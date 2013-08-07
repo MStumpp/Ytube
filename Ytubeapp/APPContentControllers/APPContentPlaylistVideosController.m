@@ -6,17 +6,18 @@
 //
 
 
-#import "APPContentFavoritesController.h"
+#import "APPContentPlaylistVideosController.h"
 
-@implementation APPContentFavoritesController
+@implementation APPContentPlaylistVideosController
+@synthesize playlist;
 
-- (id)init
+-(id)init
 {
     self = [super init];
     if (self) {
-        self.topbarImage = [UIImage imageNamed:@"top_bar_back_favorites"];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToFavorites object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromFavorites object:nil];
+        self.topbarImage = [UIImage imageNamed:@"top_bar_back_playlists"];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToPlaylist object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromPlaylist object:nil];
 
         id this = self;
         [[[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tDidInit do:^() {
@@ -29,9 +30,18 @@
     return self;
 }
 
+-(id)initWithPlaylist:(GDataEntryYouTubePlaylistLink*)pl
+{
+    self = [self init];
+    if (self) {
+        self.playlist = pl;
+    }
+    return self;
+}
+
 -(QueryTicket*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio
 {
-    return [APPQueryHelper favoriteVideosOnShowMode:mode withPrio:prio delegate:tableView];
+    return [APPQueryHelper playlistVideos:self.playlist showMode:mode withPrio:prio delegate:tableView];
 }
 
 -(QueryTicket*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)prio
@@ -44,15 +54,16 @@
 // TODO: Remove table cell locally
 -(void)tableView:(UITableView*)tableView forMode:(int)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    GDataEntryYouTubeFavorite *favorite = (GDataEntryYouTubeFavorite*) [[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
+    GDataEntryYouTubePlaylist *pl = (GDataEntryYouTubePlaylist*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
     if (editingStyle == UITableViewCellEditingStyleDelete)
-        [APPQueryHelper removeVideoFromFavorites:favorite];
+        [APPQueryHelper removeVideo:pl fromPlaylist:self.playlist];
 }
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if (![(NSDictionary*)[notification object] objectForKey:@"error"])
-        [self.tableView reloadShowMode];
+    if ([[(NSDictionary*)[notification object] objectForKey:@"playlist"] isEqual:self.playlist])
+        if (![(NSDictionary*)[notification object] objectForKey:@"error"])
+            [self.tableView reloadShowMode];
 }
 
 @end

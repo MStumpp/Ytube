@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 #import "APPFetchFeedWithURLQuery.h"
 
-@interface APPVideoMostPopular : APPFetchFeedWithURLQuery
+@interface APPVideoMostViewed : APPFetchFeedWithURLQuery
 @end

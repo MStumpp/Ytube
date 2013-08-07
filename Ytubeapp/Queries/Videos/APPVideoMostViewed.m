@@ -6,9 +6,9 @@
 //
 
 
-#import "APPVideoMostPopular.h"
+#import "APPVideoMostViewed.h"
 
-@implementation APPVideoMostPopular
+@implementation APPVideoMostViewed
 
 -(void)load:(id)data
 {

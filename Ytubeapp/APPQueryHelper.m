@@ -23,10 +23,165 @@
 #import "APPPlaylists.h"
 #import "APPPlaylistImageOfPlaylist.h"
 #import "APPVideoDeleteComment.h"
+#import "APPVideoRelatedVideos.h"
+#import "APPVideoTopFavorites.h"
+#import "APPVideoTopRated.h"
+#import "APPVideoRecentlyFeatured.h"
+#import "APPVideoMostViewed.h"
 
 @implementation APPQueryHelper
 
 // video
+
++(QueryTicket*)relatedVideos:(GDataEntryYouTubeVideo*)video showMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
+{
+    return [[APPVideoRelatedVideos instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil] onCompletion:^(int state, id data, NSError *error) {
+        switch (state)
+        {
+            case tLoaded:
+            {
+                if (data && !error) {
+                    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:(GDataFeedBase*)data, tFeed, error, tError, nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:eventRelatedVideosLoaded object:dict];
+                    [delegate reloadDataResponse:dict];
+                } else {
+                    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                                message:[NSString stringWithFormat:@"Unable to reload data. Please try again later."]
+                                               delegate:nil
+                                      cancelButtonTitle:@"OK"
+                                      otherButtonTitles:nil] show];
+                }
+                break;
+            }
+        }
+    }];
+}
+
++(QueryTicket*)topFavoriteVideosOnShowMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
+{
+    return [[APPVideoTopFavorites instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:mode, tMode, nil] onCompletion:^(int state, id data, NSError *error) {
+        switch (state)
+        {
+            case tLoaded:
+            {
+                if (data && !error) {
+                    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:(GDataFeedBase*)data, tFeed, error, tError, nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:eventTopFavoriteVideosLoaded  object:dict];
+                    [delegate reloadDataResponse:dict];
+                } else {
+                    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                                message:[NSString stringWithFormat:@"Unable to reload data. Please try again later."]
+                                               delegate:nil
+                                      cancelButtonTitle:@"OK"
+                                      otherButtonTitles:nil] show];
+                }
+                break;
+            }
+        }
+    }];
+}
+
++(QueryTicket*)topRatedVideosOnShowMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
+{
+    return [[APPVideoTopRated instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:nil onCompletion:^(int state, id data, NSError *error) {
+        switch (state)
+        {
+            case tLoaded:
+            {
+                if (data && !error) {
+                    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:(GDataFeedBase*)data, tFeed, error, tError, nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:eventTopRatedVideosLoaded  object:dict];
+                    [delegate reloadDataResponse:dict];
+                } else {
+                    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                                message:[NSString stringWithFormat:@"Unable to reload data. Please try again later."]
+                                               delegate:nil
+                                      cancelButtonTitle:@"OK"
+                                      otherButtonTitles:nil] show];
+                }
+                break;
+            }
+        }
+    }];
+}
+
++(QueryTicket*)featuredVideosOnShowMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
+{
+    return [[APPVideoRecentlyFeatured instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:nil onCompletion:^(int state, id data, NSError *error) {
+        switch (state)
+        {
+            case tLoaded:
+            {
+                if (data && !error) {
+                    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:(GDataFeedBase*)data, tFeed, error, tError, nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:eventFeaturedVideosLoaded  object:dict];
+                    [delegate reloadDataResponse:dict];
+                } else {
+                    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                                message:[NSString stringWithFormat:@"Unable to reload data. Please try again later."]
+                                               delegate:nil
+                                      cancelButtonTitle:@"OK"
+                                      otherButtonTitles:nil] show];
+                }
+                break;
+            }
+        }
+    }];
+}
+
++(QueryTicket*)mostViewedVideosOnShowMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
+{
+    return [[APPVideoMostViewed instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process: onCompletion:^(int state, id data, NSError *error) {
+        switch (state)
+        {
+            case tLoaded:
+            {
+                if (data && !error) {
+                    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:(GDataFeedBase*)data, tFeed, error, tError, nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:eventMostViewedVideosLoaded  object:dict];
+                    [delegate reloadDataResponse:dict];
+                } else {
+                    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                                message:[NSString stringWithFormat:@"Unable to reload data. Please try again later."]
+                                               delegate:nil
+                                      cancelButtonTitle:@"OK"
+                                      otherButtonTitles:nil] show];
+                }
+                break;
+            }
+        }
+    }];
+}
+
++(QueryTicket*)searchVideos:(NSString*)query showMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
+{
+
+}
+
++(QueryTicket*)playlistVideos:(GDataEntryYouTubePlaylistLink*)playlist showMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
+{
+
+}
+
++(QueryTicket*)watchLaterVideosOnShowMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
+{
+
+}
+
++(QueryTicket*)favoriteVideosOnShowMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
+{
+
+}
+
++(QueryTicket*)historyVideosOnShowMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
+{
+
+}
+
++(QueryTicket*)myVideosOnShowMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
+{
+
+}
 
 +(QueryTicket*)likeVideo:(GDataEntryYouTubeVideo*)video
 {
@@ -36,7 +191,7 @@
             case tLoaded:
             {
                 if (data && !error) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:eventVideoLiked object:[NSDictionary dictionaryWithObjectsAndKeys:(GDataEntryYouTubeVideo*)data, @"video", nil]];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:eventRelatedVideosLoaded object:[NSDictionary dictionaryWithObjectsAndKeys:(GDataEntryYouTubeVideo*)data, @"video", nil]];
                 } else {
                     [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
                                                 message:[NSString stringWithFormat:@"Unable to reload data. Please try again later."]
@@ -226,52 +381,6 @@
     }];
 }
 
-// Comments
-// TODO: consider prio to add to the right queue
-+(QueryTicket*)videoComments:(GDataEntryYouTubeVideo*)video showMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
-{
-    return [[APPVideoComments instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil] onCompletion:^(int state, id data, NSError *error) {
-        switch (state)
-        {
-            case tLoaded:
-            {
-                if (data && !error) {
-                    [delegate reloadDataResponse:[NSDictionary dictionaryWithObjectsAndKeys:(GDataFeedBase*)data, tFeed, error, tError, mode, tMode, nil]];
-                } else {
-                    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                                message:[NSString stringWithFormat:@"Unable to reload data. Please try again later."]
-                                               delegate:nil
-                                      cancelButtonTitle:@"OK"
-                                      otherButtonTitles:nil] show];
-                }
-                break;
-            }
-        }
-    }];
-}
-
-+(QueryTicket*)fetchMore:(GDataFeedBase*)feed showMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate;
-{
-    return [[APPFetchMoreQuery instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:feed, @"feed", nil] onCompletion:^(int state, id data, NSError *error) {
-        switch (state)
-        {
-            case tLoaded:
-            {
-                if (data && !error) {
-                    [delegate loadMoreDataResponse:[NSDictionary dictionaryWithObjectsAndKeys:(GDataFeedBase*)data, tFeed, error, tError, mode, tMode, nil]];
-                } else {
-                    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                                message:[NSString stringWithFormat:@"Unable to fetch more data. Please try again later."]
-                                               delegate:nil
-                                      cancelButtonTitle:@"OK"
-                                      otherButtonTitles:nil] show];
-                }
-                break;
-            }
-        }
-    }];
-}
-
 // playlist
 
 +(QueryTicket*)playlistsOnShowMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
@@ -282,7 +391,7 @@
             case tLoaded:
             {
                 if (data && !error) {
-                    [delegate reloadDataResponse:[NSDictionary dictionaryWithObjectsAndKeys:(GDataFeedBase*)data, tFeed, error, tError, mode, tMode, nil]];
+                    [delegate reloadDataResponse:[NSDictionary dictionaryWithObjectsAndKeys:(GDataFeedBase*)data, tFeed, error, tError, nil]];
                 } else {
                     [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
                                                 message:[NSString stringWithFormat:@"Unable to reload data. Please try again later."]
@@ -355,7 +464,30 @@
     }];
 }
 
-// comment
+// Comments
+
+// TODO: consider prio to add to the right queue
++(QueryTicket*)videoComments:(GDataEntryYouTubeVideo*)video showMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
+{
+    return [[APPVideoComments instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil] onCompletion:^(int state, id data, NSError *error) {
+        switch (state)
+        {
+            case tLoaded:
+            {
+                if (data && !error) {
+                    [delegate reloadDataResponse:[NSDictionary dictionaryWithObjectsAndKeys:(GDataFeedBase*)data, tFeed, error, tError, nil]];
+                } else {
+                    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                                message:[NSString stringWithFormat:@"Unable to reload data. Please try again later."]
+                                               delegate:nil
+                                      cancelButtonTitle:@"OK"
+                                      otherButtonTitles:nil] show];
+                }
+                break;
+            }
+        }
+    }];
+}
 
 +(QueryTicket*)addComment:(GDataEntryYouTubeComment*)comment ToVideo:(GDataEntryYouTubeVideo*)video
 {
@@ -405,6 +537,30 @@
             default:
             {
                 NSLog(@"APPVideoDeleteComment: default");
+                break;
+            }
+        }
+    }];
+}
+
+// fetch more
+
++(QueryTicket*)fetchMore:(GDataFeedBase*)feed showMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate;
+{
+    return [[APPFetchMoreQuery instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:feed, @"feed", nil] onCompletion:^(int state, id data, NSError *error) {
+        switch (state)
+        {
+            case tLoaded:
+            {
+                if (data && !error) {
+                    [delegate loadMoreDataResponse:[NSDictionary dictionaryWithObjectsAndKeys:(GDataFeedBase*)data, tFeed, error, tError, nil]];
+                } else {
+                    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                                message:[NSString stringWithFormat:@"Unable to fetch more data. Please try again later."]
+                                               delegate:nil
+                                      cancelButtonTitle:@"OK"
+                                      otherButtonTitles:nil] show];
+                }
                 break;
             }
         }

@@ -7,22 +7,22 @@
 
 
 #import "APPContentVideoListController.h"
-#import "APPVideoDetailViewController.h"
+#import "APPContentVideoDetailViewController.h"
 #import "APPVideoCell.h"
 
 @implementation APPContentVideoListController
 
--(UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
+-(APPTableCell*)tableView:(UITableView*)tableView forMode:(int)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     APPVideoCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPVideoCell"];
-    if (cell == nil) {
+    if (cell == nil)
         cell = [[APPVideoCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPVideoCell"];
-    }
+
     [cell setVideo:(GDataEntryYouTubeVideo*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]]];
     return cell;
 }
 
--(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
+-(void)tableView:(UITableView*)tableView forMode:(int)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     if (self.isDefaultMode)
         return;
@@ -33,7 +33,7 @@
         [self.navigationController popViewControllerAnimated:YES];
         self.afterSelect(video);
     } else {
-        [self.navigationController pushViewController:[[APPVideoDetailViewController alloc] initWithVideo:video] animated:YES];
+        [self.navigationController pushViewController:[[APPContentVideoDetailViewController alloc] initWithVideo:video] animated:YES];
     }
 }
 

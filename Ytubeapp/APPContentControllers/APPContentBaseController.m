@@ -7,7 +7,6 @@
 //
 
 #import "APPContentBaseController.h"
-#import "APPUserManager.h"
 
 @implementation APPContentBaseController
 

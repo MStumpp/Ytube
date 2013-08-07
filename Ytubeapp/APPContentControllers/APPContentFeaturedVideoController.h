@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 #import "APPContentVideoListController.h"
 
-@interface APPFeaturedVideoController : APPContentVideoListController
+@interface APPContentFeaturedVideoController : APPContentVideoListController
 @end

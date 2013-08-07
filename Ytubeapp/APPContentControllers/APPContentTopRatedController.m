@@ -82,16 +82,14 @@
             nil];
 }
 
--(QueryTicket*)reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio
+-(QueryTicket*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio
 {
-    return [self.contentManager mostPopular:mode prio:prio context:[NSNumber numberWithInt:mode] delegate:self didFinishSelector:@selector(reloadDataResponse:)];
+    return [APPQueryHelper topRatedVideosOnShowMode:mode withPrio:prio delegate:tableView];
 }
 
--(QueryTicket*)loadMoreDataConcreteForShowMode:(int)mode withPrio:(int)prio
+-(QueryTicket*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)prio
 {
-    if ([self currentFeedForShowMode:mode])
-        return [self.contentManager loadMoreData:[self currentFeedForShowMode:mode] prio:prio context:[NSNumber numberWithInt:mode] delegate:self didFinishSelector:@selector(loadMoreDataResponse:)];
-    return nil;
+    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:prio delegate:tableView];
 }
 
 @end

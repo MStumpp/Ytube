@@ -1,5 +1,5 @@
 //
-//  APPVideoDetailViewController.m
+//  APPContentVideoDetailViewController.m
 //  Ytubeapp
 //
 //  Created by Matthias Stumpp on 20.10.12.
@@ -8,15 +8,15 @@
 
 #import "APPQueryHelper.h"
 #import "APPVideoCell.h"
-#import "APPVideoDetailViewController.h"
+#import "APPContentVideoDetailViewController.h"
 #import "APPContent.h"
 #import "APPVideoIsFavorite.h"
 #import "APPVideoIsWatchLater.h"
 #import "APPCommentCell.h"
-#import "APPPlaylistListController.h"
+#import "APPContentPlaylistListController.h"
 #import "APPContentCommentListController.h"
 
-@interface APPVideoDetailViewController ()
+@interface APPContentVideoDetailViewController ()
 @property (strong, nonatomic) UIWebView *webView;
 @property (nonatomic, strong) APPTableView *tableView;
 @property (strong, nonatomic) UITableViewHeaderFormView *tableViewHeaderFormView;
@@ -33,7 +33,7 @@
 @property int downAtTopDistance;
 @end
 
-@implementation APPVideoDetailViewController
+@implementation APPContentVideoDetailViewController
 
 -(id)init
 {
@@ -43,7 +43,6 @@
         // header form stuff
         self.downAtTopOnly = TRUE;
         self.downAtTopDistance = 40;
-
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToFavorites object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromFavorites object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToWatchLater object:nil];
@@ -343,7 +342,7 @@
 
         case tAddToPlaylist:
         {
-            APPPlaylistListController *select = [[APPPlaylistListController alloc] init];
+            APPContentPlaylistListController *select = [[APPContentPlaylistListController alloc] init];
             select.afterSelect = ^(GDataEntryYouTubePlaylistLink *playlist) {
                 [APPQueryHelper addVideo:self.video toPlaylist:playlist];
             };
@@ -382,7 +381,7 @@
     if (mode == tRelatedVideos)
         return [APPQueryHelper relatedVideos:self.video showMode:mode withPrio:prio delegate:tableView];
     else if (mode == tComments)
-        return [APPQueryHelper commentsForVideo:self.video showMode:mode withPrio:prio delegate:tableView];
+        return [APPQueryHelper videoComments:self.video showMode:mode withPrio:prio delegate:tableView];
 }
 
 -(QueryTicket*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)prio
@@ -394,18 +393,16 @@
 {
     if (mode == tRelatedVideos) {
         APPVideoCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPVideoCell"];
-        if (cell == nil) {
+        if (cell == nil)
             cell = [[APPVideoCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPVideoCell"];
-        }
 
         [cell setVideo:(GDataEntryYouTubeVideo*)[[self.tableView currentCustomFeedForShowMode:mode] objectAtIndex:[indexPath row]]];
         return cell;
 
     } else if (mode == tComments) {
         APPCommentCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPCommentCell"];
-        if (cell == nil) {
+        if (cell == nil)
             cell = [[APPCommentCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPCommentCell"];
-        }
 
         [cell setComment:(GDataEntryYouTubeComment*)[[self.tableView currentCustomFeedForShowMode:mode] objectAtIndex:[indexPath row]]];
         return cell;
@@ -425,7 +422,7 @@
             [self.navigationController popViewControllerAnimated:YES];
             self.afterSelect(video);
         } else {
-            [self.navigationController pushViewController:[[APPVideoDetailViewController alloc] initWithVideo:video] animated:YES];
+            [self.navigationController pushViewController:[[APPContentVideoDetailViewController alloc] initWithVideo:video] animated:YES];
         }
 
     } else if (mode == tComments) {

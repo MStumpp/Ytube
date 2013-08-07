@@ -112,7 +112,7 @@ typedef void(^APPTableViewCallback)();
 
 -(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return [self._delegate tableView:tableView forMode:self.showMode didSelectRowAtIndexPath:(NSIndexPath*)indexPath];
+    return [self._delegate tableView:tableView forMode:self.showMode didSelectRowAtIndexPath:indexPath];
 }
 
 -(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
@@ -131,9 +131,9 @@ typedef void(^APPTableViewCallback)();
     //    }
 }
 
--(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+-(void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return [self._delegate tableView:tableView forMode:self.showMode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath];
+    return [self._delegate tableView:tableView forMode:self.showMode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath];
 }
 
 // "UITableViewAtBottomViewDelegate" Protocol

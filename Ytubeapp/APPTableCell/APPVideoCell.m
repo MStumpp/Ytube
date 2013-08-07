@@ -7,12 +7,12 @@
 //
 
 #import "APPVideoCell.h"
-#import "APPVideoQueryHelper.h"
+#import "APPQueryHelper.h"
 #import "APPContent.h"
 #import "APPVideoIsFavorite.h"
 #import "APPVideoIsWatchLater.h"
 #import "APPContentCommentListController.h"
-#import "APPPlaylistListController.h"
+#import "APPContentPlaylistListController.h"
 
 @interface APPVideoCell ()
 @property (strong, nonatomic) GDataEntryYouTubeVideo *video;
@@ -291,28 +291,28 @@
     if ([self isOpened]) {
         CGPoint location = [((UITouch *)[touches anyObject]) locationInView:self];
         if (CGRectContainsPoint(self.addToPlaylistButton.frame, location)) {
-            APPPlaylistListController *select = [[APPPlaylistListController alloc] init];
+            APPContentPlaylistListController *select = [[APPContentPlaylistListController alloc] init];
             select.afterSelect = ^(GDataEntryYouTubePlaylistLink *playlist) {
-                [APPVideoQueryHelper addVideo:self.video toPlaylist:playlist];
+                [APPQueryHelper addVideo:self.video toPlaylist:playlist];
             };
             [[self.tableView _delegate] pushViewController:select];
 
         } else if (CGRectContainsPoint(self.watchLaterButton.frame, location)) {
             if ([self.watchLaterButton isSelected]) {
                 [self.watchLaterButton setSelected:NO];
-                [APPVideoQueryHelper removeVideoFromWatchLater:self.video];
+                [APPQueryHelper removeVideoFromWatchLater:self.video];
             } else {
                 [self.watchLaterButton setSelected:YES];
-                [APPVideoQueryHelper addVideoToWatchLater:self.video];
+                [APPQueryHelper addVideoToWatchLater:self.video];
             }
 
         } else if (CGRectContainsPoint(self.favoritesButton.frame, location)) {
             if ([self.favoritesButton isSelected]) {
                 [self.favoritesButton setSelected:NO];
-                [APPVideoQueryHelper removeVideoFromFavorites:self.video];
+                [APPQueryHelper removeVideoFromFavorites:self.video];
             } else {
                 [self.favoritesButton setSelected:YES];
-                [APPVideoQueryHelper addVideoToFavorites:self.video];
+                [APPQueryHelper addVideoToFavorites:self.video];
             }
 
         } else if (CGRectContainsPoint(self.commentsButton.frame, location)) {
