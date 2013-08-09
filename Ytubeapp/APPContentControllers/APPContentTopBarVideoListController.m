@@ -9,11 +9,7 @@
 #import "APPContentTopBarVideoListController.h"
 
 @interface APPContentTopBarVideoListController ()
-@property BOOL downAtTopOnly;
-@property int downAtTopDistance;
-// TODO: shown initially wirklich notwendig
-@property BOOL subtopbarShownInitially;
-@property BOOL subtopbarWasVisible;
+@property bool subtopbarWasVisible;
 @end
 
 @implementation APPContentTopBarVideoListController
@@ -22,19 +18,16 @@
 {
     self = [super init];
     if (self) {
-        self.downAtTopOnly = TRUE;
-        self.downAtTopDistance = 40;
+        [[self configureDefaultState] onViewState:tDidInitViewState do:^{
+            self.subtopbarWasVisible = TRUE;
+        }];
 
-        [[[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tDidInit do:^{
-            self.subtopbarShownInitially = FALSE;
-            self.subtopbarWasVisible = FALSE;
-        }] onViewState:tDidAppear do:^{
-            [self onViewState:tDidAppear when:!self.subtopbarShownInitially doOnce:^{
-                [self.tableViewHeaderFormView showOnCompletion:^(BOOL isShown){
-                    if (isShown)
-                        self.subtopbarShownInitially = TRUE;
-                } animated:YES];
-            }];
+        [[self configureDefaultState] onViewState:tDidAppearViewState do:^{
+            // reloads table view content
+            [[self tableView] reloadShowMode];
+            // shows sub topbar
+            if (self.subtopbarWasVisible)
+                [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
         }];
     }
     return self;
@@ -67,9 +60,9 @@
     if ([keyPath isEqual:@"contentOffset"]) {
         CGPoint newContentOffset = [[change objectForKey:NSKeyValueChangeNewKey] CGPointValue];
         CGPoint oldContentOffset = [[change objectForKey:NSKeyValueChangeOldKey] CGPointValue];
-        if (oldContentOffset.y < newContentOffset.y && [self.tableViewHeaderFormView isHeaderShown] && newContentOffset.y > self.downAtTopDistance) {
+        if (oldContentOffset.y < newContentOffset.y && [self.tableViewHeaderFormView isHeaderShown] && newContentOffset.y > downAtTopDistance) {
             [self.tableViewHeaderFormView hideOnCompletion:nil animated:YES];
-        } else if (oldContentOffset.y > newContentOffset.y && ![self.tableViewHeaderFormView isHeaderShown] && (self.downAtTopOnly ? (newContentOffset.y < self.downAtTopDistance) : (newContentOffset.y + self.tableView.bounds.size.height - self.tableView.contentInset.bottom < (self.tableView.contentSize.height - self.downAtTopDistance)))) {
+        } else if (oldContentOffset.y > newContentOffset.y && ![self.tableViewHeaderFormView isHeaderShown] && (downAtTopOnly ? (newContentOffset.y < downAtTopDistance) : (newContentOffset.y + self.tableView.bounds.size.height - self.tableView.contentInset.bottom < (self.tableView.contentSize.height - downAtTopDistance)))) {
             [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
         }
 
@@ -83,20 +76,15 @@
 
 -(void)willHide:(void (^)(void))callback
 {
-    if (!self.isDefaultMode) {
-        if ([self.tableViewHeaderFormView isHeaderShown]) {
-            self.subtopbarWasVisible = TRUE;
-            [self.tableViewHeaderFormView hideOnCompletion:^(BOOL isHidden) {
-                if (callback)
-                    callback();
-            } animated:YES];
-        } else {
-            self.subtopbarWasVisible = FALSE;
+    if ([self.tableViewHeaderFormView isHeaderShown]) {
+        self.subtopbarWasVisible = TRUE;
+        [self.tableViewHeaderFormView hideOnCompletion:^(BOOL isHidden) {
             if (callback)
                 callback();
-        }
+        } animated:YES];
 
     } else {
+        self.subtopbarWasVisible = FALSE;
         if (callback)
             callback();
     }
@@ -104,17 +92,12 @@
 
 -(void)didShow:(void (^)(void))callback
 {
-    if (self.isDefaultMode) {
-        [self onViewState:tDidAppear when:!self.subtopbarShownInitially doOnce:^{
-            [self.tableViewHeaderFormView showOnCompletion:^(BOOL isShown){
-                if (isShown)
-                    self.subtopbarShownInitially = TRUE;
-            } animated:YES];
-        }];
+    if (self.subtopbarWasVisible) {
+        [self.tableViewHeaderFormView showOnCompletion:^(BOOL isShown) {
+            if (callback)
+                callback();
+        }  animated:YES];
 
-        [self onViewState:tDidAppear when:self.subtopbarWasVisible doOnce:^{
-            [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
-        }];
     } else {
         if (callback)
             callback();

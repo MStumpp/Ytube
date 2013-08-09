@@ -43,9 +43,6 @@
 #define tFavorites 29
 #define tComments 30
 
-// States
-#define tInitialState 01
-
 //#define tComments 01
 #define tRelatedVideos 02
 
@@ -67,11 +64,6 @@
 @required
 -(void)undoDefaultMode:(void (^)(void))callback;
 -(void)doDefaultMode:(void (^)(void))callback;
-@end
-
-@protocol State
-@required
--(void)toInitialState;
 @end
 
 @protocol Base <UserProfileChangeDelegate, APPSliderViewControllerDelegate, State>

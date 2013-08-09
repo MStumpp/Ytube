@@ -60,10 +60,10 @@ typedef void(^APPTableViewCallback)();
         [MBProgressHUD showHUDAddedTo:progressView animated:YES];
         [self.tableViewMaskView setCustomMaskView:progressView];
 
-        self.reloadDataQueryTickets = [NSMutableDictionary dictionary];
-        self.loadMoreDataQueryTickets = [NSMutableDictionary dictionary];
-        self.feeds = [NSMutableDictionary dictionary];
-        self.customFeeds = [NSMutableDictionary dictionary];
+        self.reloadDataQueryTickets = [NSMutableDictionary alloc];
+        self.loadMoreDataQueryTickets = [NSMutableDictionary alloc];
+        self.feeds = [NSMutableDictionary alloc];
+        self.customFeeds = [NSMutableDictionary alloc];
     }
     return self;
 }

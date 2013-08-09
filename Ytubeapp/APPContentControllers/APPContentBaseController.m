@@ -38,7 +38,7 @@
 -(void)userSignedIn:(GDataEntryYouTubeUserProfile*)user andAuth:(GTMOAuth2Authentication*)auth;
 {
     //self.userProfile = user;
-    [self toInitialState];
+    [self toDefaultState];
 }
 
 -(void)userSignedOut

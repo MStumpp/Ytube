@@ -9,33 +9,26 @@
 /* Begin PBXBuildFile section */
 		167C90063D501CD17BD2109E /* APPPlaylistAddVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C94BD67F75AFE2CFEC57A /* APPPlaylistAddVideo.m */; };
 		167C902458E310540CB0E8BA /* APPVideoAddComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C933948764D9EB089FDF6 /* APPVideoAddComment.m */; };
-		167C9069B8E7EA0496994828 /* APPContentFavoritesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C92F897FB4EC2F03501D0 /* APPContentFavoritesController.m */; };
 		167C90A774BCC3104A62AF3D /* APPContentVideoListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9A02AB32FF690C2973C5 /* APPContentVideoListController.m */; };
 		167C90D9879542613F031C46 /* APPContentListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C944F5FAA2AD474A43988 /* APPContentListController.m */; };
 		167C90FD62371D247F79B473 /* APPVideoMostViewed.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C97902BF2586326EB9918 /* APPVideoMostViewed.m */; };
 		167C9102AD3E50DB17AD2897 /* APPVideoImageOfComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C91A3D99519CCD783BBFB /* APPVideoImageOfComment.m */; };
-		167C9230B8C3386CE8EEAFE9 /* APPContentCommentListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9CA7B9B9D0AFA3CCFB6F /* APPContentCommentListController.m */; };
-		167C923893D8FBA20CC15727 /* APPContentPlaylistVideosController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9EB671BA2DAE0C942FFD /* APPContentPlaylistVideosController.m */; };
 		167C925865A99D9A8052C714 /* APPUserImageQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9C325867234333EBA1BE /* APPUserImageQuery.m */; };
 		167C92B23A20FAE8DB6E3A72 /* APPVideoRecentlyFeatured.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9F9C64B16028E82F0328 /* APPVideoRecentlyFeatured.m */; };
 		167C92D16FEF5A54D3AEF694 /* APPFetchFeedWithURLQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C99D7E4E360BE62C7A9BF /* APPFetchFeedWithURLQuery.m */; };
 		167C9310A52C509C4EC7E8A3 /* APPVideoIsFavorite.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C921117F102C8D77D4E6B /* APPVideoIsFavorite.m */; };
 		167C9334C62B7AB97A4CEB64 /* APPVideoMyVideoDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9BBAE49540EB605C4E20 /* APPVideoMyVideoDelete.m */; };
-		167C93818693D21F827EE7E3 /* APPContentTopRatedController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C92F09D5AD0E8DC3BC45B /* APPContentTopRatedController.m */; };
 		167C94447376E7C40F9404AF /* APPContentTopEditBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C99CEA9147ECA2CF90E76 /* APPContentTopEditBarController.m */; };
 		167C945F7BD08A9310071C0B /* APPContentTopToggleBarVideoListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C90BA3D9BC0D8DBEFD285 /* APPContentTopToggleBarVideoListController.m */; };
 		167C94B98109EB11AAD2F5B8 /* APPTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C94B5B01610D1AB88CFCC /* APPTableCell.m */; };
 		167C95169719B6E81B1361A2 /* APPVideoMyVideos.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C94FBA53CAA5D39D2F718 /* APPVideoMyVideos.m */; };
-		167C9530E72D10258C8BCF0C /* APPContentTopSearchBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C977012762A2A0E8C8484 /* APPContentTopSearchBarController.m */; };
 		167C954043A17B3DE6D7A5B4 /* settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 167C979DD2EDBC608E73FE4C /* settings.plist */; };
 		167C95C03A00B833B2E35DB0 /* APPFetchEntryByInsertingEntryQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9F3387CC01C5A2268602 /* APPFetchEntryByInsertingEntryQuery.m */; };
 		167C95F8947010E9240EDD6B /* APPPlaylistRemoveVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9B560D150D96A4C51034 /* APPPlaylistRemoveVideo.m */; };
 		167C96165BDCA4DC8116BB70 /* APPContentTopButtonBarVideoListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9EB19C2934FCA9FA3E3E /* APPContentTopButtonBarVideoListController.m */; };
 		167C967AE2EF1390793A64A5 /* APPFavorites.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9631A12521411EAD42EA /* APPFavorites.m */; };
 		167C970F05DF3CFA68991F8C /* APPVideoUnlikeVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9F269DF0859F1DA9C8F5 /* APPVideoUnlikeVideo.m */; };
-		167C9718B4539201AC499BBF /* APPContentWatchLaterController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9A08C4ABAE19D92CF4B1 /* APPContentWatchLaterController.m */; };
 		167C9729B4D3D4B033834F20 /* APPVideoWatchHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C92803E4B563AA9DDC27F /* APPVideoWatchHistory.m */; };
-		167C9744A0FB5E275B14F8F7 /* APPContentHistoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9E37244F456D0E4B4584 /* APPContentHistoryController.m */; };
 		167C976A398F85D9339594DD /* APPContentBaseController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9ED713AB477CFEA01FF6 /* APPContentBaseController.m */; };
 		167C97E3D7A089EC1D3615A7 /* APPPlaylistAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C99EF716A8BD8B18545BD /* APPPlaylistAdd.m */; };
 		167C980885A4385BBA329583 /* APPVideoDeleteComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9DF2FEE5BCFC33CB16A0 /* APPVideoDeleteComment.m */; };
@@ -49,21 +42,17 @@
 		167C994AAE1319FE8753B5A1 /* APPPlaylistQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C933CA3777DF0B7F4E584 /* APPPlaylistQuery.m */; };
 		167C9990EFB746201AB4A9FC /* APPQueryHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C94D4A7E3CAD9EE2D24A0 /* APPQueryHelper.m */; };
 		167C99B97B8186ABA6AEFD71 /* APPVideoQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9E4182561A1D10DFA039 /* APPVideoQuery.m */; };
-		167C9A5AC7BC07AD8A8E384C /* APPContentMyVideoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9900CE3256A952825830 /* APPContentMyVideoController.m */; };
-		167C9A80FBAE40C1B3584EA7 /* APPContentFeaturedVideoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C91786122664A3EBCBF57 /* APPContentFeaturedVideoController.m */; };
 		167C9ACA2185C43B6D526420 /* APPVideoAddToFavorites.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C98629F9D6D1C8AB09B06 /* APPVideoAddToFavorites.m */; };
 		167C9B1505C2DB00227CF9AA /* APPVideoRelatedVideos.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9CEC3162649B0ED01E5C /* APPVideoRelatedVideos.m */; };
 		167C9B172567EE324A677534 /* GDataEntryYouTubeWatchHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C91037AE87E645DEF96B5 /* GDataEntryYouTubeWatchHistory.m */; };
 		167C9B4C55B3B69D5A45558D /* APPVideoRemoveFromFavorites.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9B7DC91A77EF7378B5DF /* APPVideoRemoveFromFavorites.m */; };
 		167C9B62AEF61E6F9EEA179C /* APPTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C99579AEE3BB97835D7E3 /* APPTableView.m */; };
-		167C9B71E48A16305BF25013 /* APPContentPlaylistListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9FC9425F3F330ADDEBC6 /* APPContentPlaylistListController.m */; };
 		167C9BFB88813C7001879B5C /* APPCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C939829F6EEA9DA3B34B0 /* APPCommentCell.m */; };
 		167C9C1EFF03CAFEC38E2CC2 /* APPGlobals.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C99C1F7E8B00948A2D258 /* APPGlobals.m */; };
 		167C9C2DA0C25C9FFDB91ECE /* APPVideoLikeVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9B3E37E2D7478336B282 /* APPVideoLikeVideo.m */; };
 		167C9C5B65797032E33A38BB /* APPContentMostViewedVideoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C916C99BB45B7417A3515 /* APPContentMostViewedVideoController.m */; };
 		167C9C81BD9D64D0C3747ED8 /* APPPlaylistVideos.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9A3A73E9E80186C8E6F4 /* APPPlaylistVideos.m */; };
 		167C9C9C8F09DD55FD9B40D2 /* APPPlaylistDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C95A44250BCA8CC208D1E /* APPPlaylistDelete.m */; };
-		167C9CFFA417D420FD351D3C /* APPContentTopFavoritesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C98B4FE45E2D8A582F4ED /* APPContentTopFavoritesController.m */; };
 		167C9D9B7576816E599673AF /* APPVideoAddToWatchLater.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C97BAB818BF155F1B270B /* APPVideoAddToWatchLater.m */; };
 		167C9DBCC0761D6E2EBC5ECD /* APPWatchLater.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C96E7A27A9A9F54FEE60A /* APPWatchLater.m */; };
 		167C9DCD5F88A70FE849044A /* APPContent.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9942D48E80C9FB2D771A /* APPContent.m */; };
@@ -254,7 +243,7 @@
 		39EC442E15F6B8D800CE4C0A /* video_cell_menu_icon_info_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39EC442915F6B8D700CE4C0A /* video_cell_menu_icon_info_up@2x.png */; };
 		39ECB23416A8559300E65E1D /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39ECB23316A8558F00E65E1D /* Default@2x.png */; };
 		39ECB23616A8565D00E65E1D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39ECB23516A8565B00E65E1D /* Default-568h@2x.png */; };
-		9D7ED0C29CC04BFAAF341D65 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D3343BFEBAF4CA0B449026D /* libPods.a */; settings = {}; };
+		9D7ED0C29CC04BFAAF341D65 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D3343BFEBAF4CA0B449026D /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -583,7 +572,7 @@
 		39EC442915F6B8D700CE4C0A /* video_cell_menu_icon_info_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "video_cell_menu_icon_info_up@2x.png"; sourceTree = "<group>"; };
 		39ECB23316A8558F00E65E1D /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../../Default@2x.png"; sourceTree = "<group>"; };
 		39ECB23516A8565B00E65E1D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../../Default-568h@2x.png"; sourceTree = "<group>"; };
-		8D3343BFEBAF4CA0B449026D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libPods.a; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D3343BFEBAF4CA0B449026D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		916ADCFB97E841D48CB69C0C /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -1248,8 +1237,6 @@
 			mainGroup = 395A876115E186F4004F39E2;
 			productRefGroup = 395A876D15E186F4004F39E2 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-			);
 			projectRoot = "";
 			targets = (
 				395A876B15E186F4004F39E2 /* Ytubeapp */,
@@ -1449,7 +1436,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
-			showEnvVarsInLog = 1;
 		};
 		5CC7244286EF4FE5A86F55BE /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1464,7 +1450,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 1;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1530,22 +1515,11 @@
 				167C9ED65D2A44AE639C7C27 /* APPFetchMoreQuery.m in Sources */,
 				167C9990EFB746201AB4A9FC /* APPQueryHelper.m in Sources */,
 				167C9C5B65797032E33A38BB /* APPContentMostViewedVideoController.m in Sources */,
-				167C9A5AC7BC07AD8A8E384C /* APPContentMyVideoController.m in Sources */,
 				167C96165BDCA4DC8116BB70 /* APPContentTopButtonBarVideoListController.m in Sources */,
 				167C90A774BCC3104A62AF3D /* APPContentVideoListController.m in Sources */,
-				167C9069B8E7EA0496994828 /* APPContentFavoritesController.m in Sources */,
-				167C9718B4539201AC499BBF /* APPContentWatchLaterController.m in Sources */,
-				167C93818693D21F827EE7E3 /* APPContentTopRatedController.m in Sources */,
-				167C9CFFA417D420FD351D3C /* APPContentTopFavoritesController.m in Sources */,
 				167C9E4AB94272A1F204E220 /* APPContentTopBarVideoListController.m in Sources */,
-				167C9A80FBAE40C1B3584EA7 /* APPContentFeaturedVideoController.m in Sources */,
-				167C9744A0FB5E275B14F8F7 /* APPContentHistoryController.m in Sources */,
 				167C94447376E7C40F9404AF /* APPContentTopEditBarController.m in Sources */,
 				167C990A34EC1DD6962BED48 /* APPContentVideoDetailViewController.m in Sources */,
-				167C9530E72D10258C8BCF0C /* APPContentTopSearchBarController.m in Sources */,
-				167C923893D8FBA20CC15727 /* APPContentPlaylistVideosController.m in Sources */,
-				167C9B71E48A16305BF25013 /* APPContentPlaylistListController.m in Sources */,
-				167C9230B8C3386CE8EEAFE9 /* APPContentCommentListController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

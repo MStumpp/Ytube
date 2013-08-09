@@ -27,12 +27,13 @@ PODS:
     - SBJson
   - GTMHTTPFetcher (0.0.1):
     - SBJson
-  - MBProgressHUD (0.6)
+  - MBProgressHUD (0.7)
   - NSDate-TimeAgo (0.0.1)
   - QueryManager (0.0.3)
   - SBJson (3.2)
   - SmartNavigationController (0.0.1)
   - SSPullToRefresh (1.1.2)
+  - StatefulUIViewController (0.0.3)
   - UITableViewAtBottomView (0.0.1)
   - UITableViewHeaderFormView (0.0.1)
   - UITableViewHeaderMenuView (0.0.1)
@@ -47,6 +48,7 @@ DEPENDENCIES:
   - QueryManager (~> 0.0.3)
   - SmartNavigationController (~> 0.0.1)
   - SSPullToRefresh (~> 1.1.2)
+  - StatefulUIViewController (~> 0.0.3)
   - UITableViewAtBottomView (~> 0.0.1)
   - UITableViewHeaderFormView (~> 0.0.1)
   - UITableViewHeaderMenuView (~> 0.0.1)
@@ -56,14 +58,15 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   GData: 8bd2d2883a084cf9d3fb75c083413df7c036f63e
-  gtm-oauth2: c4824003b569bc9b96446661fb92dbc681335499
-  GTMHTTPFetcher: 99f026c2d7afbcf2a051a64a3e81dcaedd060135
-  MBProgressHUD: 9b55a90566fb5d07df0602f6fd9fa04510ad5d52
+  gtm-oauth2: af6d1ff3d4b14b35d3709f7f4bf2be8b43e45e62
+  GTMHTTPFetcher: b0af09f18ec87e7a5edeffcc8cb6449fdbf0e83f
+  MBProgressHUD: 1fd8591a2216d5dec6de24e09187bb03bcbe9946
   NSDate-TimeAgo: c22120e1736dec8ea2e2260fda8f48a0abb83f05
   QueryManager: 2d2e144cd2458be72d3c93a40819a3b292b3fa5b
   SBJson: e60b4dc22448c2ae1e754b523a4ab53408e85c8d
   SmartNavigationController: cec59ea312b68ceabd71073556f5ff71b7c9f2ed
   SSPullToRefresh: 8d8360b0ff0dc7b344656b48ddf9732c47e78806
+  StatefulUIViewController: a0d7ff87ada61889e1a755560aaf312d9508d45f
   UITableViewAtBottomView: fb372036a11e91ba83fab1515545e3deea033f70
   UITableViewHeaderFormView: 47c112ca7f449e8fdf03b07bf7686c69d38ef3d3
   UITableViewHeaderMenuView: a8a2a8458a79f5ae37acf5ccb4469f9441b9c8cc

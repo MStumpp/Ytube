@@ -16,8 +16,9 @@
 #import "APPQueryHelper.h"
 #import "APPGlobals.h"
 #import "APPUserManager.h"
+#import "StatefulUIViewController.h"
 
-@interface APPContentBaseController : UIViewController<State>
+@interface APPContentBaseController : StatefulUIViewController
 @property (strong, nonatomic) UIImage *topbarImage;
 @property (strong, nonatomic) NSString *topbarTitle;
 @property BOOL isDefaultMode;

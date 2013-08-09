@@ -8,20 +8,10 @@
 
 #import "APPSliderViewController.h"
 
-#import "APPSearchViewController.h"
-#import "APPFeaturedViewController.h"
-#import "APPMostViewedViewController.h"
-#import "APPTopFavoritesViewController.h"
-#import "APPTopRatedViewController.h"
-
-#import "APPFavoritesViewController.h"
-#import "APPPlaylistsViewController.h"
-#import "APPHistoryViewController.h"
-#import "APPWatchLaterViewController.h"
-#import "APPMyVideosViewController.h"
 
 #import "APPUserManager.h"
 #import "MBProgressHUD.h"
+#import "APPContentMostViewedVideoController.h"
 
 @interface APPSliderViewController ()
 // left, center and right area on this contoller
@@ -56,8 +46,18 @@
     self = [super init];
     if (self) {
         self.controllers = [[NSDictionary alloc] initWithObjectsAndKeys:
-                            [[APPSearchViewController alloc] init], [NSNumber numberWithInt:tSearch],
-                            [[APPFeaturedViewController alloc] init], [NSNumber numberWithInt:tRecentlyFeatured],
+                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tSearch],
+                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tRecentlyFeatured],
+                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tMostPopular],
+                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:ttopRated],
+                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:ttopFavorites],
+                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tRecentlyFeatured],
+                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tFavorites],
+                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tPlaylists],
+                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tHistory],
+                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tWatchLater],
+                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tMyVideos],
+                            /*
                             [[APPMostViewedViewController alloc] init], [NSNumber numberWithInt:tMostPopular],
                             [[APPTopRatedViewController alloc] init], [NSNumber numberWithInt:ttopRated],
                             [[APPTopFavoritesViewController alloc] init], [NSNumber numberWithInt:ttopFavorites],
@@ -66,7 +66,7 @@
                             [[APPPlaylistsViewController alloc] init], [NSNumber numberWithInt:tPlaylists],
                             [[APPHistoryViewController alloc] init], [NSNumber numberWithInt:tHistory],
                             [[APPWatchLaterViewController alloc] init], [NSNumber numberWithInt:tWatchLater],
-                            [[APPMyVideosViewController alloc] init], [NSNumber numberWithInt:tMyVideos],
+                            [[APPMyVideosViewController alloc] init], [NSNumber numberWithInt:tMyVideos],*/
                             nil];
         self.defaultContext = tMostPopular;
         self.currentContext = self.defaultContext;
