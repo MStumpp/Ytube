@@ -17,20 +17,28 @@
     self.tableView._delegate = self;
 }
 
+-(NSIndexPath*)tableView:(UITableView*)tableView forMode:(int)mode willSelectRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    if (self.isDefaultMode)
+        return nil;
+
+    return indexPath;
+}
+
 -(BOOL)tableViewCanBottom:(UITableView*)view
 {
-    if (!self.isDefaultMode)
-        return TRUE;
-    else
+    if (self.isDefaultMode)
         return FALSE;
+
+    return TRUE;
 }
 
 -(BOOL)pullToRefreshViewShouldStartLoading:(SSPullToRefreshView*)view
 {
-    if (!self.isDefaultMode)
-        return TRUE;
-    else
+    if (self.isDefaultMode)
         return FALSE;
+
+    return TRUE;
 }
 
 @end

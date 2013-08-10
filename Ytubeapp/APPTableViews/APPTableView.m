@@ -10,7 +10,7 @@
 #import "MBProgressHUD.h"
 #import "QueryTicket.h"
 
-typedef void(^APPTableViewCallback)();
+#define tDefaultShowMode 10
 
 @interface APPTableView()
 @property (nonatomic, strong) SSPullToRefreshView *pullToRefreshView;
@@ -19,23 +19,13 @@ typedef void(^APPTableViewCallback)();
 @property (nonatomic, strong) UITableViewMaskView *tableViewMaskView;
 @property (nonatomic, strong) NSIndexPath *openCell;
 @property int showMode;
-@property (strong, nonatomic) NSMutableDictionary *reloadDataQueryTickets;
-@property (strong, nonatomic) NSMutableDictionary *loadMoreDataQueryTickets;
+@property (strong, nonatomic) NSMutableDictionary *queryTicketsReload;
+@property (strong, nonatomic) NSMutableDictionary *queryTicketsLoadMore;
 @property (strong, nonatomic) NSMutableDictionary *feeds;
 @property (strong, nonatomic) NSMutableDictionary *customFeeds;
-@property (nonatomic, copy) APPTableViewCallback callback;
 @end
 
 @implementation APPTableView
-@synthesize pullToRefreshView;
-@synthesize tableViewSwipeView;
-@synthesize tableViewAtBottomView;
-@synthesize openCell;
-@synthesize showMode;
-@synthesize reloadDataQueryTickets;
-@synthesize loadMoreDataQueryTickets;
-@synthesize feeds;
-@synthesize customFeeds;
 
 -(id)initWithFrame:(CGRect)frame style:(UITableViewStyle)style
 {
@@ -54,16 +44,16 @@ typedef void(^APPTableViewCallback)();
         self.pullToRefreshView = [[SSPullToRefreshView alloc] initWithScrollView:self delegate:self];
         self.tableViewSwipeView = [[UITableViewSwipeView alloc] initWithTableView:self delegate:self];
         self.tableViewAtBottomView = [[UITableViewAtBottomView alloc] initWithTableView:self delegate:self];
-
         self.tableViewMaskView = [[UITableViewMaskView alloc] initWithRootView:self customMaskView:nil delegate:self];
         UIView *progressView = [[UIView alloc] init];
         [MBProgressHUD showHUDAddedTo:progressView animated:YES];
         [self.tableViewMaskView setCustomMaskView:progressView];
 
-        self.reloadDataQueryTickets = [NSMutableDictionary alloc];
-        self.loadMoreDataQueryTickets = [NSMutableDictionary alloc];
+        self.queryTicketsReload = [NSMutableDictionary alloc];
+        self.queryTicketsLoadMore = [NSMutableDictionary alloc];
         self.feeds = [NSMutableDictionary alloc];
         self.customFeeds = [NSMutableDictionary alloc];
+        [self addShowMode:tDefaultShowMode];
     }
     return self;
 }
@@ -72,30 +62,34 @@ typedef void(^APPTableViewCallback)();
 
 #pragma mark - Table view data source
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+-(UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
     APPTableCell *cell = [self._delegate tableView:tableView forMode:self.showMode cellForRowAtIndexPath:indexPath];
     cell.indexPath = indexPath;
     cell.tableView = self;
+    // ensure cell is either open or closed
     if (self.openCell && [self.openCell row] == [indexPath row])
         [cell openOnCompletion:nil animated:NO];
+    else
+        [cell closeOnCompletion:nil animated:NO];
     return cell;
 }
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+-(NSInteger)numberOfSectionsInTableView:(UITableView*)tableView
 {
     return 1;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+-(NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if ([self currentCustomFeed])
-        return [[self currentCustomFeed] count];
+    if ([self currentCustomFeedForShowMode:self.showMode])
+        return [[self currentCustomFeedForShowMode:self.showMode] count];
     else
         return 0;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+-(CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
+{
     return 88.0;
 }
 
@@ -105,21 +99,19 @@ typedef void(^APPTableViewCallback)();
 {
     APPTableCell *selectedCell = (APPTableCell*) [self cellForRowAtIndexPath:indexPath];
     if (![selectedCell isOpened])
-        return indexPath;
+        return [self._delegate tableView:tableView forMode:self.showMode willSelectRowAtIndexPath:indexPath];
     else
         return nil;
 }
 
 -(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return [self._delegate tableView:tableView forMode:self.showMode didSelectRowAtIndexPath:indexPath];
+    [self._delegate tableView:tableView forMode:self.showMode didSelectRowAtIndexPath:indexPath];
 }
 
 -(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    if ([self._delegate respondsToSelector:@selector(tableView:canEditRowAtIndexPath:)])
-        return [self._delegate tableView:tableView canEditRowAtIndexPath:indexPath];
-    return YES;
+    return [self._delegate tableView:tableView canEditRowAtIndexPath:indexPath];
 
     //    if (self.tmpEditingCell) {
     //        if ([self.tmpEditingCell row] == [indexPath row])
@@ -131,35 +123,37 @@ typedef void(^APPTableViewCallback)();
     //    }
 }
 
--(void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath
+-(void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+        forRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return [self._delegate tableView:tableView forMode:self.showMode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath];
+    [self._delegate tableView:tableView forMode:self.showMode
+           commitEditingStyle:editingStyle forRowAtIndexPath:indexPath];
 }
 
 // "UITableViewAtBottomViewDelegate" Protocol
 
--(BOOL)tableViewCanBottom:(UITableView *)view
+-(BOOL)tableViewCanBottom:(UITableView*)view
 {
     if ([self._delegate respondsToSelector:@selector(tableViewCanBottom:)])
         return [self._delegate tableViewCanBottom:view];
     return YES;
 }
 
--(void)tableViewDidBottom:(UITableView *)view
+-(void)tableViewDidBottom:(UITableView*)view
 {
     [self loadMoreDataForShowMode:self.showMode withPrio:tVisibleload];
 }
 
 // "SSPullToRefreshViewDelegate" Protocol
 
--(BOOL)pullToRefreshViewShouldStartLoading:(SSPullToRefreshView *)view
+-(BOOL)pullToRefreshViewShouldStartLoading:(SSPullToRefreshView*)view
 {
     if ([self._delegate respondsToSelector:@selector(pullToRefreshViewShouldStartLoading:)])
         return [self._delegate pullToRefreshViewShouldStartLoading:view];
     return YES;
 }
 
--(void)pullToRefreshViewDidStartLoading:(SSPullToRefreshView *)view
+-(void)pullToRefreshViewDidStartLoading:(SSPullToRefreshView*)view
 {
     [self.pullToRefreshView startLoading];
     [self reloadDataForShowMode:self.showMode withPrio:tVisibleload];
@@ -168,7 +162,7 @@ typedef void(^APPTableViewCallback)();
 // TODO: Possibly move that to UITableCell
 // "UITableViewSwipeViewDelegate" Protocol
 
--(void)tableViewSwipeViewDidSwipeLeft:(UITableView *)view rowAtIndexPath:(NSIndexPath *)indexPath
+-(void)tableViewSwipeViewDidSwipeLeft:(UITableView*)view rowAtIndexPath:(NSIndexPath*)indexPath
 {
     APPTableCell *cell = (APPTableCell*) [self cellForRowAtIndexPath:indexPath];
     if (self.openCell) {
@@ -202,7 +196,7 @@ typedef void(^APPTableViewCallback)();
 //    }
 }
 
--(void)tableViewSwipeViewDidSwipeRight:(UITableView *)view rowAtIndexPath:(NSIndexPath *)indexPath
+-(void)tableViewSwipeViewDidSwipeRight:(UITableView*)view rowAtIndexPath:(NSIndexPath*)indexPath
 {
     APPTableCell *cell = (APPTableCell*) [self cellForRowAtIndexPath:indexPath];
     [cell closeOnCompletion:^(BOOL isClosed) {
@@ -226,64 +220,30 @@ typedef void(^APPTableViewCallback)();
 //    }
 }
 
-// reloads data
--(void)reloadShowMode
-{
-
-}
-
--(void)reloadDataForShowMode:(int)mode withPrio:(int)prio
-{
-    // eventually cancel query ticket querying more data
-    [[self queryTicketForMode:mode forType:self.loadMoreDataQueryTickets] cancel];
-    [self setQueryTicket:nil forMode:mode forType:self.loadMoreDataQueryTickets];
-
-    switch ([self stateForShowMode:mode forType:self.reloadDataQueryTickets])
-    {
-        // if there is a ticket and its state is unloaded, eventually adjust prio
-        case tUnloaded:
-        {
-            if ([self prioForShowMode:mode forType:self.reloadDataQueryTickets] != prio)
-                [self setPrio:prio forShowMode:mode forType:self.reloadDataQueryTickets];
-            break;
-        }
-
-            // if there is a ticket and its state is loading, eventually adjust prio
-        case tLoading:
-        {
-            if ([self prioForShowMode:mode forType:self.reloadDataQueryTickets] != prio)
-                [self setPrio:prio forShowMode:mode forType:self.reloadDataQueryTickets];
-            break;
-        }
-
-            // if there is no ticket yet or ticket is in state tLoaded or tCancelled
-            // make a new request and store returned ticket
-        default:
-        {
-            [self setQueryTicket:[self._delegate tableView:self reloadDataConcreteForShowMode:mode withPrio:prio] forMode:mode forType:self.reloadDataQueryTickets];
-            break;
-        }
-    }
-}
+// "APPTableViewProcessResponse" Protocol
 
 -(void)reloadDataResponse:(NSDictionary*)args
 {
     int mode = [[args objectForKey:tMode] intValue];
-    if (![args objectForKey:tError]) {
+    GDataFeedBase *feed = [args objectForKey:tFeed];
+    NSError *error = [args objectForKey:tError];
+
+    // if there is
+
+    if (!error) {
 
         // replace current feed for mode
-        [self currentFeed:[args objectForKey:tFeed] forShowMode:mode];
+        [self currentFeed:feed forShowMode:mode];
 
-        // init custom feed array, either initialize array or clear
+        // init custom feed array, either initialize fresh array or clear
         if (![self currentCustomFeedForShowMode:mode]) {
             [self currentCustomFeed:[NSMutableArray array] forShowMode:mode];
-
         } else {
             [[self currentCustomFeedForShowMode:mode] removeAllObjects];
         }
 
         // finally, add feed entries to custom feed
-        [[self currentCustomFeedForShowMode:mode] addObjectsFromArray:[[args objectForKey:tFeed] entries]];
+        [[self currentCustomFeedForShowMode:mode] addObjectsFromArray:[feed entries]];
 
         // if show mode of response is equal to current show mode,
         // update shown data
@@ -317,47 +277,19 @@ typedef void(^APPTableViewCallback)();
     }
 }
 
--(void)loadMoreDataForShowMode:(int)mode withPrio:(int)prio
-{
-    switch ([self stateForShowMode:mode forType:self.loadMoreDataQueryTickets])
-    {
-        // if there is a ticket and its state is unloaded, eventually adjust prio
-        case tUnloaded:
-        {
-            if ([self prioForShowMode:mode forType:self.loadMoreDataQueryTickets] != prio)
-                [self setPrio:prio forShowMode:mode forType:self.loadMoreDataQueryTickets];
-            break;
-        }
-
-            // if there is a ticket and its state is loading, eventually adjust prio
-        case tLoading:
-        {
-            if ([self prioForShowMode:mode forType:self.loadMoreDataQueryTickets] != prio)
-                [self setPrio:prio forShowMode:mode forType:self.loadMoreDataQueryTickets];
-            break;
-        }
-
-            // if there is no ticket yet or ticket is in state tLoaded or tCancelled
-            // make a new request and store returned ticket
-        default:
-        {
-            if ([self currentFeedForShowMode:mode])
-                [self setQueryTicket:[self._delegate tableView:self loadMoreDataConcreteForShowMode:mode forFeed:[self currentFeedForShowMode:mode] withPrio:prio] forMode:mode forType:self.reloadDataQueryTickets];
-            break;
-        }
-    }
-}
-
 -(void)loadMoreDataResponse:(NSDictionary*)args
 {
     int mode = [[args objectForKey:tMode] intValue];
-    if (![args objectForKey:tError]) {
+    GDataFeedBase *feed = [args objectForKey:tFeed];
+    NSError *error = [args objectForKey:tError];
+
+    if (!error) {
 
         // replace current feed for mode
-        [self currentFeed:[args objectForKey:tFeed] forShowMode:mode];
+        [self currentFeed:feed forShowMode:mode];
 
         // finally, add feed entries to custom feed
-        [[self currentCustomFeedForShowMode:mode] addObjectsFromArray:[[args objectForKey:tFeed] entries]];
+        [[self currentCustomFeedForShowMode:mode] addObjectsFromArray:[feed entries]];
 
         // if show mode of response is equal to current show mode,
         // update shown data
@@ -379,68 +311,52 @@ typedef void(^APPTableViewCallback)();
     }
 }
 
+-(BOOL)addShowMode:(int)mode
+{
+    if (!mode || mode == tDefaultShowMode || [self hasShowMode:mode])
+        return FALSE;
+    [self.queryTicketsReload addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
+    [self.queryTicketsLoadMore addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
+    [self.feeds addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
+    [self.customFeeds addEntriesFromDictionary:[NSDictionary dictionaryWithObject:[NSMutableArray array] forKey:[NSNumber numberWithInt:mode]]];
+
+    // remove tDefaultShowMode in dicts once one custom show mode is added
+    [self.queryTicketsReload removeObjectForKey:[NSNumber numberWithInt:tDefaultShowMode]];
+    [self.queryTicketsLoadMore removeObjectForKey:[NSNumber numberWithInt:tDefaultShowMode]];
+    [self.feeds removeObjectForKey:[NSNumber numberWithInt:tDefaultShowMode]];
+    [self.customFeeds removeObjectForKey:[NSNumber numberWithInt:tDefaultShowMode]];
+
+    return TRUE;
+}
+
 -(void)toShowMode:(int)mode
 {
-    if (!mode || (self.showMode && self.showMode == mode))
-        return;
+    if (!mode || ![self hasShowMode:mode])
+        [NSException raise:@"show mode is nil or doesn't exists" format:@"show mode is nil or doesn't exists"];
 
+    // if current show mode equal to requested show mode, then just scroll to top
+    if (self.showMode == mode) {
+        [self scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+        return;
+    }
+
+    // do some exit processing
     if ([self._delegate respondsToSelector:@selector(beforeShowModeChange)])
         [self._delegate beforeShowModeChange];
 
     self.showMode = mode;
 
+    // do some enter processing
     if ([self._delegate respondsToSelector:@selector(afterShowModeChange)])
         [self._delegate afterShowModeChange];
 
-    switch ([self stateForShowMode:self.showMode forType:self.reloadDataQueryTickets])
-    {
-        // state of showmmode is loaded, just display it
-        case tLoaded:
-        {
-            [self.tableViewMaskView unmaskOnCompletion:^(BOOL isUnmasked) {
-                if (isUnmasked) {
-                    [self.pullToRefreshView finishLoading];
-                    [self reloadData];
-                }
-            }];
-            break;
-        }
-
-            // otherwise, if state of showmode is tUnloaded, tLoading or tCancelled,
-            // call reloadDataOfShowMode with prio set to highest
-        default:
-        {
-            [self.tableViewMaskView maskOnCompletion:^(BOOL isMasked) {
-                if (isMasked) {
-                    [self reloadDataForShowMode:mode withPrio:tVisibleload];
-                }
-            }];
-            break;
-        }
-    }
-}
-
--(void)addShowMode:(int)mode
-{
-    [self.reloadDataQueryTickets addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
-    [self.loadMoreDataQueryTickets addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
-    [self.feeds addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
-    [self.customFeeds addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
-}
-
--(void)resetAllShowModes
-{
-    NSArray* keys = [self.reloadDataQueryTickets allKeys];
-    for(NSNumber* key in keys)
-        [self resetShowMode:[key intValue]];
-}
-
--(void)resetShowMode:(int)mode
-{
-    [self.reloadDataQueryTickets setObject:nil forKey:[NSNumber numberWithInt:mode]];
-    [self.loadMoreDataQueryTickets setObject:nil forKey:[NSNumber numberWithInt:mode]];
-    [self.feeds setObject:nil forKey:[NSNumber numberWithInt:mode]];
-    [self.customFeeds setObject:nil forKey:[NSNumber numberWithInt:mode]];
+    QueryTicket *ticket = [self queryTicketForMode:mode forType:self.queryTicketsReload];
+    // if there is no ticket, load the data for the first time
+    if (!ticket)
+        [self reloadDataForShowMode:mode withPrio:tVisibleload];
+    // otherwise, just reload the data
+    else
+        [self reloadData];
 }
 
 -(int)showMode
@@ -448,9 +364,93 @@ typedef void(^APPTableViewCallback)();
     return self.showMode;
 }
 
--(GDataFeedBase*)currentFeed
+-(void)reloadDataAll
 {
-    return [self currentFeedForShowMode:self.showMode];
+    // reset all show modes
+    [self resetAllShowModesAndReload];
+    // load initial data for each show mode
+    NSArray* keys = [self.queryTicketsReload allKeys];
+    for(NSNumber* key in keys)
+        [self reloadDataForShowMode:[key intValue] withPrio:tVisibleload];
+}
+
+-(NSMutableArray*)currentCustomFeedForShowMode:(int)mode
+{
+    if (!mode || ![self hasShowMode:mode])
+        [NSException raise:@"show mode is nil or doesn't exists" format:@"show mode is nil or doesn't exists"];
+    return [self currentCustomFeed:nil forShowMode:mode];
+}
+
+// private
+
+-(void)reloadDataForShowMode:(int)mode withPrio:(int)prio
+{
+    // reset show mode
+    [self resetShowMode:mode];
+
+    // reload the data
+    QueryTicket *ticket = [self._delegate tableView:self reloadDataConcreteForShowMode:mode
+                                           withPrio:prio];
+    [self setQueryTicket:ticket forMode:mode forType:self.queryTicketsReload];
+}
+
+-(void)loadMoreDataForShowMode:(int)mode withPrio:(int)prio
+{
+    // if there is no feed, cant load more data
+    if (![self currentFeedForShowMode:mode])
+        return;
+
+    // eventually cancel currently running load more request
+    if ([self queryTicketForMode:mode forType:self.queryTicketsLoadMore])
+        [[self queryTicketForMode:mode forType:self.queryTicketsLoadMore] cancel];
+
+    // load more data
+    QueryTicket *ticket = [self._delegate tableView:self loadMoreDataConcreteForShowMode:mode
+                                            forFeed:[self currentFeedForShowMode:mode] withPrio:prio];
+    [self setQueryTicket:ticket forMode:mode forType:self.queryTicketsLoadMore];
+}
+
+-(BOOL)resetShowMode:(int)mode
+{
+    if ([self hasShowMode:mode])
+        return FALSE;
+    if ([self queryTicketForMode:mode forType:self.queryTicketsReload])
+        [[self queryTicketForMode:mode forType:self.queryTicketsReload] cancel];
+    [self.queryTicketsReload setObject:nil forKey:[NSNumber numberWithInt:mode]];
+
+    if ([self queryTicketForMode:mode forType:self.queryTicketsLoadMore])
+        [[self queryTicketForMode:mode forType:self.queryTicketsLoadMore] cancel];
+    [self.queryTicketsLoadMore setObject:nil forKey:[NSNumber numberWithInt:mode]];
+
+    [self.feeds setObject:nil forKey:[NSNumber numberWithInt:mode]];
+    [[self currentCustomFeedForShowMode:mode] removeAllObjects];
+}
+
+-(void)resetAllShowModes
+{
+    NSArray* keys = [self.queryTicketsReload allKeys];
+    for(NSNumber* key in keys)
+        [self resetShowMode:[key intValue]];
+}
+
+-(void)resetAllShowModesAndReload
+{
+    NSArray* keys = [self.queryTicketsReload allKeys];
+    for(NSNumber* key in keys)
+        [self resetShowMode:[key intValue]];
+    [self reloadData];
+}
+
+-(void)setQueryTicket:(QueryTicket*)ticket forMode:(int)mode forType:(NSMutableDictionary*)type
+{
+    if (ticket && mode && type)
+        [type setObject:ticket forKey:[NSNumber numberWithInt:mode]];
+}
+
+-(QueryTicket*)queryTicketForMode:(int)mode forType:(NSMutableDictionary*)type
+{
+    if (mode)
+        return (QueryTicket*)[type objectForKey:[NSNumber numberWithInt:mode]];
 }
 
 -(GDataFeedBase*)currentFeedForShowMode:(int)mode
@@ -465,16 +465,6 @@ typedef void(^APPTableViewCallback)();
     return (GDataFeedBase*)[self.feeds objectForKey:[NSNumber numberWithInt:mode]];
 }
 
--(NSMutableArray*)currentCustomFeed
-{
-    return [self currentCustomFeed:nil forShowMode:self.showMode];
-}
-
--(NSMutableArray*)currentCustomFeedForShowMode:(int)mode
-{
-    return [self currentCustomFeed:nil forShowMode:mode];
-}
-
 -(NSMutableArray*)currentCustomFeed:(NSMutableArray*)feed forShowMode:(int)mode
 {
     if (feed)
@@ -482,38 +472,12 @@ typedef void(^APPTableViewCallback)();
     return (NSMutableArray*)[self.customFeeds objectForKey:[NSNumber numberWithInt:mode]];
 }
 
--(int)stateForShowMode:(int)mode forType:(NSMutableDictionary*)type
+-(BOOL)hasShowMode:(int)mode
 {
-    if (mode && type && [type objectForKey:[NSNumber numberWithInt:mode]])
-        return [(QueryTicket*)[type objectForKey:[NSNumber numberWithInt:mode]] state];
-    else
-    return -1;
-}
-
--(int)prioForShowMode:(int)mode forType:(NSMutableDictionary*)type
-{
-    if (mode && type && [type objectForKey:[NSNumber numberWithInt:mode]])
-        return [(QueryTicket*)[type objectForKey:[NSNumber numberWithInt:mode]] prio];
-    else
-    return -1;
-}
-
--(void)setPrio:(int)prio forShowMode:(int)mode forType:(NSMutableDictionary*)type
-{
-    if (prio && mode && type && [type objectForKey:[NSNumber numberWithInt:mode]])
-        [(QueryTicket*)[type objectForKey:[NSNumber numberWithInt:mode]] setPrio:prio];
-}
-
--(QueryTicket*)queryTicketForMode:(int)mode forType:(NSMutableDictionary*)type
-{
-    if (mode && type)
-        return (QueryTicket*)[type objectForKey:[NSNumber numberWithInt:mode]];
-}
-
--(void)setQueryTicket:(QueryTicket*)ticket forMode:(int)mode forType:(NSMutableDictionary*)type
-{
-    if (ticket && mode && type)
-        [type setObject:ticket forKey:[NSNumber numberWithInt:mode]];
+    NSArray* keys = [self.queryTicketsReload allKeys];
+    for(NSNumber* key in keys)
+        if ([key intValue] == mode) return TRUE;
+    return FALSE;
 }
 
 @end

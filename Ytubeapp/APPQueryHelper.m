@@ -35,7 +35,7 @@
 
 +(QueryTicket*)relatedVideos:(GDataEntryYouTubeVideo*)video showMode:(int)mode withPrio:(int)prio delegate:(id<APPTableViewProcessResponse>)delegate
 {
-    return [[APPVideoRelatedVideos instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil] onCompletion:^(int state, id data, NSError *error) {
+    return [[APPVideoRelatedVideos instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] getQueueWithIdentifier:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil] onCompletion:^(int state, id data, NSError *error) {
         switch (state)
         {
             case tLoaded:

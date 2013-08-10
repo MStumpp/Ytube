@@ -15,21 +15,20 @@
 #define tError @"error"
 #define tFeed @"feed"
 
-@protocol APPTableViewDelegate;
 @protocol APPTableViewProcessResponse;
-
-@class QueryTicket;
+@protocol APPTableViewDelegate;
 
 @class APPTableCell;
+@class QueryTicket;
 
-@interface APPTableView : UITableView <UITableViewDataSource, UITableViewDelegate, SSPullToRefreshViewDelegate, UITableViewSwipeViewDelegate, UITableViewAtBottomViewDelegate, UITableViewMaskViewDelegate, APPTableViewProcessResponse>
+@interface APPTableView : UITableView <UITableViewDataSource, UITableViewDelegate, UITableViewAtBottomViewDelegate,
+        SSPullToRefreshViewDelegate, UITableViewSwipeViewDelegate, UITableViewMaskViewDelegate, APPTableViewProcessResponse>
 @property id<APPTableViewDelegate> _delegate;
+-(BOOL)addShowMode:(int)mode;
 -(void)toShowMode:(int)mode;
--(void)addShowMode:(int)mode;
 -(int)showMode;
--(NSMutableArray*)currentCustomFeed;
+-(void)reloadDataAll;
 -(NSMutableArray*)currentCustomFeedForShowMode:(int)mode;
--(void)reloadShowMode;
 @end
 
 @protocol APPTableViewProcessResponse
@@ -41,12 +40,15 @@
 @protocol APPTableViewDelegate
 @required
 -(APPTableCell*)tableView:(UITableView*)tableView forMode:(int)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath;
--(void)tableView:(UITableView*)tableView forMode:(int)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath;
+-(NSIndexPath*)tableView:(UITableView*)tableView forMode:(int)mode willSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 -(void)tableView:(UITableView*)tableView forMode:(int)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
--(QueryTicket*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio;
--(QueryTicket*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)prio;
-@optional
 -(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath;
+-(void)tableView:(UITableView*)tableView forMode:(int)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+        forRowAtIndexPath:(NSIndexPath*)indexPath;
+-(QueryTicket*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio;
+-(QueryTicket*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode
+        forFeed:(GDataFeedBase*)feed withPrio:(int)prio;
+@optional
 -(BOOL)tableViewCanBottom:(UITableView*)view;
 -(BOOL)pullToRefreshViewShouldStartLoading:(SSPullToRefreshView*)view;
 -(void)beforeShowModeChange;
