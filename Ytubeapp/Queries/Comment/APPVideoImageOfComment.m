@@ -16,24 +16,29 @@
     GDataEntryYouTubeComment *comment = [dict objectForKey:@"comment"];
     NSURL *entryURL = [NSURL URLWithString:[[[comment authors] objectAtIndex:0] URI]];
 
+    id this = self;
     if ([self service]) {
         self.ticket = [[self service] fetchEntryWithURL:entryURL completionHandler:^(GDataServiceTicket *ticket, GDataEntryBase *entry, NSError *error) {
             if (!error) {
                 GDataEntryYouTubeUserProfile *profile = (GDataEntryYouTubeUserProfile*)entry;
                 [APPContent loadImage:[NSURL URLWithString:[[profile thumbnail] URLString]] callback:^(UIImage *image){
                     if (image) {
-                        [self loadedWithData:image andError:nil];
+                        [this addToDataWithValue:image andKey:@"image"];
+                        [this loaded];
                     } else {
-                        [self loadedWithData:nil andError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"unable to load image from url"] code:1 userInfo:nil]];
+                        [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"unable to load image from url"] code:1 userInfo:nil] andKey:@"error"];
+                        [this loaded];
                     }
                 }];
             } else {
-                [self loadedWithData:nil andError:error];
+                [this addToDataWithValue:error andKey:@"error"];
+                [this loaded];
             }
         }];
 
     } else {
-        [self loadedWithData:nil andError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil]];
+        [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil] andKey:@"error"];
+        [this loaded];
     }
 }
 

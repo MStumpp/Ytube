@@ -8,7 +8,6 @@
 
 #import "APPVideoLikeVideo.h"
 
-
 @implementation APPVideoLikeVideo
 
 -(void)load:(id)data

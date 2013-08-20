@@ -16,6 +16,7 @@
     GDataEntryYouTubePlaylistLink *playlist = [dict objectForKey:@"playlist"];
     NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [[playlist content] sourceURI], @"&max-results=1"]];
 
+    id this = self;
     if ([self service]) {
         self.ticket = [[self service] fetchFeedWithURL:feedURL completionHandler:^(GDataServiceTicket *ticket, GDataFeedBase *feed, NSError *error) {
             if (!error) {
@@ -25,18 +26,22 @@
                 NSArray *thumbnails = [mediaGroup mediaThumbnails];
                 [APPContent loadImage:[NSURL URLWithString:[[thumbnails objectAtIndex:0] URLString]] callback:^(UIImage *image){
                     if (image) {
-                        [self loadedWithData:image andError:nil];
+                        [this addToDataWithValue:image andKey:@"image"];
+                        [this loaded];
                     } else {
-                        [self loadedWithData:nil andError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"unable to load image from url"] code:1 userInfo:nil]];
+                        [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"unable to load image from url"] code:1 userInfo:nil] andKey:@"error"];
+                        [this loaded];
                     }
                 }];
             } else {
-                [self loadedWithData:nil andError:error];
+                [this addToDataWithValue:error andKey:@"error"];
+                [this loaded];
             }
         }];
 
     } else {
-        [self loadedWithData:nil andError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil]];
+        [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil] andKey:@"error"];
+        [this loaded];
     }
 }
 

@@ -173,30 +173,21 @@ static APPUserManager *classInstance = nil;
 
     if ([self canAuthorize]) {
         // here we have to get the queue
-        [[APPDefaultUserProfileQuery instanceWithQueue:nil] process:nil onCompletion:^(int state, id data, NSError *error) {
-            switch (state)
-            {
-                case tLoaded:
-                {
-                    if (!error) {
-                        self.currentUserProfile = (GDataEntryYouTubeUserProfile*) data;
-                        if (callback)
-                            callback(self.currentUserProfile, nil);
+        [[APPDefaultUserProfileQuery instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                execute:nil
+          onStateChange:^(Query *query, id data) {
+              if ([query isFinished]) {
+                  if (![query isCancelled] && ![(APPAbstractQuery*)query hasError]) {
+                      self.currentUserProfile = (GDataEntryYouTubeUserProfile*)[(NSDictionary*)data objectForKey:@"entry"];
+                      if (callback)
+                          callback(self.currentUserProfile, nil);
+                  } else {
+                      if (callback)
+                          callback(nil, [(NSDictionary*)data objectForKey:@"error"]);
+                  }
+              }
+          }];
 
-                    } else {
-                        if (callback)
-                            callback(nil, error);
-                    }
-                    break;
-                }
-
-                default:
-                {
-                      NSLog(@"currentUserProfileWithCallback switch default");
-                      break;
-                }
-            }
-        }];
     } else {
         if (callback)
             callback(nil, nil);
@@ -217,30 +208,20 @@ static APPUserManager *classInstance = nil;
         return;
     }
 
-    [[APPUserImageQuery instanceWithQueue:[[APPGlobals getGlobalForKey:@"querymanager"] getQueueWithIdentifier:@"queue1"]] process:[self getUserProfile] onCompletion:^(int state, id data, NSError *error) {
-        switch (state)
-        {
-            case tLoaded:
-            {
-                if (error) {
-                    if (callback)
-                        callback(nil);
-
-                } else {
-                    self.currentUserImage = data;
-                    if (callback)
-                        callback(self.currentUserImage);
-                }
-                break;
-            }
-
-            default:
-            {
-                NSLog(@"imageForCurrentUserWithCallback switch default");
-                break;
-            }
-        }
-    }];
+    [[APPUserImageQuery instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+            execute:[NSDictionary dictionaryWithObjectsAndKeys:[self getUserProfile], @"user", nil]
+      onStateChange:^(Query *query, id data) {
+          if ([query isFinished]) {
+              if (![query isCancelled] && ![(APPAbstractQuery*)query hasError]) {
+                  self.currentUserImage = (UIImage*)[(NSDictionary*)data objectForKey:@"image"];
+                  if (callback)
+                      callback(self.currentUserImage);
+              } else {
+                  if (callback)
+                      callback(nil);
+              }
+          }
+      }];
 }
 
 // allowed to visit when not signed in

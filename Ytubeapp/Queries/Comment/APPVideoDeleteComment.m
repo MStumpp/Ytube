@@ -8,12 +8,11 @@
 
 #import "APPVideoDeleteComment.h"
 
-
 @implementation APPVideoDeleteComment
 
 -(void)load:(id)data
 {
-    NSDictionary *dict = (NSDictionary*) data;
+    NSDictionary *dict = (NSDictionary*)data;
     GDataEntryYouTubeComment *comment = [dict objectForKey:@"comment"];
     [self deleteEntry:comment];
 }

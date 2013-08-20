@@ -8,7 +8,6 @@
 
 #import "APPPlaylistDelete.h"
 
-
 @implementation APPPlaylistDelete
 
 -(void)load:(id)data

@@ -107,27 +107,19 @@
     self.text = [[self.playlist title] stringValue];
     self.description = [[self.playlist summary] stringValue];
 
-    [[APPPlaylistImageOfPlaylist instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:self.playlist, @"playlist", nil] onCompletion:^(int state, id data, NSError *error) {
-        switch (state)
-        {
-            case tLoaded:
-            {
-                if (data && !error) {
-                    UIImage *image = (UIImage*)data;
-                    if (image)
-                        self.textPic = image;
-                } else {
-                    NSLog(@"APPPlaylistImageOfPlaylist: error");
-                }
-                break;
-            }
-            default:
-            {
-                NSLog(@"APPPlaylistImageOfPlaylist: default");
-                break;
-            }
-        }
-    }];
+    [[APPPlaylistImageOfPlaylist instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+            execute:[NSDictionary dictionaryWithObjectsAndKeys:self.playlist, @"playlist", nil]
+      onStateChange:^(Query *query, id data) {
+          if ([query isFinished]) {
+              if (![query isCancelled] && ![(APPAbstractQuery*)query hasError]) {
+                  UIImage *image = (UIImage*)[(NSDictionary*)data objectForKey:@"image"];
+                  if (image)
+                      self.textPic = image;
+              } else {
+                  NSLog(@"APPPlaylistImageOfPlaylist: error");
+              }
+          }
+      }];
 }
 
 @end

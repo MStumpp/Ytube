@@ -244,45 +244,31 @@
 
     // sub view set up
 
-    [[APPVideoIsFavorite instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil] onCompletion:^(int state, id data, NSError *error) {
-        switch (state)
-        {
-            case tLoaded:
-            {
-                if (data && !error) {
+    [[APPVideoIsFavorite instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+            execute:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
+      onStateChange:^(Query *query, id data) {
+          if ([query isFinished]) {
+              if (![query isCancelled] && ![(APPAbstractQuery*)query hasError]) {
+                  if([(NSDictionary*)data objectForKey:@"favorite"])
                     [self.favoritesButton setSelected:YES];
-                } else {
-                    NSLog(@"APPVideoIsFavorite: error");
-                }
-                break;
-            }
-            default:
-            {
-                NSLog(@"APPVideoIsFavorite: default");
-                break;
-            }
-        }
-    }];
+              } else {
+                  NSLog(@"APPVideoIsFavorite: error");
+              }
+          }
+      }];
 
-    [[APPVideoIsWatchLater instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil] onCompletion:^(int state, id data, NSError *error) {
-        switch (state)
-        {
-            case tLoaded:
-            {
-                if (data && !error) {
-                    [self.watchLaterButton setSelected:YES];
-                } else {
-                    NSLog(@"APPVideoIsWatchLater: error");
-                }
-                break;
-            }
-            default:
-            {
-                NSLog(@"APPVideoIsWatchLater: default");
-                break;
-            }
-        }
-    }];
+    [[APPVideoIsWatchLater instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+            execute:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
+      onStateChange:^(Query *query, id data) {
+          if ([query isFinished]) {
+              if (![query isCancelled] && ![(APPAbstractQuery*)query hasError]) {
+                  if([(NSDictionary*)data objectForKey:@"playlist"])
+                      [self.watchLaterButton setSelected:YES];
+              } else {
+                  NSLog(@"APPVideoIsWatchLater: error");
+              }
+          }
+      }];
 }
 
 -(void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event

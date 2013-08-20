@@ -15,15 +15,20 @@
     NSDictionary *dict = (NSDictionary*) data;
     GDataEntryYouTubeVideo *video = [dict objectForKey:@"video"];
 
+    id this = self;
     if ([video isMemberOfClass:[GDataEntryYouTubePlaylist class]]) {
         if ([self service]) {
             self.ticket = [[self service] deleteEntry:video completionHandler:^(GDataServiceTicket *ticket, GDataEntryBase *entry, NSError *error) {
-                [self loadedWithData:entry andError:error];
+                [this addToDataWithValue:entry andKey:@"entry"];
+                [this addToDataWithValue:error andKey:@"error"];
+                [this loaded];
             }];
 
         } else {
-            [self loadedWithData:nil andError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil]];
+            [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil] andKey:@"error"];
+            [this loaded];
         }
+
     } else {
         GDataYouTubeMediaGroup *mediaGroupVideo = [video mediaGroup];
         NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/users/default/watch_later?v=2"]];
@@ -37,21 +42,29 @@
                         if ([[mediaGroupVideo videoID] isEqualToString:[mediaGroupEntry videoID]]) {
                             if ([self service]) {
                                 self.ticket = [[self service] deleteEntry:playlist completionHandler:^(GDataServiceTicket *ticket, GDataEntryBase *entry, NSError *error) {
-                                    [self loadedWithData:entry andError:error];
+                                    [this addToDataWithValue:entry andKey:@"entry"];
+                                    [this addToDataWithValue:error andKey:@"error"];
+                                    [this loaded];
                                 }];
                             } else {
-                                [self loadedWithData:nil andError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil]];
+                                [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil] andKey:@"error"];
+                                [this loaded];
+
                             }
                             return;
                         }
                     }
-                    [self loadedWithData:nil andError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"provided video is not a watch later video"] code:1 userInfo:nil]];
+                    [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"provided video is not a watch later video"] code:1 userInfo:nil] andKey:@"error"];
+                    [this loaded];
+
                 } else {
-                    [self loadedWithData:nil andError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"unable to fetch favorites"] code:1 userInfo:nil]];
+                    [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"unable to fetch favorites"] code:1 userInfo:nil] andKey:@"error"];
+                    [this loaded];
                 }
             }];
         } else {
-            [self loadedWithData:nil andError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil]];
+            [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil] andKey:@"error"];
+            [this loaded];
         }
     }
 }

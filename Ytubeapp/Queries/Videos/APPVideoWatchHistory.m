@@ -8,7 +8,6 @@
 
 #import "APPVideoWatchHistory.h"
 
-
 @implementation APPVideoWatchHistory
 
 -(void)load:(id)data

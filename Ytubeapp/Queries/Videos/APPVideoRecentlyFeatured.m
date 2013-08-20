@@ -8,7 +8,6 @@
 
 #import "APPVideoRecentlyFeatured.h"
 
-
 @implementation APPVideoRecentlyFeatured
 
 -(void)load:(id)data

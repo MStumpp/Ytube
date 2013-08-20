@@ -152,27 +152,19 @@
 
     self.date = [[comment updatedDate] date];
 
-    [[APPVideoImageOfComment instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:self.comment, @"comment", nil] onCompletion:^(int state, id data, NSError *error) {
-        switch (state)
-        {
-            case tLoaded:
-            {
-                if (data && !error) {
-                    UIImage *image = (UIImage*)data;
-                    if (image)
-                        self.profilePic = image;
-                } else {
-                    NSLog(@"APPVideoImageOfComment: error");
-                }
-                break;
-            }
-            default:
-            {
-                NSLog(@"APPVideoImageOfComment: default");
-                break;
-            }
-        }
-    }];
+    [[APPVideoImageOfComment instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+            execute:[NSDictionary dictionaryWithObjectsAndKeys:self.comment, @"comment", nil]
+      onStateChange:^(Query *query, id data) {
+          if ([query isFinished]) {
+              if (![query isCancelled] && ![(APPAbstractQuery*)query hasError]) {
+                  UIImage *image = (UIImage*)[(NSDictionary*)data objectForKey:@"image"];
+                  if (image)
+                      self.profilePic = image;
+              } else {
+                  NSLog(@"APPVideoImageOfComment: error");
+              }
+          }
+      }];
 }
 
 @end

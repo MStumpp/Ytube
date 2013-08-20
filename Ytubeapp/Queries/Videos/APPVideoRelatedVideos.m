@@ -8,7 +8,6 @@
 
 #import "APPVideoRelatedVideos.h"
 
-
 @implementation APPVideoRelatedVideos
 
 -(void)load:(id)data

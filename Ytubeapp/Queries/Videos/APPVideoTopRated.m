@@ -8,7 +8,6 @@
 
 #import "APPVideoTopRated.h"
 
-
 @implementation APPVideoTopRated
 
 -(void)load:(id)data

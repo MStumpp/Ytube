@@ -14,4 +14,6 @@
 @interface APPAbstractQuery : Query
 @property (strong, nonatomic) GDataServiceTicket *ticket;
 -(GDataServiceGoogleYouTube*)service;
+-(void)addToDataWithValue:(NSString*)value andKey:(NSString*)key;
+-(BOOL)hasError;
 @end

@@ -44,9 +44,7 @@
 
     // set up QueryManager and Queues
     QueryManager *manager = [QueryManager instance];
-    [manager setNumberOfMaxConcurrentConnections:10];
-    [manager initQueueWithPrio:1 andIdentifier:@"queue1"];
-    [manager initQueueWithPrio:2 andIdentifier:@"queue2"];
+    [manager initQueueWithName:@"queue"];
     [APPGlobals setGlobalObject:manager forKey:@"queuemanager"];
 
     // set up other stuff in globals

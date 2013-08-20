@@ -8,7 +8,6 @@
 
 #import "APPVideoTopFavorites.h"
 
-
 @implementation APPVideoTopFavorites
 
 -(void)load:(id)data

@@ -8,34 +8,35 @@
 
 #import "APPAbstractQuery.h"
 #import "GTMOAuth2Authentication.h"
+#import "APPGlobals.h"
 
 @implementation APPAbstractQuery
 
 -(GDataServiceGoogleYouTube*)service
 {
-    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
-    if (standardUserDefaults) {
-        GDataServiceGoogleYouTube *ytService = (GDataServiceGoogleYouTube*)[standardUserDefaults objectForKey:@"service"];
-        if ([[ytService authorizer] canAuthorize])
+    GDataServiceGoogleYouTube *ytService = (GDataServiceGoogleYouTube*)[APPGlobals getGlobalForKey:@"service"];
+    if (ytService && [[ytService authorizer] canAuthorize])
             return ytService;
-    }
     return nil;
 }
 
--(void)pause:(id)data
-
+-(void)cancelled:(id)data
 {
     if (self.ticket)
         [self.ticket cancelTicket];
-    [self pausedWithData:nil andError:nil];
 }
 
--(void)cancel:(id)data
-
+-(void)addToDataWithValue:(NSString*)value andKey:(NSString*)key
 {
-    if (self.ticket)
-        [self.ticket cancelTicket];
-    [self cancelledWithData:nil andError:nil];
+    NSMutableDictionary *dict = (NSMutableDictionary*)[self data];
+    [dict setValue:value forKey:key];
+}
+
+-(BOOL)hasError
+{
+    if ([(NSDictionary*)self.data objectForKey:@"error"])
+        return true;
+    return false;
 }
 
 @end

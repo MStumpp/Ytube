@@ -12,13 +12,17 @@
 
 -(void)fetchEntryByInsertingEntry:(GDataEntryBase*)entry andURL:(NSURL*)url;
 {
+    id this = self;
     if ([self service]) {
         self.ticket = [[self service] fetchEntryByInsertingEntry:entry forFeedURL:url completionHandler:^(GDataServiceTicket *ticket, GDataEntryBase *entry, NSError *error) {
-            [self loadedWithData:entry andError:error];
+            [this addToDataWithValue:entry andKey:@"entry"];
+            [this addToDataWithValue:error andKey:@"error"];
+            [this loaded];
         }];
 
     } else {
-        [self loadedWithData:nil andError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil]];
+        [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil] andKey:@"error"];
+        [this loaded];
     }
 }
 

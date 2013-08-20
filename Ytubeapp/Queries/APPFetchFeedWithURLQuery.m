@@ -12,13 +12,17 @@
 
 -(void)fetchFeedWithURL:(NSURL*)feedURL
 {
+    id this = self;
     if ([self service]) {
         self.ticket = [[self service] fetchFeedWithURL:feedURL completionHandler:^(GDataServiceTicket *ticket, GDataFeedBase *feed, NSError *error) {
-            [self loadedWithData:feed andError:error];
+            [this addToDataWithValue:feed andKey:@"feed"];
+            [this addToDataWithValue:error andKey:@"error"];
+            [this loaded];
         }];
 
     } else {
-        [self loadedWithData:nil andError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil]];
+        [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil] andKey:@"error"];
+        [this loaded];
     }
 }
 

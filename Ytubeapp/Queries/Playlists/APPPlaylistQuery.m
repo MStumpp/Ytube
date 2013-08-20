@@ -8,14 +8,12 @@
 
 #import "APPPlaylistQuery.h"
 
-
 @implementation APPPlaylistQuery
 
 -(void)load:(id)data
 {
     NSDictionary *dict = (NSDictionary*) data;
     NSString *query = [dict objectForKey:@"query"];
-
     NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/playlists/snippets?q=%@", query]];
     [self fetchFeedWithURL:feedURL];
 }

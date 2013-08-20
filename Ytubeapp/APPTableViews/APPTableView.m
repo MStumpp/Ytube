@@ -8,9 +8,9 @@
 
 #import "APPTableView.h"
 #import "MBProgressHUD.h"
-#import "QueryTicket.h"
+#import "Query.h"
 
-#define tDefaultShowMode 10
+#define tDefaultShowMode -1
 
 @interface APPTableView()
 @property (nonatomic, strong) SSPullToRefreshView *pullToRefreshView;
@@ -19,8 +19,8 @@
 @property (nonatomic, strong) UITableViewMaskView *tableViewMaskView;
 @property (nonatomic, strong) NSIndexPath *openCell;
 @property int showMode;
-@property (strong, nonatomic) NSMutableDictionary *queryTicketsReload;
-@property (strong, nonatomic) NSMutableDictionary *queryTicketsLoadMore;
+@property (strong, nonatomic) NSMutableDictionary *queriesReload;
+@property (strong, nonatomic) NSMutableDictionary *queriesLoadMore;
 @property (strong, nonatomic) NSMutableDictionary *feeds;
 @property (strong, nonatomic) NSMutableDictionary *customFeeds;
 @end
@@ -49,8 +49,8 @@
         [MBProgressHUD showHUDAddedTo:progressView animated:YES];
         [self.tableViewMaskView setCustomMaskView:progressView];
 
-        self.queryTicketsReload = [NSMutableDictionary alloc];
-        self.queryTicketsLoadMore = [NSMutableDictionary alloc];
+        self.queriesReload = [NSMutableDictionary alloc];
+        self.queriesLoadMore = [NSMutableDictionary alloc];
         self.feeds = [NSMutableDictionary alloc];
         self.customFeeds = [NSMutableDictionary alloc];
         [self addShowMode:tDefaultShowMode];
@@ -228,19 +228,15 @@
     GDataFeedBase *feed = [args objectForKey:tFeed];
     NSError *error = [args objectForKey:tError];
 
-    // if there is
+    // if there is no error
 
     if (!error) {
 
         // replace current feed for mode
         [self currentFeed:feed forShowMode:mode];
 
-        // init custom feed array, either initialize fresh array or clear
-        if (![self currentCustomFeedForShowMode:mode]) {
-            [self currentCustomFeed:[NSMutableArray array] forShowMode:mode];
-        } else {
-            [[self currentCustomFeedForShowMode:mode] removeAllObjects];
-        }
+        // clear custom feed array
+        [[self currentCustomFeedForShowMode:mode] removeAllObjects];
 
         // finally, add feed entries to custom feed
         [[self currentCustomFeedForShowMode:mode] addObjectsFromArray:[feed entries]];
@@ -313,18 +309,18 @@
 
 -(BOOL)addShowMode:(int)mode
 {
-    if (!mode || mode == tDefaultShowMode || [self hasShowMode:mode])
+    if (!mode || [self hasShowMode:mode])
         return FALSE;
-    [self.queryTicketsReload addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
-    [self.queryTicketsLoadMore addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
+    [self.queriesReload addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
+    [self.queriesLoadMore addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
     [self.feeds addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
     [self.customFeeds addEntriesFromDictionary:[NSDictionary dictionaryWithObject:[NSMutableArray array] forKey:[NSNumber numberWithInt:mode]]];
 
     // remove tDefaultShowMode in dicts once one custom show mode is added
-    [self.queryTicketsReload removeObjectForKey:[NSNumber numberWithInt:tDefaultShowMode]];
-    [self.queryTicketsLoadMore removeObjectForKey:[NSNumber numberWithInt:tDefaultShowMode]];
-    [self.feeds removeObjectForKey:[NSNumber numberWithInt:tDefaultShowMode]];
-    [self.customFeeds removeObjectForKey:[NSNumber numberWithInt:tDefaultShowMode]];
+//    [self.queryTicketsReload removeObjectForKey:[NSNumber numberWithInt:tDefaultShowMode]];
+//    [self.queryTicketsLoadMore removeObjectForKey:[NSNumber numberWithInt:tDefaultShowMode]];
+//    [self.feeds removeObjectForKey:[NSNumber numberWithInt:tDefaultShowMode]];
+//    [self.customFeeds removeObjectForKey:[NSNumber numberWithInt:tDefaultShowMode]];
 
     return TRUE;
 }
@@ -350,7 +346,7 @@
     if ([self._delegate respondsToSelector:@selector(afterShowModeChange)])
         [self._delegate afterShowModeChange];
 
-    QueryTicket *ticket = [self queryTicketForMode:mode forType:self.queryTicketsReload];
+    QueryTicket *ticket = [self queryForMode:mode forType:self.queriesReload];
     // if there is no ticket, load the data for the first time
     if (!ticket)
         [self reloadDataForShowMode:mode withPrio:tVisibleload];
@@ -369,7 +365,7 @@
     // reset all show modes
     [self resetAllShowModesAndReload];
     // load initial data for each show mode
-    NSArray* keys = [self.queryTicketsReload allKeys];
+    NSArray* keys = [self.queriesReload allKeys];
     for(NSNumber* key in keys)
         [self reloadDataForShowMode:[key intValue] withPrio:tVisibleload];
 }
@@ -391,7 +387,7 @@
     // reload the data
     QueryTicket *ticket = [self._delegate tableView:self reloadDataConcreteForShowMode:mode
                                            withPrio:prio];
-    [self setQueryTicket:ticket forMode:mode forType:self.queryTicketsReload];
+    [self setQuery:ticket forMode:mode forType:self.queriesReload];
 }
 
 -(void)loadMoreDataForShowMode:(int)mode withPrio:(int)prio
@@ -401,26 +397,24 @@
         return;
 
     // eventually cancel currently running load more request
-    if ([self queryTicketForMode:mode forType:self.queryTicketsLoadMore])
-        [[self queryTicketForMode:mode forType:self.queryTicketsLoadMore] cancel];
+    if ([self queryForMode:mode forType:self.queriesLoadMore])
+        [[self queryForMode:mode forType:self.queriesLoadMore] cancel];
 
     // load more data
     QueryTicket *ticket = [self._delegate tableView:self loadMoreDataConcreteForShowMode:mode
                                             forFeed:[self currentFeedForShowMode:mode] withPrio:prio];
-    [self setQueryTicket:ticket forMode:mode forType:self.queryTicketsLoadMore];
+    [self setQuery:ticket forMode:mode forType:self.queriesLoadMore];
 }
 
 -(BOOL)resetShowMode:(int)mode
 {
-    if ([self hasShowMode:mode])
-        return FALSE;
-    if ([self queryTicketForMode:mode forType:self.queryTicketsReload])
-        [[self queryTicketForMode:mode forType:self.queryTicketsReload] cancel];
-    [self.queryTicketsReload setObject:nil forKey:[NSNumber numberWithInt:mode]];
+    if ([self queryForMode:mode forType:self.queriesReload])
+        [[self queryForMode:mode forType:self.queriesReload] cancel];
+    [self.queriesReload setObject:nil forKey:[NSNumber numberWithInt:mode]];
 
-    if ([self queryTicketForMode:mode forType:self.queryTicketsLoadMore])
-        [[self queryTicketForMode:mode forType:self.queryTicketsLoadMore] cancel];
-    [self.queryTicketsLoadMore setObject:nil forKey:[NSNumber numberWithInt:mode]];
+    if ([self queryForMode:mode forType:self.queriesLoadMore])
+        [[self queryForMode:mode forType:self.queriesLoadMore] cancel];
+    [self.queriesLoadMore setObject:nil forKey:[NSNumber numberWithInt:mode]];
 
     [self.feeds setObject:nil forKey:[NSNumber numberWithInt:mode]];
     [[self currentCustomFeedForShowMode:mode] removeAllObjects];
@@ -428,29 +422,29 @@
 
 -(void)resetAllShowModes
 {
-    NSArray* keys = [self.queryTicketsReload allKeys];
+    NSArray* keys = [self.queriesReload allKeys];
     for(NSNumber* key in keys)
         [self resetShowMode:[key intValue]];
 }
 
 -(void)resetAllShowModesAndReload
 {
-    NSArray* keys = [self.queryTicketsReload allKeys];
+    NSArray* keys = [self.queriesReload allKeys];
     for(NSNumber* key in keys)
         [self resetShowMode:[key intValue]];
     [self reloadData];
 }
 
--(void)setQueryTicket:(QueryTicket*)ticket forMode:(int)mode forType:(NSMutableDictionary*)type
+-(void)setQuery:(Query*)ticket forMode:(int)mode forType:(NSMutableDictionary*)type
 {
     if (ticket && mode && type)
         [type setObject:ticket forKey:[NSNumber numberWithInt:mode]];
 }
 
--(QueryTicket*)queryTicketForMode:(int)mode forType:(NSMutableDictionary*)type
+-(Query*)queryForMode:(int)mode forType:(NSMutableDictionary*)type
 {
     if (mode)
-        return (QueryTicket*)[type objectForKey:[NSNumber numberWithInt:mode]];
+        return (Query*)[type objectForKey:[NSNumber numberWithInt:mode]];
 }
 
 -(GDataFeedBase*)currentFeedForShowMode:(int)mode
@@ -474,7 +468,7 @@
 
 -(BOOL)hasShowMode:(int)mode
 {
-    NSArray* keys = [self.queryTicketsReload allKeys];
+    NSArray* keys = [self.queriesReload allKeys];
     for(NSNumber* key in keys)
         if ([key intValue] == mode) return TRUE;
     return FALSE;

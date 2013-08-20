@@ -8,7 +8,6 @@
 
 #import "APPVideoQuery.h"
 
-
 @implementation APPVideoQuery
 
 -(void)load:(id)data
