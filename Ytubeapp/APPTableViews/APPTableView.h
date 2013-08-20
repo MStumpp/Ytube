@@ -28,7 +28,7 @@
 -(void)toShowMode:(int)mode;
 -(int)showMode;
 -(void)reloadDataAll;
--(NSMutableArray*)currentCustomFeedForShowMode:(int)mode;
+-(NSMutableArray*)currentCustomFeed;
 @end
 
 @protocol APPTableViewProcessResponse

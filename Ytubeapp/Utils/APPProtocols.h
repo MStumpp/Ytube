@@ -66,7 +66,7 @@
 -(void)doDefaultMode:(void (^)(void))callback;
 @end
 
-@protocol Base <UserProfileChangeDelegate, APPSliderViewControllerDelegate, State>
+@protocol Base <UserProfileChangeDelegate, APPSliderViewControllerDelegate>
 @end
 
 @protocol VideoDependenceDelegate

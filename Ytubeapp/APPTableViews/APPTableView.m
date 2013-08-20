@@ -370,11 +370,9 @@
         [self reloadDataForShowMode:[key intValue] withPrio:tVisibleload];
 }
 
--(NSMutableArray*)currentCustomFeedForShowMode:(int)mode
+-(NSMutableArray*)currentCustomFeed
 {
-    if (!mode || ![self hasShowMode:mode])
-        [NSException raise:@"show mode is nil or doesn't exists" format:@"show mode is nil or doesn't exists"];
-    return [self currentCustomFeed:nil forShowMode:mode];
+    return [self currentCustomFeedForShowMode:self.showMode];
 }
 
 // private
@@ -457,6 +455,13 @@
     if (feed)
         [self.feeds setObject:feed forKey:[NSNumber numberWithInt:mode]];
     return (GDataFeedBase*)[self.feeds objectForKey:[NSNumber numberWithInt:mode]];
+}
+
+-(NSMutableArray*)currentCustomFeedForShowMode:(int)mode
+{
+    if (!mode || ![self hasShowMode:mode])
+        [NSException raise:@"show mode is nil or doesn't exists" format:@"show mode is nil or doesn't exists"];
+    return [self currentCustomFeed:nil forShowMode:mode];
 }
 
 -(NSMutableArray*)currentCustomFeed:(NSMutableArray*)feed forShowMode:(int)mode

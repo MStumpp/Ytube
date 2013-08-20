@@ -16,7 +16,7 @@
 
 @implementation APPContent
 
-+(NSString*)videoID:(GDataEntryYouTubeVideo *)video
++(NSString*)videoID:(GDataEntryYouTubeVideo*)video
 {
     GDataYouTubeMediaGroup *mediaGroupVideo = [video mediaGroup];
     return [mediaGroupVideo videoID];

@@ -82,12 +82,14 @@
 
 -(void)willHide:(void (^)(void))callback
 {
-    callback();
+    if (callback)
+        callback();
 }
 
 -(void)didShow:(void (^)(void))callback
 {
-    callback();
+    if (callback)
+        callback();
 }
 
 -(void)processEvent:(NSNotification*)notification

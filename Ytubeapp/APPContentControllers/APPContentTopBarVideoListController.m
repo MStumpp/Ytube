@@ -25,7 +25,7 @@
         [[self configureDefaultState] onViewState:tDidAppearViewState do:^{
             // reloads table view content
             [[self tableView] reloadDataAll];
-            // shows sub topbar
+            // shows sub topbar if was visible
             if (self.subtopbarWasVisible)
                 [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
         }];

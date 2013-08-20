@@ -12,7 +12,6 @@
 #import "GDataYouTube.h"
 #import "APPTableCell.h"
 #import "UITableViewHeaderFormView.h"
-#import "QueryTicket.h"
 #import "APPQueryHelper.h"
 #import "APPGlobals.h"
 #import "APPUserManager.h"

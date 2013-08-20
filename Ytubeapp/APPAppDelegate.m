@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Matthias Stumpp. All rights reserved.
 //
 
+#import "APPProtocols.h"
 #import "APPAppDelegate.h"
 #import "APPIndexViewController.h"
 #import "APPUserManager.h"
@@ -44,7 +45,7 @@
 
     // set up QueryManager and Queues
     QueryManager *manager = [QueryManager instance];
-    [manager initQueueWithName:@"queue"];
+    [manager createQueueWithName:@"queue"];
     [APPGlobals setGlobalObject:manager forKey:@"queuemanager"];
 
     // set up other stuff in globals
