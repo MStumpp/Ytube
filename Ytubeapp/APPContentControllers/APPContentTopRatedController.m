@@ -8,7 +8,6 @@
 
 #import "APPContentTopRatedController.h"
 
-
 @implementation APPContentTopRatedController
 
 - (id)init
@@ -17,18 +16,17 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_top_rated"];
 
-        [self.tableView addShowMode:tAll];
+        [self.tableView addDefaultShowMode:tAll];
         [self.tableView addShowMode:tToday];
         [self.tableView addShowMode:tWeek];
         [self.tableView addShowMode:tMonth];
 
-        id this = self;
-        [[[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tDidInit do:^() {
-        }] onViewState:tDidLoad do:^() {
-            [this toShowMode:tToday];
+        [[self configureDefaultState] onViewState:tDidLoadViewState do:^{
+            // reloads table view content
+            [self.tableView clearViewAndReloadAll];
+            [self.tableView toDefaultShowMode];
         }];
-
-        [self toInitialState];
+        [self toDefaultStateForce];
     }
     return self;
 }
@@ -82,14 +80,14 @@
             nil];
 }
 
--(QueryTicket*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio
+-(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p
 {
-    return [APPQueryHelper topRatedVideosOnShowMode:mode withPrio:prio delegate:tableView];
+    return [APPQueryHelper topRatedVideosOnShowMode:mode withPrio:p delegate:tableView];
 }
 
--(QueryTicket*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)prio
+-(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)p
 {
-    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:prio delegate:tableView];
+    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:p delegate:tableView];
 }
 
 @end

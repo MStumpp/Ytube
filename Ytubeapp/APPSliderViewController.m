@@ -7,8 +7,6 @@
 //
 
 #import "APPSliderViewController.h"
-
-
 #import "APPUserManager.h"
 #import "MBProgressHUD.h"
 #import "APPContentMostViewedVideoController.h"
@@ -406,8 +404,8 @@
                         }];
                     }];
                 }];
-                break;
             }];
+            break;
         }
 
         default:

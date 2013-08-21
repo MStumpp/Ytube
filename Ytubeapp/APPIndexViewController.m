@@ -63,7 +63,6 @@
     // right button
     // TODO: Examplarily implement reactive pattern for pervasive here
     self.rightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 32, 31)];
-    [[APPUserManager classInstance] registerUserProfileObserverWithDelegate:self];
     if ([[APPUserManager classInstance] isUserSignedIn])
         [self setRightButtonForUserSignedIn];
     else
@@ -92,6 +91,9 @@
     self.mainController.navigationBar.hidden = YES;
     self.mainController.delegate = self;
     [self.view addSubview:self.mainController.view];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
 }
 
 -(void)topbarButtonPress:(UIButton*)sender
@@ -230,14 +232,12 @@
         [self.spinner stopAnimating];
 }
 
-// method of UserProfileChangeDelegate
--(void)userSignedIn:(GDataEntryYouTubeUserProfile*)user andAuth:(GTMOAuth2Authentication*)auth
+-(void)userSignedIn:(NSNotification*)notification
 {
     [self setRightButtonForUserSignedIn];
 }
 
-// method of UserProfileChangeDelegate
--(void)userSignedOut
+-(void)userSignedOut:(NSNotification*)notification
 {
     [self setRightButtonForUserSignedOut];
 }

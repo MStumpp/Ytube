@@ -16,9 +16,6 @@
 @property (strong, nonatomic) GDataEntryYouTubeUserProfile *currentUserProfile;
 @property (strong, nonatomic) UIImage *currentUserImage;
 @property (strong, nonatomic) GTMOAuth2Authentication *auth;
-
-// userProfile observer
-@property (strong, nonatomic) NSMutableArray<UserProfileChangeDelegate> *userProfileObserver;
 @end
 
 @implementation APPUserManager
@@ -31,7 +28,6 @@ static APPUserManager *classInstance = nil;
         classInstance = [[super allocWithZone:NULL] init];
         classInstance.currentUserProfile = nil;
         classInstance.currentUserImage = nil;
-        classInstance.userProfileObserver = [NSMutableArray array];
     }
     return classInstance;
 }
@@ -86,11 +82,7 @@ static APPUserManager *classInstance = nil;
                 if (user && !error) {
 
                     // inform observers
-                    NSEnumerator *e = [self.userProfileObserver objectEnumerator];
-                    id object;
-                    while (object = [e nextObject]) {
-                        [object userSignedIn:user andAuth:self.auth];
-                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedIn object:[NSMutableDictionary dictionaryWithObjectsAndKeys:user, @"user", self.auth, @"auth", nil]];
 
                     if (callback)
                         callback(user, nil);
@@ -126,10 +118,7 @@ static APPUserManager *classInstance = nil;
         self.auth = nil;
 
         // inform observers
-        NSEnumerator *e = [self.userProfileObserver objectEnumerator];
-        id object;
-        while (object = [e nextObject])
-            [object userSignedOut];
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedOut object:nil];
 
         if (callback)
             callback(TRUE);
@@ -233,18 +222,6 @@ static APPUserManager *classInstance = nil;
                     [NSNumber numberWithInt:tMostPopular],
                     [NSNumber numberWithInt:ttopRated],
                     [NSNumber numberWithInt:ttopFavorites], nil] containsObject:[NSNumber numberWithInt:context]];
-}
-
--(void)registerUserProfileObserverWithDelegate:(id<UserProfileChangeDelegate>) observer
-{
-    if (![self.userProfileObserver containsObject:observer])
-        [self.userProfileObserver addObject:observer];
-}
-
--(void)unregisterUserProfileObserverWithDelegate:(id<UserProfileChangeDelegate>) observer
-{
-    if ([self.userProfileObserver containsObject:observer])
-        [self.userProfileObserver removeObject:observer];
 }
 
 @end

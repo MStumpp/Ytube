@@ -15,33 +15,33 @@
     self = [super init];
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_history"];
+
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventVideoWatched object:nil];
 
-        id this = self;
-        [[[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tDidInit do:^() {
-        }] onViewState:tDidLoad do:^() {
-            [this toShowMode:tDefault];
+        [[self configureDefaultState] onViewState:tDidLoadViewState do:^{
+            // reloads table view content
+            [self.tableView clearViewAndReloadAll];
+            [self.tableView toDefaultShowMode];
         }];
-
-        [self toInitialState];
+        [self toDefaultStateForce];
     }
     return self;
 }
 
--(QueryTicket*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio
+-(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p
 {
-    return [APPQueryHelper historyVideosOnShowMode:mode withPrio:prio delegate:tableView];
+    return [APPQueryHelper historyVideosOnShowMode:mode withPrio:p delegate:tableView];
 }
 
--(QueryTicket*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)prio
+-(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)p
 {
-    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:prio delegate:tableView];
+    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:p delegate:tableView];
 }
 
 -(void)processEvent:(NSNotification*)notification
 {
     if (![(NSDictionary*)[notification object] objectForKey:@"error"])
-        [self.tableView reloadShowMode];
+        [self.tableView clearViewAndReloadAll];
 }
 
 @end

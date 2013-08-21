@@ -10,21 +10,15 @@
 #import "APPAppDelegate.h"
 #import "APPIndexViewController.h"
 #import "APPUserManager.h"
-#import "QueryManager.h"
 #import "APPGlobals.h"
-
-@interface APPAppDelegate()
-@property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) GDataServiceGoogleYouTube *service;
-@end
 
 @implementation APPAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = [[APPIndexViewController alloc] init];
-    self.window.backgroundColor = [UIColor whiteColor];
+    UIWindow *window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    window.rootViewController = [[APPIndexViewController alloc] init];
+    window.backgroundColor = [UIColor whiteColor];
 
     NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
     NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
@@ -34,14 +28,13 @@
                                                                                       clientSecret:[settings objectForKey:@"kMyClientSecret"]];
 
     // set up the service instance
-    self.service = [[GDataServiceGoogleYouTube alloc] init];
-    [self.service setYouTubeDeveloperKey:[settings objectForKey:@"key"]];
-    [self.service setUserAgent:@"AppWhirl-UserApp-1.0"];
-    [self.service setShouldCacheDatedData:TRUE];
+    GDataServiceGoogleYouTube *service = [[GDataServiceGoogleYouTube alloc] init];
+    [service setYouTubeDeveloperKey:[settings objectForKey:@"key"]];
+    [service setUserAgent:@"AppWhirl-UserApp-1.0"];
+    [service setShouldCacheDatedData:TRUE];
     //[self.service setServiceShouldFollowNextLinks:FALSE];
-    [self.service setAuthorizer:auth];
-    [[APPUserManager classInstance] registerUserProfileObserverWithDelegate:self];
-    [APPGlobals setGlobalObject:self.service forKey:@"service"];
+    [service setAuthorizer:auth];
+    [APPGlobals setGlobalObject:service forKey:@"service"];
 
     // set up QueryManager and Queues
     QueryManager *manager = [QueryManager instance];
@@ -52,6 +45,9 @@
     [APPGlobals setGlobalObject:[UIImage imageNamed:@"silhouette"] forKey:@"silhouetteImage"];
     [APPGlobals setGlobalObject:[UIImage imageNamed:@"no_preview"] forKey:@"noPreviewImage"];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
+
     // init APPUserManager with retrieved auth object, no matter if it can or cannot authorize
     dispatch_semaphore_t sema = dispatch_semaphore_create(1);
     [[APPUserManager classInstance] initWithAuth:auth onCompletion:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
@@ -59,7 +55,7 @@
     }];
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
 
-    [self.window makeKeyAndVisible];
+    [window makeKeyAndVisible];
 
     return YES;
 }
@@ -91,14 +87,18 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
--(void)userSignedIn:(GDataEntryYouTubeUserProfile*)user andAuth:(GTMOAuth2Authentication*)auth
+-(void)userSignedIn:(NSNotification*)notification
 {
-    [self.service setAuthorizer:auth];
+    GDataServiceGoogleYouTube *service = [APPGlobals getGlobalForKey:@"service"];
+    if (service && [(NSDictionary*)[notification object] objectForKey:@"auth"])
+        [service setAuthorizer:[(NSDictionary*)[notification object] objectForKey:@"auth"]];
 }
 
--(void)userSignedOut
+-(void)userSignedOut:(NSNotification*)notification
 {
-    [self.service setAuthorizer:nil];
+    GDataServiceGoogleYouTube *service = [APPGlobals getGlobalForKey:@"service"];
+    if (service)
+        [service setAuthorizer:nil];
 }
 
 @end

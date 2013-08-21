@@ -50,14 +50,11 @@
 @class UITableViewHeaderFormView;
 
 @protocol SelectDelegate;
+@class GDataEntryYouTubeVideo;
+@class GDataEntryYouTubePlaylistLink;
+@class GDataEntryBase;
 
 @interface APPProtocols
-@end
-
-@protocol UserProfileChangeDelegate
-@optional
--(void)userSignedIn:(GDataEntryYouTubeUserProfile*)user andAuth:(GTMOAuth2Authentication*)auth;
--(void)userSignedOut;
 @end
 
 @protocol APPSliderViewControllerDelegate
@@ -66,19 +63,19 @@
 -(void)doDefaultMode:(void (^)(void))callback;
 @end
 
-@protocol Base <UserProfileChangeDelegate, APPSliderViewControllerDelegate>
+@protocol Base <APPSliderViewControllerDelegate>
 @end
 
 @protocol VideoDependenceDelegate
 @required
 @property (nonatomic, retain) GDataEntryYouTubeVideo *video;
--(id)initWithVideo:(GDataEntryYouTubeVideo *)video;
+-(id)initWithVideo:(GDataEntryYouTubeVideo*)video;
 @end
 
 @protocol PlaylistDependenceDelegate
 @required
 @property (nonatomic, retain) GDataEntryYouTubePlaylistLink *playlist;
--(id)initWithPlaylist:(GDataEntryYouTubePlaylistLink *)playlist;
+-(id)initWithPlaylist:(GDataEntryYouTubePlaylistLink*)playlist;
 @end
 
 typedef void(^APPSelectDelegateCallback)(GDataEntryBase *entryBase);

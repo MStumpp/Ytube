@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "APPTableCell.h"
+#import "Query.h"
 
 #define tPreload 01
 #define tVisibleload 02
@@ -23,12 +24,16 @@
 
 @interface APPTableView : UITableView <UITableViewDataSource, UITableViewDelegate, UITableViewAtBottomViewDelegate,
         SSPullToRefreshViewDelegate, UITableViewSwipeViewDelegate, UITableViewMaskViewDelegate, APPTableViewProcessResponse>
-@property id<APPTableViewDelegate> _delegate;
+@property id<APPTableViewDelegate> _del;
 -(BOOL)addShowMode:(int)mode;
+-(BOOL)addDefaultShowMode:(int)mode;
 -(void)toShowMode:(int)mode;
+-(void)toDefaultShowMode;
 -(int)showMode;
--(void)reloadDataAll;
+-(void)clearView;
+-(void)clearViewAndReloadAll;
 -(NSMutableArray*)currentCustomFeed;
+-(NSMutableArray*)currentCustomFeedForShowMode:(int)mode;
 @end
 
 @protocol APPTableViewProcessResponse
@@ -45,13 +50,13 @@
 -(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath;
 -(void)tableView:(UITableView*)tableView forMode:(int)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
         forRowAtIndexPath:(NSIndexPath*)indexPath;
--(QueryTicket*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio;
--(QueryTicket*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode
+-(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio;
+-(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode
         forFeed:(GDataFeedBase*)feed withPrio:(int)prio;
-@optional
 -(BOOL)tableViewCanBottom:(UITableView*)view;
 -(BOOL)pullToRefreshViewShouldStartLoading:(SSPullToRefreshView*)view;
 -(void)beforeShowModeChange;
 -(void)afterShowModeChange;
+@optional
 -(void)pushViewController:(UIViewController*)controller;
 @end

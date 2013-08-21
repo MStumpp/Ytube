@@ -14,6 +14,8 @@
 
 @interface APPQueryHelper : NSObject
 
+#define eventVideoWatched @"videoWatched"
+
 // video showing (APPTableView)
 
 #define eventRelatedVideosLoaded @"relatedVideosLoaded"
@@ -35,7 +37,7 @@
 +(Query*)queryVideos:(NSString*)query showMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate;
 
 #define eventPlaylistVideosLoaded @"playlistVideosLoaded"
-+(Query*)playlistVideos:(GDataEntryYouTubePlaylistLink*)playlist showMode:(int)mode withPrio:(int) delegate:(id<APPTableViewProcessResponse>)delegate;
++(Query*)playlistVideos:(GDataEntryYouTubePlaylistLink*)playlist showMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate;
 
 #define eventWatchLaterVideosLoaded @"watchLaterVideosLoaded"
 +(Query*)watchLaterVideosOnShowMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate;

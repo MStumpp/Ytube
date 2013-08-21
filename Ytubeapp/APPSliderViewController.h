@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "APPIndexViewController.h"
+#import "UITableViewMaskView.h"
+#import "SmartNavigationController.h"
 
 // context
 #define tNone 01

@@ -19,16 +19,20 @@
     self = [super init];
     if (self) {
         [[self configureDefaultState] onViewState:tDidInitViewState do:^{
+            // sets sub topbar to visible initially
             self.subtopbarWasVisible = TRUE;
         }];
-
-        [[self configureDefaultState] onViewState:tDidAppearViewState do:^{
+        [[self configureDefaultState] onViewState:tDidLoadViewState do:^{
             // reloads table view content
-            [[self tableView] reloadDataAll];
+            [self.tableView clearViewAndReloadAll];
+            [self.tableView toDefaultShowMode];
+        }];
+        [[self configureDefaultState] onViewState:tDidAppearViewState do:^{
             // shows sub topbar if was visible
             if (self.subtopbarWasVisible)
                 [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
         }];
+        [self toDefaultStateForce];
     }
     return self;
 }

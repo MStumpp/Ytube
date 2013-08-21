@@ -14,10 +14,11 @@
 {
     self = [super init];
     if (self) {
-        [[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tWillAppear do:^{
+        [[self configureDefaultState] onViewState:tWillAppearViewState do:^{
             [self.editButton setSelected:NO];
             [self.tableView setEditing:NO animated:YES];
         }];
+        [self toDefaultStateForce];
     }
     return self;
 }

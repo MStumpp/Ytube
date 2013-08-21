@@ -10,7 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "APPProtocols.h"
 
-@interface APPIndexViewController : UIViewController <UINavigationControllerDelegate, UserProfileChangeDelegate>
+@interface APPIndexViewController : UIViewController <UINavigationControllerDelegate>
 // the following methods are called from SliderViewController
 // sets the background image of the toolbar accordingly
 -(void)setToolbarBackgroundImage:(UIImage*)image;

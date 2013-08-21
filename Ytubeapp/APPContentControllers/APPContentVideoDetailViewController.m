@@ -38,11 +38,10 @@
 -(id)init
 {
     self = [super init];
-    if (self) {        
-        self.heightVideoView = 186.0;
-        // header form stuff
-        self.downAtTopOnly = TRUE;
-        self.downAtTopDistance = 40;
+    if (self) {
+        [self.tableView addDefaultShowMode:tComments];
+        [self.tableView addShowMode:tRelatedVideos];
+
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToFavorites object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromFavorites object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToWatchLater object:nil];
@@ -50,16 +49,16 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventVideoLiked object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventVideoUnliked object:nil];
 
-        id this = self;
-        [[[[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tDidInit do:^() {
-        }] onViewState:tDidLoad do:^() {
-            [this toShowMode:tComments];
-        }] onViewState:tDidAppear do:^{
-            [self.tableViewHeaderFormView hideOnCompletion:nil animated:YES];
-            //[self.tableView scrollsToTop];
+        [[self configureDefaultState] onViewState:tDidLoadViewState do:^{
+            // reloads table view content
+            [self.tableView clearViewAndReloadAll];
+            [self.tableView toDefaultShowMode];
         }];
-        
-        [self toInitialState];
+        [[self configureDefaultState] onViewState:tDidAppearViewState do:^{
+            [self.tableViewHeaderFormView hideOnCompletion:nil animated:YES];
+            [self.tableView scrollsToTop];
+        }];
+        [self toDefaultStateForce];
     }
     return self;
 }
@@ -150,25 +149,19 @@
     [self.watchLaterButton setSelected:FALSE];
     [self.watchLaterButton addTarget:self action:@selector(subtopbarButtonPress:) forControlEvents:UIControlEventTouchUpInside];
     [subtopbarContainer addSubview:self.watchLaterButton];
-    [[APPVideoIsWatchLater instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil] onCompletion:^(int state, id data, NSError *error) {
-        switch (state)
-        {
-            case tLoaded:
-            {
-                if (data && !error) {
-                    [self.watchLaterButton setSelected:YES];
-                } else {
-                    NSLog(@"APPVideoIsWatchLater: error");
-                }
-                break;
-            }
-            default:
-            {
-                NSLog(@"APPVideoIsWatchLater: default");
-                break;
-            }
-        }
-    }];
+
+    [[APPVideoIsWatchLater instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+            execute:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
+      onStateChange:^(Query *query, id data) {
+          if ([query isFinished]) {
+              if (![query isCancelled] && ![(APPAbstractQuery*)query hasError]) {
+                  if([(NSDictionary*)data objectForKey:@"playlist"])
+                      [self.watchLaterButton setSelected:YES];
+              } else {
+                  NSLog(@"APPVideoIsWatchLater: error");
+              }
+          }
+      }];
 
     self.favoritesButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.favoritesButton.frame = CGRectMake(320.0-52.0-52.0-52.0, 0.0, 52.0, 50.0);
@@ -179,25 +172,19 @@
     [self.favoritesButton setSelected:FALSE];
     [self.favoritesButton addTarget:self action:@selector(subtopbarButtonPress:) forControlEvents:UIControlEventTouchUpInside];
     [subtopbarContainer addSubview:self.favoritesButton];
-    [[APPVideoIsFavorite instanceWithQueue:[APPGlobals getGlobalForKey:@"queue2"]] process:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil] onCompletion:^(int state, id data, NSError *error) {
-        switch (state)
-        {
-            case tLoaded:
-            {
-                if (data && !error) {
-                    [self.favoritesButton setSelected:YES];
-                } else {
-                    NSLog(@"APPVideoIsFavorite: error");
-                }
-                break;
-            }
-            default:
-            {
-                NSLog(@"APPVideoIsFavorite: default");
-                break;
-            }
-        }
-    }];
+
+    [[APPVideoIsFavorite instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+            execute:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
+      onStateChange:^(Query *query, id data) {
+          if ([query isFinished]) {
+              if (![query isCancelled] && ![(APPAbstractQuery*)query hasError]) {
+                  if([(NSDictionary*)data objectForKey:@"favorite"])
+                      [self.favoritesButton setSelected:YES];
+              } else {
+                  NSLog(@"APPVideoIsFavorite: error");
+              }
+          }
+      }];
 
     self.commentButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.commentButton.frame = CGRectMake(320.0-52.0-52.0, 0.0, 52.0, 50.0);
@@ -343,8 +330,8 @@
         case tAddToPlaylist:
         {
             APPContentPlaylistListController *select = [[APPContentPlaylistListController alloc] init];
-            select.afterSelect = ^(GDataEntryYouTubePlaylistLink *playlist) {
-                [APPQueryHelper addVideo:self.video toPlaylist:playlist];
+            select.afterSelect = ^(GDataEntryBase *entry) {
+                [APPQueryHelper addVideo:self.video toPlaylist:(GDataEntryYouTubePlaylistLink*)entry];
             };
             [self.navigationController pushViewController:select animated:YES];
             break;
@@ -376,17 +363,17 @@
     }
 }
 
--(QueryTicket*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio
+-(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p
 {
     if (mode == tRelatedVideos)
-        return [APPQueryHelper relatedVideos:self.video showMode:mode withPrio:prio delegate:tableView];
+        return [APPQueryHelper relatedVideos:self.video showMode:mode withPrio:p delegate:tableView];
     else if (mode == tComments)
-        return [APPQueryHelper videoComments:self.video showMode:mode withPrio:prio delegate:tableView];
+        return [APPQueryHelper videoComments:self.video showMode:mode withPrio:p delegate:tableView];
 }
 
--(QueryTicket*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)prio
+-(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)p
 {
-    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:prio delegate:tableView];
+    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:p delegate:tableView];
 }
 
 -(APPTableCell*)tableView:(UITableView*)tableView forMode:(int)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath

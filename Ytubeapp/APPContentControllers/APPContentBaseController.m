@@ -6,11 +6,10 @@
 //  Copyright (c) 2012 Matthias Stumpp. All rights reserved.
 //
 
+
 #import "APPContentBaseController.h"
 
 @implementation APPContentBaseController
-
-//@synthesize userProfile;
 
 -(id)init
 {
@@ -18,11 +17,8 @@
     if (self) {
         self.isDefaultMode = TRUE;
         
-        // synchronously get current user profile
-        //self.userProfile = [self.contentManager getUserProfile];
-        
-        // register user profile observer to receive user profile changes
-        [[APPUserManager classInstance] registerUserProfileObserverWithDelegate:self];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
     }
     return self;
 }
@@ -35,15 +31,14 @@
 
 // "UserProfileChangeDelegate" Protocol
 
--(void)userSignedIn:(GDataEntryYouTubeUserProfile*)user andAuth:(GTMOAuth2Authentication*)auth;
+-(void)userSignedIn:(NSNotification*)notification
 {
-    //self.userProfile = user;
-    [self toDefaultState];
+    [self toDefaultStateForce];
 }
 
--(void)userSignedOut
+-(void)userSignedOut:(NSNotification*)notification
 {
-    // check if we have to remove content
+    [self clearContent];
 }
 
 // "APPSliderViewControllerDelegate" Protocol
@@ -92,9 +87,9 @@
         callback();
 }
 
--(void)processEvent:(NSNotification*)notification
+-(void)clearContent
 {
-    NSLog(@"Method processEvent must be overwritten in subclass!");
+    return;
 }
 
 // other stuff

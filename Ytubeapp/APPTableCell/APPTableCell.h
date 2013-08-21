@@ -12,10 +12,12 @@
 #import "APPProtocols.h"
 #import "APPTableView.h"
 
+@class APPTableView;
+
 @interface APPTableCell : UITableViewCell
 @property (strong, nonatomic) UIView *tableCellMain;
 @property (strong, nonatomic) UIImageView *tableCellSubMenu;
-@property (weak, nonatomic) APPTableView *tableView;
+@property (strong, nonatomic) APPTableView *__tableView;
 @property (retain, nonatomic) NSIndexPath *indexPath;
 -(void)openOnCompletion:(void (^)(BOOL isOpened))callback animated:(BOOL)animated;
 -(void)closeOnCompletion:(void (^)(BOOL isClosed))callback animated:(BOOL)animated;

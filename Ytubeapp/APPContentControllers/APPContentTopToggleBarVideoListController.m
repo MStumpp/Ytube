@@ -9,8 +9,6 @@
 #import "APPContentTopToggleBarVideoListController.h"
 
 @interface APPContentTopToggleBarVideoListController ()
-// TODO: shown initially wirklich notwendig
-@property BOOL subtopbarShownInitially;
 @property BOOL subtopbarWasVisible1;
 @property BOOL subtopbarWasVisible2;
 @end
@@ -21,16 +19,23 @@
 {
     self = [super init];
     if (self) {
-        [[[self registerNewOrRetrieveInitialState:tInitialState] onViewState:tDidInit do:^() {
-            self.subtopbarWasVisible1 = FALSE;
+        [[self configureDefaultState] onViewState:tDidInitViewState do:^{
+            self.subtopbarWasVisible1 = TRUE;
             self.subtopbarWasVisible2 = FALSE;
-        }] onViewState:tDidAppear do:^{
+        }];
+        [[self configureDefaultState] onViewState:tDidLoadViewState do:^{
+            // reloads table view content
+            [self.tableView clearViewAndReloadAll];
+            [self.tableView toDefaultShowMode];
+        }];
+        [[self configureDefaultState] onViewState:tDidAppearViewState do:^{
             [self.tableViewHeaderFormView2 hideOnCompletion:^(BOOL isHidden) {
                 if (isHidden)
                     [self.tableViewHeaderFormView1 showOnCompletion:nil animated:YES];
             } animated:YES];
             [self.tableView scrollsToTop];
         }];
+        [self toDefaultStateForce];
     }
     return self;
 }
@@ -127,29 +132,23 @@
 
 -(void)willHide:(void (^)(void))callback
 {
-    if (!self.isDefaultMode) {
-        if ([self.tableViewHeaderFormView1 isHeaderShown]) {
-            self.subtopbarWasVisible1 = TRUE;
-            [self.tableViewHeaderFormView1 hideOnCompletion:^(BOOL isHidden) {
-                if (callback)
-                    callback();
-            } animated:YES];
-
-        } else if ([self.tableViewHeaderFormView2 isHeaderShown]) {
-            self.subtopbarWasVisible2 = TRUE;
-            [self.tableViewHeaderFormView2 hideOnCompletion:^(BOOL isHidden) {
-                if (callback)
-                    callback();
-            } animated:YES];
-
-        } else {
-            self.subtopbarWasVisible1 = FALSE;
-            self.subtopbarWasVisible2 = FALSE;
+    if ([self.tableViewHeaderFormView1 isHeaderShown]) {
+        self.subtopbarWasVisible1 = TRUE;
+        [self.tableViewHeaderFormView1 hideOnCompletion:^(BOOL isHidden) {
             if (callback)
                 callback();
-        }
+        } animated:YES];
+
+    } else if ([self.tableViewHeaderFormView2 isHeaderShown]) {
+        self.subtopbarWasVisible2 = TRUE;
+        [self.tableViewHeaderFormView2 hideOnCompletion:^(BOOL isHidden) {
+            if (callback)
+                callback();
+        } animated:YES];
 
     } else {
+        self.subtopbarWasVisible1 = FALSE;
+        self.subtopbarWasVisible2 = FALSE;
         if (callback)
             callback();
     }
@@ -157,17 +156,18 @@
 
 -(void)didShow:(void (^)(void))callback
 {
-    if (self.isDefaultMode) {
-        [self onViewState:tDidAppear when:!self.subtopbarWasVisible1 doOnce:^{
-            [self.tableViewHeaderFormView1 showOnCompletion:^(BOOL isShown){
-                if (isShown)
-                    self.subtopbarShownInitially = TRUE;
-            } animated:YES];
-        }];
+    if (self.subtopbarWasVisible1) {
+        [self.tableViewHeaderFormView1 showOnCompletion:^(BOOL isShown) {
+            if (callback)
+                callback();
+        }  animated:YES];
 
-        [self onViewState:tDidAppear when:self.subtopbarWasVisible2 doOnce:^{
-            [self.tableViewHeaderFormView2 showOnCompletion:nil animated:YES];
-        }];
+    } else if (self.subtopbarWasVisible2) {
+        [self.tableViewHeaderFormView2 showOnCompletion:^(BOOL isShown) {
+            if (callback)
+                callback();
+        }  animated:YES];
+
     } else {
         if (callback)
             callback();

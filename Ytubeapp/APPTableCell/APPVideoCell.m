@@ -278,10 +278,10 @@
         CGPoint location = [((UITouch *)[touches anyObject]) locationInView:self];
         if (CGRectContainsPoint(self.addToPlaylistButton.frame, location)) {
             APPContentPlaylistListController *select = [[APPContentPlaylistListController alloc] init];
-            select.afterSelect = ^(GDataEntryYouTubePlaylistLink *playlist) {
-                [APPQueryHelper addVideo:self.video toPlaylist:playlist];
+            select.afterSelect = ^(GDataEntryBase *entry) {
+                [APPQueryHelper addVideo:self.video toPlaylist:(GDataEntryYouTubePlaylistLink*)entry];
             };
-            [[self.tableView _delegate] pushViewController:select];
+            [[self.__tableView _del] pushViewController:select];
 
         } else if (CGRectContainsPoint(self.watchLaterButton.frame, location)) {
             if ([self.watchLaterButton isSelected]) {
@@ -303,7 +303,7 @@
 
         } else if (CGRectContainsPoint(self.commentsButton.frame, location)) {
             APPContentCommentListController *select = [[APPContentCommentListController alloc] initWithVideo:self.video];
-            [[self.tableView _delegate] pushViewController:select];
+            [[self.__tableView _del] pushViewController:select];
         }
     }
 }

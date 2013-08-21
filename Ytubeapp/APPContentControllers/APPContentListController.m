@@ -14,7 +14,7 @@
 {
     [super loadView];
     self.tableView = [[APPTableView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height-44.0) style:UITableViewStylePlain];
-    self.tableView._delegate = self;
+    self.tableView._del = self;
 }
 
 -(NSIndexPath*)tableView:(UITableView*)tableView forMode:(int)mode willSelectRowAtIndexPath:(NSIndexPath*)indexPath
@@ -39,6 +39,21 @@
         return FALSE;
 
     return TRUE;
+}
+
+-(void)beforeShowModeChange
+{
+    return;
+}
+
+-(void)afterShowModeChange
+{
+    return;
+}
+
+-(void)clearContent
+{
+    [self.tableView clearView];
 }
 
 @end

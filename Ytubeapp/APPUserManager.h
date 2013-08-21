@@ -17,6 +17,9 @@
 
 @interface APPUserManager : NSObject
 
+#define eventUserSignedIn @"userSignedIn"
+#define eventUserSignedOut @"userSignedOut"
+
 +(APPUserManager*)classInstance;
 
 // init (async)
@@ -39,9 +42,5 @@
 
 // true if user is allowed to visit this context without signed in, false otherwise
 -(BOOL)allowedToVisit:(int)context;
-
-// observer for UserProfile changes
--(void)registerUserProfileObserverWithDelegate:(id<UserProfileChangeDelegate>) observer;
--(void)unregisterUserProfileObserverWithDelegate:(id<UserProfileChangeDelegate>) observer;
 
 @end

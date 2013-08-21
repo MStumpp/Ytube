@@ -15,7 +15,7 @@
     self = [super init];
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_most_popular"];
-        [self.tableView addShowMode:tAll];
+        [self.tableView addDefaultShowMode:tAll];
         [self.tableView addShowMode:tToday];
     }
     return self;
