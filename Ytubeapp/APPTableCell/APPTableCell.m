@@ -10,9 +10,9 @@
 #import <QuartzCore/QuartzCore.h>
 
 @interface APPTableCell ()
-@property (strong, nonatomic) CALayer *menuSubMenuMask;
-@property (strong, nonatomic) UIImageView *shadowImage;
-@property (strong, nonatomic) UIImageView *bottomBack;
+@property CALayer *menuSubMenuMask;
+@property UIImageView *shadowImage;
+@property UIImageView *bottomBack;
 @property BOOL allowToOpen;
 @end
 

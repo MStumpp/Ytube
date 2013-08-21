@@ -18,8 +18,8 @@
 #import "StatefulUIViewController.h"
 
 @interface APPContentBaseController : StatefulUIViewController
-@property (strong, nonatomic) UIImage *topbarImage;
-@property (strong, nonatomic) NSString *topbarTitle;
+@property UIImage *topbarImage;
+@property NSString *topbarTitle;
 @property BOOL isDefaultMode;
 -(void)didShow:(void (^)(void))callback;
 -(void)willHide:(void (^)(void))callback;

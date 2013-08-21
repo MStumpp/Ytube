@@ -32,7 +32,7 @@
     [service setYouTubeDeveloperKey:[settings objectForKey:@"key"]];
     [service setUserAgent:@"AppWhirl-UserApp-1.0"];
     [service setShouldCacheDatedData:TRUE];
-    //[self.service setServiceShouldFollowNextLinks:FALSE];
+    //[service setServiceShouldFollowNextLinks:FALSE];
     [service setAuthorizer:auth];
     [APPGlobals setGlobalObject:service forKey:@"service"];
 
@@ -49,11 +49,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
 
     // init APPUserManager with retrieved auth object, no matter if it can or cannot authorize
-    dispatch_semaphore_t sema = dispatch_semaphore_create(1);
+    /*dispatch_semaphore_t sema = dispatch_semaphore_create(1);
     [[APPUserManager classInstance] initWithAuth:auth onCompletion:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
         dispatch_semaphore_signal(sema);
-    }];
-    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+    }];*/
+    //dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
 
     [window makeKeyAndVisible];
 

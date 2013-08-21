@@ -35,7 +35,6 @@
             } animated:YES];
             [self.tableView scrollsToTop];
         }];
-        [self toDefaultStateForce];
     }
     return self;
 }

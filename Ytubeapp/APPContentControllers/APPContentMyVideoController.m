@@ -16,11 +16,6 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_my_videos"];
 
-        [[self configureDefaultState] onViewState:tDidLoadViewState do:^{
-            // reloads table view content
-            [self.tableView clearViewAndReloadAll];
-            [self.tableView toDefaultShowMode];
-        }];
         [self toDefaultStateForce];
     }
     return self;

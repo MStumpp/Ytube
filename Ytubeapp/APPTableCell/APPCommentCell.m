@@ -12,16 +12,16 @@
 #import "APPVideoImageOfComment.h"
 
 @interface APPCommentCell()
-@property (strong, nonatomic) GDataEntryYouTubeComment *comment;
-@property (copy, nonatomic) NSString *name;
-@property (copy, nonatomic) NSString *text;
-@property (copy, nonatomic) UIImage *profilePic;
-@property (copy, nonatomic) NSDate *date;
+@property GDataEntryYouTubeComment *comment;
+@property NSString *name;
+@property NSString *text;
+@property UIImage *profilePic;
+@property NSDate *date;
 @property BOOL showFullComment;
-@property (strong, nonatomic) UILabel *nameLabel;
-@property (strong, nonatomic) UILabel *commentLabel;
-@property (strong, nonatomic) UILabel *timeagoLabel;
-@property (strong, nonatomic) UIImageView *profilePicImage;
+@property UILabel *nameLabel;
+@property UILabel *commentLabel;
+@property UILabel *timeagoLabel;
+@property UIImageView *profilePicImage;
 -(NSUInteger)cellHeightFullComment;
 @end
 

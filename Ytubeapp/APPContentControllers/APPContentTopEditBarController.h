@@ -10,7 +10,7 @@
 #import "APPContentTopBarVideoListController.h"
 
 @interface APPContentTopEditBarController : APPContentTopBarVideoListController
-@property (nonatomic, strong) UIButton *backButton;
-@property (nonatomic, strong) UIButton *editButton;
-@property (nonatomic, retain) NSIndexPath *tmpEditingCell;
+@property UIButton *backButton;
+@property UIButton *editButton;
+@property NSIndexPath *tmpEditingCell;
 @end

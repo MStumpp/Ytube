@@ -13,17 +13,17 @@
 
 @interface APPSliderViewController ()
 // left, center and right area on this contoller
-@property (strong, nonatomic) UIView *mainView;
-@property (strong, nonatomic) UIControl *leftImageView;
-@property (strong, nonatomic) UIControl *rightImageView;
-@property (strong, nonatomic) UIView *centerView;
+@property UIView *mainView;
+@property UIControl *leftImageView;
+@property UIControl *rightImageView;
+@property UIView *centerView;
 
 // some shadow on left and right menu
-@property (strong, nonatomic) UIImageView *leftShadow;
-@property (strong, nonatomic) UIImageView *rightShadow;
+@property UIImageView *leftShadow;
+@property UIImageView *rightShadow;
 
 // controller in center to keep controllers with the actual content
-@property (strong, nonatomic) SmartNavigationController<APPSliderViewControllerDelegate> *centerController;
+@property SmartNavigationController<APPSliderViewControllerDelegate> *centerController;
 
 // keep some references to button and controller instances
 @property NSDictionary *buttons;
@@ -45,7 +45,6 @@
     if (self) {
         self.controllers = [[NSDictionary alloc] initWithObjectsAndKeys:
                             [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tSearch],
-                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tRecentlyFeatured],
                             [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tMostPopular],
                             [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:ttopRated],
                             [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:ttopFavorites],
@@ -197,7 +196,7 @@
                     buttonMyVideos, [NSNumber numberWithInt:tMyVideos],
                     buttonSignOut, [NSNumber numberWithInt:tSignOut],
                     nil];
-        
+
     self.centerView = [[UIView alloc] initWithFrame:CGRectMake(82, 0, self.view.frame.size.width, self.view.frame.size.height)];
     [self.mainView addSubview:self.centerView];
     self.centerController = [[SmartNavigationController alloc] init];
@@ -220,6 +219,8 @@
     [MBProgressHUD showHUDAddedTo:progressView animated:YES];
     [maskView setCustomMaskView:progressView];
     self.view = maskView;
+
+    NSLog(@"check1");
 }
 
 -(void)viewDidLoad
@@ -228,7 +229,9 @@
     CGRect frame = self.view.frame;
     frame.origin.y = frame.origin.y - 20.0;
     self.view.frame = frame;
+    NSLog(@"check2");
     [self toggleContext:self.currentContext];
+    NSLog(@"check3");
 }
 
 // moves the slider to the left

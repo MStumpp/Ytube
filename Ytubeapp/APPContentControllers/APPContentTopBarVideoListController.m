@@ -18,21 +18,16 @@
 {
     self = [super init];
     if (self) {
+        NSLog(@"APPContentTopBarVideoListController");
         [[self configureDefaultState] onViewState:tDidInitViewState do:^{
             // sets sub topbar to visible initially
             self.subtopbarWasVisible = TRUE;
-        }];
-        [[self configureDefaultState] onViewState:tDidLoadViewState do:^{
-            // reloads table view content
-            [self.tableView clearViewAndReloadAll];
-            [self.tableView toDefaultShowMode];
         }];
         [[self configureDefaultState] onViewState:tDidAppearViewState do:^{
             // shows sub topbar if was visible
             if (self.subtopbarWasVisible)
                 [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
         }];
-        [self toDefaultStateForce];
     }
     return self;
 }
@@ -40,6 +35,7 @@
 -(void)loadView
 {
     [super loadView];
+    NSLog(@"APPContentTopBarVideoListController: loadView");
     self.tableViewHeaderFormView = [[UITableViewHeaderFormView alloc] initWithRootView:self.tableView headerView:nil delegate:self];
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
 }
@@ -80,6 +76,7 @@
 
 -(void)willHide:(void (^)(void))callback
 {
+    NSLog(@"willHide");
     if ([self.tableViewHeaderFormView isHeaderShown]) {
         self.subtopbarWasVisible = TRUE;
         [self.tableViewHeaderFormView hideOnCompletion:^(BOOL isHidden) {
@@ -96,6 +93,7 @@
 
 -(void)didShow:(void (^)(void))callback
 {
+    NSLog(@"didShow");
     if (self.subtopbarWasVisible) {
         [self.tableViewHeaderFormView showOnCompletion:^(BOOL isShown) {
             if (callback)

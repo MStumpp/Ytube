@@ -13,5 +13,5 @@ static bool downAtTopOnly = TRUE;
 static int downAtTopDistance = 40;
 
 @interface APPContentTopBarVideoListController : APPContentVideoListController <UITableViewHeaderFormViewDelegate>
-@property (nonatomic, strong) UITableViewHeaderFormView *tableViewHeaderFormView;
+@property UITableViewHeaderFormView *tableViewHeaderFormView;
 @end

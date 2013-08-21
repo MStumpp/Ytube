@@ -10,9 +10,9 @@
 #import "APPContentListController.h"
 
 @interface APPContentTopToggleBarVideoListController : APPContentListController
-@property (nonatomic, strong) UITableViewHeaderFormView *tableViewHeaderFormView1;
-@property (nonatomic, strong) UITableViewHeaderFormView *tableViewHeaderFormView2;
-@property (nonatomic, strong) UIButton *backButton;
-@property (nonatomic, strong) UIButton *editButton;
-@property (nonatomic, retain) NSIndexPath *tmpEditingCell;
+@property UITableViewHeaderFormView *tableViewHeaderFormView1;
+@property UITableViewHeaderFormView *tableViewHeaderFormView2;
+@property UIButton *backButton;
+@property UIButton *editButton;
+@property NSIndexPath *tmpEditingCell;
 @end

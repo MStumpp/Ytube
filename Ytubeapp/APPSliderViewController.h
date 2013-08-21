@@ -30,7 +30,7 @@
 #define tMoveToRight 3
 
 @interface APPSliderViewController : UIViewController <UINavigationControllerDelegate, SmartNavigationControllerDelegate, UITableViewMaskViewDelegate>
-@property (strong, nonatomic) APPIndexViewController *controller;
+@property APPIndexViewController *controller;
 // move this controller to the left
 - (void)moveToLeft:(void (^)(void))callback;
 // move this controller to the center

@@ -11,7 +11,5 @@
 
 @class APPIndexViewController;
 
-@protocol UserProfileChangeDelegate;
-
-@interface APPAppDelegate : UIResponder <UIApplicationDelegate, UserProfileChangeDelegate>
+@interface APPAppDelegate : UIResponder <UIApplicationDelegate>
 @end

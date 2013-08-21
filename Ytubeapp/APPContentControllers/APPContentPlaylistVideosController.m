@@ -20,11 +20,6 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToPlaylist object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromPlaylist object:nil];
 
-        [[self configureDefaultState] onViewState:tDidLoadViewState do:^{
-            // reloads table view content
-            [self.tableView clearViewAndReloadAll];
-            [self.tableView toDefaultShowMode];
-        }];
         [self toDefaultStateForce];
     }
     return self;

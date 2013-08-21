@@ -18,7 +18,6 @@
             [self.editButton setSelected:NO];
             [self.tableView setEditing:NO animated:YES];
         }];
-        [self toDefaultStateForce];
     }
     return self;
 }

@@ -12,8 +12,8 @@
 #import <QuartzCore/QuartzCore.h>
 
 @interface APPContentCommentListController ()
-@property (nonatomic, strong) UITextField *textField;
-@property (nonatomic, retain) UIImageView *userImageView;
+@property UITextField *textField;
+@property UIImageView *userImageView;
 @property NSInteger rowOpenHeight;
 @end
 
@@ -34,10 +34,6 @@
                 if (image)
                     [self.userImageView setImage:image];
             }];
-
-            // reloads table view content
-            [self.tableView clearViewAndReloadAll];
-            [self.tableView toDefaultShowMode];
         }];
         [self toDefaultStateForce];
     }

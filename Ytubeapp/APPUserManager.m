@@ -13,9 +13,9 @@
 #import "APPSliderViewController.h"
 
 @interface APPUserManager()
-@property (strong, nonatomic) GDataEntryYouTubeUserProfile *currentUserProfile;
-@property (strong, nonatomic) UIImage *currentUserImage;
-@property (strong, nonatomic) GTMOAuth2Authentication *auth;
+@property GDataEntryYouTubeUserProfile *currentUserProfile;
+@property UIImage *currentUserImage;
+@property GTMOAuth2Authentication *auth;
 @end
 
 @implementation APPUserManager

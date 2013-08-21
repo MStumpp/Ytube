@@ -15,28 +15,28 @@
 #import "APPContentPlaylistListController.h"
 
 @interface APPVideoCell ()
-@property (strong, nonatomic) GDataEntryYouTubeVideo *video;
-@property (copy, nonatomic) NSString *title;
-@property (copy, nonatomic) NSString *subtitle;
-@property (nonatomic) UIImage *thumbnail;
-@property (nonatomic) int numberlikes;
-@property (nonatomic) int numberdislikes;
-@property (nonatomic) int views;
-@property (nonatomic) int durationinseconds;
+@property GDataEntryYouTubeVideo *video;
+@property NSString *title;
+@property NSString *subtitle;
+@property UIImage *thumbnail;
+@property int numberlikes;
+@property int numberdislikes;
+@property int views;
+@property int durationinseconds;
 
-@property (strong, nonatomic) UIButton *addToPlaylistButton;
-@property (strong, nonatomic) UIButton *watchLaterButton;
-@property (strong, nonatomic) UIButton *favoritesButton;
-@property (strong, nonatomic) UIButton *commentsButton;
-@property (strong, nonatomic) UILabel *titleLabel;
-@property (strong, nonatomic) UILabel *subtitleLabel;
-@property (strong, nonatomic) UILabel *statisticsLabel;
-@property (strong, nonatomic) UILabel *durationLabel;
-@property (strong, nonatomic) UIImageView *thumbnailImage;
-@property (strong, nonatomic) UIImageView *thumbnailImageFrame;
-@property (strong, nonatomic) UIImageView *hdImage;
-@property (strong, nonatomic) UIImageView *durationImage;
-@property (strong, nonatomic) UIImageView *playImage;
+@property UIButton *addToPlaylistButton;
+@property UIButton *watchLaterButton;
+@property UIButton *favoritesButton;
+@property UIButton *commentsButton;
+@property UILabel *titleLabel;
+@property UILabel *subtitleLabel;
+@property UILabel *statisticsLabel;
+@property UILabel *durationLabel;
+@property UIImageView *thumbnailImage;
+@property UIImageView *thumbnailImageFrame;
+@property UIImageView *hdImage;
+@property UIImageView *durationImage;
+@property UIImageView *playImage;
 @end
 
 @implementation APPVideoCell

@@ -10,6 +10,6 @@
 #import "APPContentTopBarVideoListController.h"
 
 @interface APPContentTopSearchBarController : APPContentTopBarVideoListController <UITextFieldDelegate>
-@property (strong, nonatomic) UITextField *search;
-@property (strong, nonatomic) UIButton *cancelButton;
+@property UITextField *search;
+@property UIButton *cancelButton;
 @end

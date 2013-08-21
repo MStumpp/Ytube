@@ -21,11 +21,6 @@
         [self.tableView addShowMode:tWeek];
         [self.tableView addShowMode:tMonth];
 
-        [[self configureDefaultState] onViewState:tDidLoadViewState do:^{
-            // reloads table view content
-            [self.tableView clearViewAndReloadAll];
-            [self.tableView toDefaultShowMode];
-        }];
         [self toDefaultStateForce];
     }
     return self;

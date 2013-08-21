@@ -11,7 +11,7 @@
 #import "APPPlaylistCell.h"
 
 @interface APPContentPlaylistListController ()
-@property (nonatomic, strong) UITextField *textField;
+@property UITextField *textField;
 @end
 
 @implementation APPContentPlaylistListController
@@ -25,11 +25,6 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedPlaylist object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventDeletedPlaylist object:nil];
 
-        [[self configureDefaultState] onViewState:tDidLoadViewState do:^{
-            // reloads table view content
-            [self.tableView clearViewAndReloadAll];
-            [self.tableView toDefaultShowMode];
-        }];
         [self toDefaultStateForce];
     }
     return self;

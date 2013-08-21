@@ -12,14 +12,14 @@
 #import <QuartzCore/QuartzCore.h>
 
 @interface APPPlaylistCell ()
-@property (strong, nonatomic) GDataEntryYouTubePlaylistLink *playlist;
-@property (copy, nonatomic) NSString *text;
-@property (copy, nonatomic) NSString *description;
-@property (copy, nonatomic) UIImage *textPic;
-@property (nonatomic) int numberItems;
-@property (strong, nonatomic) UILabel *textLabel;
-@property (strong, nonatomic) UILabel *descriptionLabel;
-@property (strong, nonatomic) UIImageView *textPicImage;
+@property GDataEntryYouTubePlaylistLink *playlist;
+@property NSString *text;
+@property NSString *description;
+@property UIImage *textPic;
+@property int numberItems;
+@property UILabel *textLabel;
+@property UILabel *descriptionLabel;
+@property UIImageView *textPicImage;
 @end
 
 @implementation APPPlaylistCell

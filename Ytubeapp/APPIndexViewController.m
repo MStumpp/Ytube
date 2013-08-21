@@ -14,26 +14,27 @@
 #define tRightButton 1
 
 @interface APPIndexViewController ()
-@property (strong, nonatomic) UINavigationController *mainController;
-@property (strong, nonatomic) APPSliderViewController *sliderViewController;
-@property (strong, nonatomic) GTMOAuth2ViewControllerTouch *loginController;
+@property UINavigationController *mainController;
+@property APPSliderViewController *sliderViewController;
+@property GTMOAuth2ViewControllerTouch *loginController;
 
-@property (strong, nonatomic) UIImage *tmpTopBarBackImage;
-@property (strong, nonatomic) UIToolbar *toolbar;
-@property (strong, nonatomic) UILabel *toolbarLabel;
-@property (strong, nonatomic) UIButton *leftButton;
-@property (strong, nonatomic) UIButton *rightButton;
-@property (strong, nonatomic) UIActivityIndicatorView *spinner;
+@property UIImage *tmpTopBarBackImage;
+@property UIToolbar *toolbar;
+@property UILabel *toolbarLabel;
+@property UIButton *leftButton;
+@property UIButton *rightButton;
+@property UIActivityIndicatorView *spinner;
 @end
 
 @implementation APPIndexViewController
 
 -(void)loadView
 {
+    NSLog(@"APPIndexViewController: start");
     CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
     UIView *contentView = [[UIView alloc] initWithFrame:applicationFrame];
     self.view = contentView;
-        
+
     // Set up UI
     [self.view addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main_back"]]];
 
@@ -85,7 +86,7 @@
 
     self.sliderViewController = [[APPSliderViewController alloc] init];
     self.sliderViewController.controller = self;
-    
+
     self.mainController = [[UINavigationController alloc] initWithRootViewController:self.sliderViewController];
     self.mainController.view.frame = CGRectMake(0, 44, self.view.frame.size.width, self.view.frame.size.height-44);
     self.mainController.navigationBar.hidden = YES;
@@ -94,6 +95,8 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
+
+    NSLog(@"APPIndexViewController: end");
 }
 
 -(void)topbarButtonPress:(UIButton*)sender

@@ -15,6 +15,7 @@
 {
     self = [super init];
     if (self) {
+        NSLog(@"APPContentBaseController");
         self.isDefaultMode = TRUE;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
@@ -33,11 +34,13 @@
 
 -(void)userSignedIn:(NSNotification*)notification
 {
+    NSLog(@"userSignedIn");
     [self toDefaultStateForce];
 }
 
 -(void)userSignedOut:(NSNotification*)notification
 {
+    NSLog(@"userSignedOut");
     [self clearContent];
 }
 
@@ -45,6 +48,7 @@
 
 -(void)doDefaultMode:(void (^)(void))callback;
 {
+    NSLog(@"doDefaultMode");
     if (self.isDefaultMode) {
         if (callback)
             callback();
@@ -61,6 +65,7 @@
 
 -(void)undoDefaultMode:(void (^)(void))callback;
 {
+    NSLog(@"undoDefaultMode");
     if (!self.isDefaultMode) {
         if (callback)
             callback();
@@ -77,18 +82,21 @@
 
 -(void)willHide:(void (^)(void))callback
 {
+    NSLog(@"willHide");
     if (callback)
         callback();
 }
 
 -(void)didShow:(void (^)(void))callback
 {
+    NSLog(@"didShow");
     if (callback)
         callback();
 }
 
 -(void)clearContent
 {
+    NSLog(@"clearContent");
     return;
 }
 

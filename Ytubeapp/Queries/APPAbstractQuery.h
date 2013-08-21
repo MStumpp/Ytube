@@ -12,7 +12,7 @@
 #import "APPContent.h"
 
 @interface APPAbstractQuery : Query
-@property (strong, nonatomic) GDataServiceTicket *ticket;
+@property GDataServiceTicket *ticket;
 -(GDataServiceGoogleYouTube*)service;
 -(void)addToDataWithValue:(NSString*)value andKey:(NSString*)key;
 -(BOOL)hasError;

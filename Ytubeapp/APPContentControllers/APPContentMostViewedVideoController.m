@@ -14,9 +14,13 @@
 {
     self = [super init];
     if (self) {
+        NSLog(@"APPContentMostViewedVideoController");
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_most_popular"];
+
         [self.tableView addDefaultShowMode:tAll];
         [self.tableView addShowMode:tToday];
+
+        //[self toDefaultStateForce];
     }
     return self;
 }
@@ -24,6 +28,7 @@
 - (void)loadView
 {
     [super loadView];
+    NSLog(@"APPContentMostViewedVideoController: loadView: start");
 
     UIControl *subtopbarContainer = [[UIControl alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0)];
     [subtopbarContainer addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sub_top_bar_back"]]];
@@ -47,18 +52,22 @@
     [self.tableViewHeaderFormView setHeaderView:subtopbarContainer];
 
     self.buttons = [[NSDictionary alloc] initWithObjectsAndKeys:
-            buttonToday, [NSNumber numberWithInt:tToday],
-            buttonAll, [NSNumber numberWithInt:tAll],
-            nil];
+             buttonToday, [NSNumber numberWithInt:tToday],
+             buttonAll, [NSNumber numberWithInt:tAll],
+             nil];
+
+    NSLog(@"APPContentMostViewedVideoController: loadView: end");
 }
 
 -(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p
 {
+    NSLog(@"reloadDataConcreteForShowMode");
     return [APPQueryHelper mostViewedVideosOnShowMode:mode withPrio:p delegate:tableView];
 }
 
 -(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)p
 {
+    NSLog(@"loadMoreDataConcreteForShowMode");
     return [APPQueryHelper fetchMore:feed showMode:mode withPrio:p delegate:tableView];
 }
 

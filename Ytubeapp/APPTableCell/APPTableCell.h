@@ -15,10 +15,10 @@
 @class APPTableView;
 
 @interface APPTableCell : UITableViewCell
-@property (strong, nonatomic) UIView *tableCellMain;
-@property (strong, nonatomic) UIImageView *tableCellSubMenu;
-@property (strong, nonatomic) APPTableView *__tableView;
-@property (retain, nonatomic) NSIndexPath *indexPath;
+@property UIView *tableCellMain;
+@property UIImageView *tableCellSubMenu;
+@property APPTableView *__tableView;
+@property NSIndexPath *indexPath;
 -(void)openOnCompletion:(void (^)(BOOL isOpened))callback animated:(BOOL)animated;
 -(void)closeOnCompletion:(void (^)(BOOL isClosed))callback animated:(BOOL)animated;
 -(BOOL)isOpened;

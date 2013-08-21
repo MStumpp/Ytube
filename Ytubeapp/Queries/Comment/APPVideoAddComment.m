@@ -8,7 +8,6 @@
 
 #import "APPVideoAddComment.h"
 
-
 @implementation APPVideoAddComment
 
 -(void)load:(id)data

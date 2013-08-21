@@ -13,6 +13,7 @@
 -(void)loadView
 {
     [super loadView];
+    NSLog(@"APPContentListController: loadView");
     self.tableView = [[APPTableView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height-44.0) style:UITableViewStylePlain];
     self.tableView._del = self;
 }

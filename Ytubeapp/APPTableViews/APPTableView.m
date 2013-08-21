@@ -12,17 +12,17 @@
 #define tDefaultShowMode -1
 
 @interface APPTableView()
-@property (nonatomic, strong) SSPullToRefreshView *pullToRefreshView;
-@property (nonatomic, strong) UITableViewSwipeView *tableViewSwipeView;
-@property (nonatomic, strong) UITableViewAtBottomView *tableViewAtBottomView;
-@property (nonatomic, strong) UITableViewMaskView *tableViewMaskView;
-@property (nonatomic, strong) NSIndexPath *openCell;
+@property SSPullToRefreshView *pullToRefreshView;
+@property UITableViewSwipeView *tableViewSwipeView;
+@property UITableViewAtBottomView *tableViewAtBottomView;
+@property UITableViewMaskView *tableViewMaskView;
+@property NSIndexPath *openCell;
 @property int showMode;
 @property int defaultShowMode;
-@property (strong, nonatomic) NSMutableDictionary *queriesReload;
-@property (strong, nonatomic) NSMutableDictionary *queriesLoadMore;
-@property (strong, nonatomic) NSMutableDictionary *feeds;
-@property (strong, nonatomic) NSMutableDictionary *customFeeds;
+@property NSMutableDictionary *queriesReload;
+@property NSMutableDictionary *queriesLoadMore;
+@property NSMutableDictionary *feeds;
+@property NSMutableDictionary *customFeeds;
 @end
 
 @implementation APPTableView
@@ -49,10 +49,11 @@
         [MBProgressHUD showHUDAddedTo:progressView animated:YES];
         [self.tableViewMaskView setCustomMaskView:progressView];
 
-        self.queriesReload = [NSMutableDictionary alloc];
-        self.queriesLoadMore = [NSMutableDictionary alloc];
-        self.feeds = [NSMutableDictionary alloc];
-        self.customFeeds = [NSMutableDictionary alloc];
+        self.queriesReload = [[NSMutableDictionary alloc] init];
+        self.queriesLoadMore = [[NSMutableDictionary alloc] init];
+        self.feeds = [[NSMutableDictionary alloc] init];
+        self.customFeeds = [[NSMutableDictionary alloc] init];
+
         [self addDefaultShowMode:tDefaultShowMode];
     }
     return self;
@@ -64,15 +65,21 @@
 
 -(UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    APPTableCell *cell = [self._del tableView:tableView forMode:self.showMode cellForRowAtIndexPath:indexPath];
-    cell.indexPath = indexPath;
-    cell.__tableView = self;
-    // ensure cell is either open or closed
-    if (self.openCell && [self.openCell row] == [indexPath row])
-        [cell openOnCompletion:nil animated:NO];
-    else
-        [cell closeOnCompletion:nil animated:NO];
-    return cell;
+    NSLog(@"cellForRowAtIndexPath");
+    if (self.showMode) {
+        APPTableCell *cell = [self._del tableView:tableView forMode:self.showMode cellForRowAtIndexPath:indexPath];
+        cell.indexPath = indexPath;
+        cell.__tableView = self;
+        // ensure cell is either open or closed
+        if (self.openCell && [self.openCell row] == [indexPath row])
+            [cell openOnCompletion:nil animated:NO];
+        else
+            [cell closeOnCompletion:nil animated:NO];
+        return cell;
+
+    } else {
+        return nil;
+    }
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView*)tableView
@@ -82,10 +89,17 @@
 
 -(NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if ([self currentCustomFeedForShowMode:self.showMode])
-        return [[self currentCustomFeedForShowMode:self.showMode] count];
-    else
+    NSLog(@"numberOfRowsInSection");
+    if (self.showMode) {
+        if ([self currentCustomFeedForShowMode:self.showMode]) {
+            return [[self currentCustomFeedForShowMode:self.showMode] count];
+        } else {
+            return 0;
+        }
+
+    } else {
         return 0;
+    }
 }
 
 -(CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
@@ -307,11 +321,12 @@
 {
     if (!mode || [self hasShowMode:mode])
         return FALSE;
-    [self.queriesReload addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
-    [self.queriesLoadMore addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
-    [self.feeds addEntriesFromDictionary:[NSDictionary dictionaryWithObject:nil forKey:[NSNumber numberWithInt:mode]]];
-    [self.customFeeds addEntriesFromDictionary:[NSDictionary dictionaryWithObject:[NSMutableArray array] forKey:[NSNumber numberWithInt:mode]]];
-
+    NSLog(@"addShowMode: start");
+    [self.queriesReload setObject:[NSNull new] forKey:[NSNumber numberWithInt:mode]];
+    [self.queriesLoadMore setObject:[NSNull new] forKey:[NSNumber numberWithInt:mode]];
+    [self.feeds setObject:[NSNull new] forKey:[NSNumber numberWithInt:mode]];
+    [self.customFeeds setObject:[[NSMutableArray alloc] init] forKey:[NSNumber numberWithInt:mode]];
+    NSLog(@"addShowMode: end");
     return TRUE;
 }
 
@@ -325,6 +340,8 @@
 
 -(void)toShowMode:(int)mode
 {
+    NSLog(@"toShowMode");
+
     if (!mode || ![self hasShowMode:mode])
         [NSException raise:@"show mode is nil or doesn't exists" format:@"show mode is nil or doesn't exists"];
 

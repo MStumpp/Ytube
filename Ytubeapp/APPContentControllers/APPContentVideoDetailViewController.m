@@ -17,17 +17,17 @@
 #import "APPContentCommentListController.h"
 
 @interface APPContentVideoDetailViewController ()
-@property (strong, nonatomic) UIWebView *webView;
-@property (nonatomic, strong) APPTableView *tableView;
-@property (strong, nonatomic) UITableViewHeaderFormView *tableViewHeaderFormView;
-@property (strong, nonatomic) UIButton *backButton;
-@property (strong, nonatomic) UIButton *likeButton;
-@property (strong, nonatomic) UIButton *watchLaterButton;
-@property (strong, nonatomic) UIButton *favoritesButton;
-@property (strong, nonatomic) UIButton *commentButton;
-@property (strong, nonatomic) UIButton *addToPlaylistButton;
-@property (strong, nonatomic) UIButton *commentsButton;
-@property (strong, nonatomic) UIButton *relatedVideosButton;
+@property UIWebView *webView;
+@property APPTableView *tableView;
+@property UITableViewHeaderFormView *tableViewHeaderFormView;
+@property UIButton *backButton;
+@property UIButton *likeButton;
+@property UIButton *watchLaterButton;
+@property UIButton *favoritesButton;
+@property UIButton *commentButton;
+@property UIButton *addToPlaylistButton;
+@property UIButton *commentsButton;
+@property UIButton *relatedVideosButton;
 @property CGFloat heightVideoView;
 @property BOOL downAtTopOnly;
 @property int downAtTopDistance;
