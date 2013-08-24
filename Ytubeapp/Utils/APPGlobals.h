@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface APPGlobals : NSObject
-+(id)getGlobalForKey:(NSString*)key;
-+(void)setGlobalObject:(id)object forKey:(NSString*)key;
++(APPGlobals*)classInstance;
+-(id)getGlobalForKey:(NSString*)key;
+-(void)setGlobalObject:(id)object forKey:(NSString*)key;
 @end

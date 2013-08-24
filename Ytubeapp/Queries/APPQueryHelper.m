@@ -42,7 +42,7 @@
 
 +(Query*)relatedVideos:(GDataEntryYouTubeVideo*)video showMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate
 {
-    return [[APPVideoRelatedVideos instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoRelatedVideos instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
         execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:video, @"video", @(mode), tMode, nil]
         withPrio:p
         onStateChange:^(Query *query, id data) {
@@ -59,7 +59,7 @@
 
 +(Query*)topFavoriteVideosOnShowMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate
 {
-    return [[APPVideoTopFavorites instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoTopFavorites instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:@(mode), tMode, nil]
            withPrio:p
       onStateChange:^(Query *query, id data) {
@@ -76,7 +76,7 @@
 
 +(Query*)topRatedVideosOnShowMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate
 {
-    return [[APPVideoTopRated instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoTopRated instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:@(mode), tMode, nil]
            withPrio:p
       onStateChange:^(Query *query, id data) {
@@ -93,7 +93,7 @@
 
 +(Query*)featuredVideosOnShowMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate
 {
-    return [[APPVideoRecentlyFeatured instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoRecentlyFeatured instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:@(mode), tMode, nil]
            withPrio:p
       onStateChange:^(Query *query, id data) {
@@ -110,7 +110,7 @@
 
 +(Query*)mostViewedVideosOnShowMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate
 {
-    return [[APPVideoMostViewed instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoMostViewed instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:@(mode), tMode, nil]
            withPrio:p
       onStateChange:^(Query *query, id data) {
@@ -127,7 +127,7 @@
 
 +(Query*)queryVideos:(NSString*)query showMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate;
 {
-    return [[APPVideoQuery instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:@(mode), tMode, query, @"query", nil]
            withPrio:p
       onStateChange:^(Query *query, id data) {
@@ -144,7 +144,7 @@
 
 +(Query*)playlistVideos:(GDataEntryYouTubePlaylistLink*)playlist showMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate
 {
-    return [[APPPlaylistVideos instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPPlaylistVideos instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:@(mode), tMode, playlist, @"playlist", nil]
            withPrio:p
       onStateChange:^(Query *query, id data) {
@@ -161,7 +161,7 @@
 
 +(Query*)watchLaterVideosOnShowMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate
 {
-    return [[APPWatchLater instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:@(mode), tMode, nil]
            withPrio:p
       onStateChange:^(Query *query, id data) {
@@ -178,7 +178,7 @@
 
 +(Query*)favoriteVideosOnShowMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate
 {
-    return [[APPFavorites instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPFavorites instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:@(mode), tMode, nil]
            withPrio:p
       onStateChange:^(Query *query, id data) {
@@ -195,7 +195,7 @@
 
 +(Query*)historyVideosOnShowMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate
 {
-    return [[APPVideoWatchHistory instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoWatchHistory instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:@(mode), tMode, nil]
            withPrio:p
       onStateChange:^(Query *query, id data) {
@@ -212,7 +212,7 @@
 
 +(Query*)myVideosOnShowMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate
 {
-    return [[APPVideoMyVideos instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoMyVideos instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:@(mode), tMode, nil]
            withPrio:p
       onStateChange:^(Query *query, id data) {
@@ -231,7 +231,7 @@
 
 +(Query*)likeVideo:(GDataEntryYouTubeVideo*)video
 {
-    return [[APPVideoLikeVideo instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoLikeVideo instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -245,7 +245,7 @@
 
 +(Query*)unlikeVideo:(GDataEntryYouTubeVideo*)video
 {
-    return [[APPVideoUnlikeVideo instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoUnlikeVideo instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -261,7 +261,7 @@
 
 +(Query*)addVideo:(GDataEntryYouTubeVideo*)video toPlaylist:(GDataEntryYouTubePlaylistLink*)playlist
 {
-    return [[APPPlaylistAddVideo instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPPlaylistAddVideo instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", playlist, @"playlist", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -275,7 +275,7 @@
 
 +(Query*)removeVideo:(GDataEntryYouTubePlaylist*)video fromPlaylist:(GDataEntryYouTubePlaylistLink*)playlist
 {
-    return [[APPPlaylistRemoveVideo instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPPlaylistRemoveVideo instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", playlist, @"playlist", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -289,7 +289,7 @@
 
 +(Query*)addVideoToFavorites:(GDataEntryYouTubeVideo*)video
 {
-    return [[APPVideoAddToFavorites instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoAddToFavorites instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -303,7 +303,7 @@
 
 +(Query*)removeVideoFromFavorites:(GDataEntryYouTubeVideo*)video
 {
-    return [[APPVideoRemoveFromFavorites instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoRemoveFromFavorites instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -317,7 +317,7 @@
 
 +(Query*)addVideoToWatchLater:(GDataEntryYouTubeVideo*)video
 {
-    return [[APPVideoAddToWatchLater instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoAddToWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -331,7 +331,7 @@
 
 +(Query*)removeVideoFromWatchLater:(GDataEntryYouTubeVideo*)video
 {
-    return [[APPVideoRemoveFromWatchLater instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoRemoveFromWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -345,7 +345,7 @@
 
 +(Query*)deleteMyVideo:(GDataEntryYouTubeVideo*)video
 {
-    return [[APPVideoMyVideoDelete instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoMyVideoDelete instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -361,7 +361,7 @@
 
 +(Query*)playlistsOnShowMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate
 {
-    return [[APPPlaylists instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPPlaylists instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:@(mode), @"mode", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -375,7 +375,7 @@
 
 +(Query*)addPlaylist:(GDataEntryYouTubePlaylistLink*)playlist
 {
-    return [[APPPlaylistAdd instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPPlaylistAdd instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:playlist, @"playlist", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -389,7 +389,7 @@
 
 +(Query*)deletePlaylist:(GDataEntryYouTubePlaylistLink*)playlist
 {
-    return [[APPPlaylistDelete instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPPlaylistDelete instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:playlist, @"playlist", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -403,7 +403,7 @@
 
 +(Query*)queryPlaylists:(NSString*)query showMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate;
 {
-    return [[APPPlaylistQuery instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPPlaylistQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:@(mode), tMode, query, @"query", nil]
            withPrio:p
       onStateChange:^(Query *query, id data) {
@@ -422,7 +422,7 @@
 
 +(Query*)videoComments:(GDataEntryYouTubeVideo*)video showMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate
 {
-    return [[APPVideoComments instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoComments instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", @(mode), @"mode", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -436,7 +436,7 @@
 
 +(Query*)addComment:(GDataEntryYouTubeComment*)comment ToVideo:(GDataEntryYouTubeVideo*)video
 {
-    return [[APPVideoAddComment instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoAddComment instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", comment, @"comment", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -450,7 +450,7 @@
 
 +(Query*)deleteComment:(GDataEntryYouTubeComment*)comment FromVideo:(GDataEntryYouTubeVideo*)video
 {
-    return [[APPVideoDeleteComment instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPVideoDeleteComment instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", comment, @"comment", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -466,7 +466,7 @@
 
 +(Query*)fetchMore:(GDataFeedBase*)feed showMode:(int)mode withPrio:(int)p delegate:(id<APPTableViewProcessResponse>)delegate;
 {
-    return [[APPFetchMoreQuery instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    return [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:feed, @"feed", @(mode), @"mode", nil]
            withPrio:p
       onStateChange:^(Query *query, id data) {
@@ -483,11 +483,12 @@
 
 +(void)showErrorMessage
 {
-    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-    message:[NSString stringWithFormat:@"Unable to reload data. Please try again later."]
-    delegate:nil
-    cancelButtonTitle:@"OK"
-    otherButtonTitles:nil] show];
+    NSLog(@"error");
+//    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+//    message:[NSString stringWithFormat:@"Unable to reload data. Please try again later."]
+//    delegate:nil
+//    cancelButtonTitle:@"OK"
+//    otherButtonTitles:nil] show];
 }
 
 @end

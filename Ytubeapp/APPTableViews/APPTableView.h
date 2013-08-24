@@ -25,11 +25,11 @@
 @interface APPTableView : UITableView <UITableViewDataSource, UITableViewDelegate, UITableViewAtBottomViewDelegate,
         SSPullToRefreshViewDelegate, UITableViewSwipeViewDelegate, UITableViewMaskViewDelegate, APPTableViewProcessResponse>
 @property id<APPTableViewDelegate> _del;
+@property int showMode;
 -(BOOL)addShowMode:(int)mode;
 -(BOOL)addDefaultShowMode:(int)mode;
 -(void)toShowMode:(int)mode;
 -(void)toDefaultShowMode;
--(int)showMode;
 -(void)clearView;
 -(void)clearViewAndReloadAll;
 -(NSMutableArray*)currentCustomFeed;

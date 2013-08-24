@@ -24,4 +24,7 @@
 -(void)didShow:(void (^)(void))callback;
 -(void)willHide:(void (^)(void))callback;
 -(void)processEvent:(NSNotification*)notification;
+-(void)resetController;
+-(void)clearContent;
+-(void)loadContent;
 @end

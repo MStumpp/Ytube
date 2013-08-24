@@ -8,6 +8,7 @@
 
 #import "APPTableView.h"
 #import "MBProgressHUD.h"
+#import "APPAbstractQuery.h"
 
 #define tDefaultShowMode -1
 
@@ -17,7 +18,6 @@
 @property UITableViewAtBottomView *tableViewAtBottomView;
 @property UITableViewMaskView *tableViewMaskView;
 @property NSIndexPath *openCell;
-@property int showMode;
 @property int defaultShowMode;
 @property NSMutableDictionary *queriesReload;
 @property NSMutableDictionary *queriesLoadMore;
@@ -234,9 +234,13 @@
 
 -(void)reloadDataResponse:(NSDictionary*)args
 {
+    NSLog(@"reloadDataResponse");
+
     int mode = [[args objectForKey:tMode] intValue];
     GDataFeedBase *feed = [args objectForKey:tFeed];
     NSError *error = [args objectForKey:tError];
+
+    NSLog(@"number entries: %i", [[feed entries] count]);
 
     // if there is no error
 
@@ -360,22 +364,18 @@
     [self._del afterShowModeChange];
 
     Query *query = [self queryForMode:mode forType:self.queriesReload];
-    // if there is no ticket, load the data for the first time
-    if (!query)
-        [self reloadDataForShowMode:mode withPrio:tVisibleload];
-    // otherwise, just reload the data
-    else
+    if ([self queryForMode:mode forType:self.queriesReload] &&
+            [self queryForMode:mode forType:self.queriesReload] != (id)[NSNull new] &&
+            [[self queryForMode:mode forType:self.queriesReload] isFinished] &&
+            ![(APPAbstractQuery*)[self queryForMode:mode forType:self.queriesReload] hasError])
         [self reloadData];
+    else
+        [self reloadDataForShowMode:mode withPrio:tVisibleload];
 }
 
 -(void)toDefaultShowMode
 {
     [self toShowMode:self.defaultShowMode];
-}
-
--(int)showMode
-{
-    return self.showMode;
 }
 
 -(void)clearView
@@ -425,7 +425,8 @@
         return;
 
     // eventually cancel currently running load more request
-    if ([self queryForMode:mode forType:self.queriesLoadMore])
+    if ([self queryForMode:mode forType:self.queriesLoadMore] &&
+            [self queryForMode:mode forType:self.queriesLoadMore] != (id)[NSNull new])
         [[self queryForMode:mode forType:self.queriesLoadMore] cancel];
 
     // load more data
@@ -451,15 +452,17 @@
 
 -(BOOL)resetShowMode:(int)mode
 {
-    if ([self queryForMode:mode forType:self.queriesReload])
+    if ([self queryForMode:mode forType:self.queriesReload] &&
+            [self queryForMode:mode forType:self.queriesReload] != (id)[NSNull new])
         [[self queryForMode:mode forType:self.queriesReload] cancel];
-    [self.queriesReload setObject:nil forKey:[NSNumber numberWithInt:mode]];
+    [self.queriesReload setObject:[NSNull new] forKey:[NSNumber numberWithInt:mode]];
 
-    if ([self queryForMode:mode forType:self.queriesLoadMore])
+    if ([self queryForMode:mode forType:self.queriesLoadMore] &&
+            [self queryForMode:mode forType:self.queriesLoadMore] != (id)[NSNull new])
         [[self queryForMode:mode forType:self.queriesLoadMore] cancel];
-    [self.queriesLoadMore setObject:nil forKey:[NSNumber numberWithInt:mode]];
+    [self.queriesLoadMore setObject:[NSNull new] forKey:[NSNumber numberWithInt:mode]];
 
-    [self.feeds setObject:nil forKey:[NSNumber numberWithInt:mode]];
+    [self.feeds setObject:[NSNull new] forKey:[NSNumber numberWithInt:mode]];
     [[self currentCustomFeedForShowMode:mode] removeAllObjects];
 }
 

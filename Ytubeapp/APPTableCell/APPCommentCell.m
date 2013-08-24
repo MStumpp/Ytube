@@ -79,7 +79,7 @@
     [super prepareForReuse];
     self.showFullComment = FALSE;
     [self allowToOpen:NO];
-    [self setProfilePic:[APPGlobals getGlobalForKey:@"silhouetteImage"]];
+    [self setProfilePic:[[APPGlobals classInstance] getGlobalForKey:@"silhouetteImage"]];
 }
 
 /*- (void)layoutSubviews
@@ -152,7 +152,7 @@
 
     self.date = [[comment updatedDate] date];
 
-    [[APPVideoImageOfComment instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    [[APPVideoImageOfComment instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:self.comment, @"comment", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {

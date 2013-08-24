@@ -19,15 +19,20 @@
     self = [super init];
     if (self) {
         NSLog(@"APPContentTopBarVideoListController");
+        self.subtopbarWasVisible = TRUE;
+
+        /*__weak id weakSelf = self;
         [[self configureDefaultState] onViewState:tDidInitViewState do:^{
+            NSLog(@"APPContentTopBarVideoListController: onViewState:tDidInitViewState");
             // sets sub topbar to visible initially
-            self.subtopbarWasVisible = TRUE;
+            //[weakSelf setSubtopbarWasVisible:TRUE]; //= TRUE;
         }];
         [[self configureDefaultState] onViewState:tDidAppearViewState do:^{
+            NSLog(@"APPContentTopBarVideoListController: onViewState:tDidAppearViewState");
             // shows sub topbar if was visible
-            if (self.subtopbarWasVisible)
-                [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
-        }];
+            //if (self.subtopbarWasVisible)
+            //    [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
+        }];   */
     }
     return self;
 }
@@ -40,10 +45,16 @@
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
 }
 
--(void)viewDidUnload
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidUnload];
-    self.tableViewHeaderFormView = nil;
+    if (self.subtopbarWasVisible)
+        [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
+}
+
+-(void)resetController
+{
+    self.subtopbarWasVisible = TRUE;
+    [self viewDidAppear:TRUE];
 }
 
 -(BOOL)tableViewHeaderFormViewShouldShow:(UITableViewHeaderFormView*)view

@@ -75,6 +75,8 @@
 
 -(void)loadView
 {
+    NSLog(@"APPSliderViewController: start");
+
     CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
     UIView *contentView = [[UIView alloc] initWithFrame:applicationFrame];
     self.view = contentView;
@@ -221,6 +223,7 @@
     self.view = maskView;
 
     NSLog(@"check1");
+    NSLog(@"APPSliderViewController: end");
 }
 
 -(void)viewDidLoad

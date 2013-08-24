@@ -7,24 +7,31 @@
 
 #import "APPGlobals.h"
 
+@interface APPGlobals()
+@property NSMutableDictionary *dict;
+@end
+
 @implementation APPGlobals
 
-+(id)getGlobalForKey:(NSString*)key
+static APPGlobals *classInstance = nil;
+
++(APPGlobals*)classInstance
 {
-    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
-    if (standardUserDefaults) {
-        return [standardUserDefaults objectForKey:key];
+    if (classInstance == nil) {
+        classInstance = [[super allocWithZone:NULL] init];
+        classInstance.dict = [[NSMutableDictionary alloc] init];
     }
-    return nil;
+    return classInstance;
 }
 
-+(void)setGlobalObject:(id)object forKey:(NSString*)key
+-(id)getGlobalForKey:(NSString*)key
 {
-    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
-    if (standardUserDefaults) {
-        [standardUserDefaults setObject:object forKey:key];
-        [standardUserDefaults synchronize];
-    }
+    return [self.dict objectForKey:key];
+}
+
+-(void)setGlobalObject:(id)object forKey:(NSString*)key
+{
+    [self.dict setObject:object forKey:key];
 }
 
 @end

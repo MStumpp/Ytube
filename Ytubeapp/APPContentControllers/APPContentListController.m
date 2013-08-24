@@ -52,6 +52,11 @@
     return;
 }
 
+-(void)loadContent
+{
+    [self.tableView clearViewAndReloadAll];
+}
+
 -(void)clearContent
 {
     [self.tableView clearView];

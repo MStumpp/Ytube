@@ -16,11 +16,6 @@
     if (self) {
         NSLog(@"APPContentMostViewedVideoController");
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_most_popular"];
-
-        [self.tableView addDefaultShowMode:tAll];
-        [self.tableView addShowMode:tToday];
-
-        //[self toDefaultStateForce];
     }
     return self;
 }
@@ -57,6 +52,13 @@
              nil];
 
     NSLog(@"APPContentMostViewedVideoController: loadView: end");
+}
+
+- (void)viewDidLoad
+{
+    [self.tableView addDefaultShowMode:tAll];
+    [self.tableView addShowMode:tToday];
+    [self.tableView toDefaultShowMode];
 }
 
 -(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p

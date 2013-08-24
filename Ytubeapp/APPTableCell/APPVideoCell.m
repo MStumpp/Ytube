@@ -150,7 +150,7 @@
     [self allowToOpen:YES];
     [self.favoritesButton setSelected:NO];
     [self.watchLaterButton setSelected:NO];
-    [self setThumbnail:[APPGlobals getGlobalForKey:@"noPreviewImage"]];
+    [self setThumbnail:[[APPGlobals classInstance] getGlobalForKey:@"noPreviewImage"]];
 }
 
 -(void)setTitle:(NSString*)n
@@ -244,7 +244,7 @@
 
     // sub view set up
 
-    [[APPVideoIsFavorite instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    [[APPVideoIsFavorite instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
@@ -257,7 +257,7 @@
           }
       }];
 
-    [[APPVideoIsWatchLater instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    [[APPVideoIsWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {

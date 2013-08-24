@@ -35,12 +35,14 @@
 -(void)userSignedIn:(NSNotification*)notification
 {
     NSLog(@"userSignedIn");
-    [self toDefaultStateForce];
+    [self resetController];
+    [self loadContent];
 }
 
 -(void)userSignedOut:(NSNotification*)notification
 {
     NSLog(@"userSignedOut");
+    [self resetController];
     [self clearContent];
 }
 
@@ -94,9 +96,21 @@
         callback();
 }
 
+-(void)resetController
+{
+    NSLog(@"resetController");
+    return;
+}
+
 -(void)clearContent
 {
     NSLog(@"clearContent");
+    return;
+}
+
+-(void)loadContent
+{
+    NSLog(@"loadContent");
     return;
 }
 

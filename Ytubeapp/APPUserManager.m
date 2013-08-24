@@ -162,7 +162,7 @@ static APPUserManager *classInstance = nil;
 
     if ([self canAuthorize]) {
         // here we have to get the queue
-        [[APPDefaultUserProfileQuery instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+        [[APPDefaultUserProfileQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                 execute:nil
           onStateChange:^(Query *query, id data) {
               if ([query isFinished]) {
@@ -197,7 +197,7 @@ static APPUserManager *classInstance = nil;
         return;
     }
 
-    [[APPUserImageQuery instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    [[APPUserImageQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:[self getUserProfile], @"user", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {

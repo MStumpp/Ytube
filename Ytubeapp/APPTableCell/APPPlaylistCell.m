@@ -61,7 +61,7 @@
 {
     [super prepareForReuse];
     [self allowToOpen:NO];
-    [self setTextPic:[APPGlobals getGlobalForKey:@"noPreviewImage"]];
+    [self setTextPic:[[APPGlobals classInstance] getGlobalForKey:@"noPreviewImage"]];
 }
 
 -(void)setText:(NSString*)n
@@ -107,7 +107,7 @@
     self.text = [[self.playlist title] stringValue];
     self.description = [[self.playlist summary] stringValue];
 
-    [[APPPlaylistImageOfPlaylist instanceWithQueue:[[APPGlobals getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    [[APPPlaylistImageOfPlaylist instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:self.playlist, @"playlist", nil]
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
