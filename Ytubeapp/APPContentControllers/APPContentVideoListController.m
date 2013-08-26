@@ -12,27 +12,6 @@
 
 @implementation APPContentVideoListController
 
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        NSLog(@"APPContentVideoListController");
-//        [[self configureDefaultState] onViewState:tDidLoadViewState do:^{
-//            NSLog(@"APPContentVideoListController: onViewState:tDidLoadViewState");
-//            // reloads table view content
-//            //[self.tableView clearViewAndReloadAll];
-//            //[self.tableView toDefaultShowMode];
-//        }];
-    }
-    return self;
-}
-
-- (void)viewDidLoad
-{
-    [self.tableView clearViewAndReloadAll];
-    [self.tableView toDefaultShowMode];
-}
-
 -(APPTableCell*)tableView:(UITableView*)tableView forMode:(int)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     NSLog(@"cellForRowAtIndexPath");

@@ -471,10 +471,12 @@
            withPrio:p
       onStateChange:^(Query *query, id data) {
           if ([query isFinished]) {
-              if ([(APPAbstractQuery*)query hasError]) {
+              if (![(APPAbstractQuery*)query hasError]) {
+                  [[NSNotificationCenter defaultCenter] postNotificationName:eventFetchMoreLoaded object:data];
+                  [delegate loadMoreDataResponse:data];
+              } else {
                   [self showErrorMessage];
               }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventFetchMoreLoaded object:data];
           }
       }];
 }

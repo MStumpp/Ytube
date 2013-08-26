@@ -10,6 +10,21 @@
 
 @implementation APPContentListController
 
+-(id)initWithTag:(int)tag
+{
+    self = [super init];
+    if (self) {
+        [[self configureDefaultState] onViewState:tDidAppearViewState do:^{
+            [self.tableView toDefaultShowMode];
+        }];
+
+        [[self configureState:tClearState] onViewState:tDidAppearViewState do:^{
+            [self.tableView clearView];
+        }];
+    }
+    return self;
+}
+
 -(void)loadView
 {
     [super loadView];
@@ -50,16 +65,6 @@
 -(void)afterShowModeChange
 {
     return;
-}
-
--(void)loadContent
-{
-    [self.tableView clearViewAndReloadAll];
-}
-
--(void)clearContent
-{
-    [self.tableView clearView];
 }
 
 @end

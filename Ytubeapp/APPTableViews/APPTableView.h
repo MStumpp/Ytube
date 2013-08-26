@@ -20,7 +20,6 @@
 @protocol APPTableViewDelegate;
 
 @class APPTableCell;
-@class QueryTicket;
 
 @interface APPTableView : UITableView <UITableViewDataSource, UITableViewDelegate, UITableViewAtBottomViewDelegate,
         SSPullToRefreshViewDelegate, UITableViewSwipeViewDelegate, UITableViewMaskViewDelegate, APPTableViewProcessResponse>
@@ -50,9 +49,9 @@
 -(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath;
 -(void)tableView:(UITableView*)tableView forMode:(int)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
         forRowAtIndexPath:(NSIndexPath*)indexPath;
--(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)prio;
+-(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p;
 -(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode
-        forFeed:(GDataFeedBase*)feed withPrio:(int)prio;
+        forFeed:(GDataFeedBase*)feed withPrio:(int)p;
 -(BOOL)tableViewCanBottom:(UITableView*)view;
 -(BOOL)pullToRefreshViewShouldStartLoading:(SSPullToRefreshView*)view;
 -(void)beforeShowModeChange;

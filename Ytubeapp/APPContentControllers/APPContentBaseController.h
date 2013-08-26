@@ -10,21 +10,21 @@
 #import "APPProtocols.h"
 #import "ViewHelpers.h"
 #import "GDataYouTube.h"
+#import "APPTableView.h"
 #import "APPTableCell.h"
 #import "UITableViewHeaderFormView.h"
 #import "APPQueryHelper.h"
 #import "APPGlobals.h"
 #import "APPUserManager.h"
-#import "StatefulUIViewController.h"
+#import "FSMUIViewController.h"
 
-@interface APPContentBaseController : StatefulUIViewController
+#define tClearState @"clearState"
+
+@interface APPContentBaseController : FSMUIViewController
 @property UIImage *topbarImage;
 @property NSString *topbarTitle;
 @property BOOL isDefaultMode;
 -(void)didShow:(void (^)(void))callback;
 -(void)willHide:(void (^)(void))callback;
 -(void)processEvent:(NSNotification*)notification;
--(void)resetController;
--(void)clearContent;
--(void)loadContent;
 @end

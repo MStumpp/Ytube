@@ -46,6 +46,10 @@
 //#define tComments 01
 #define tRelatedVideos 02
 
+#define tIn 01
+#define tOut 02
+#define tInOut 03
+
 @class GTMOAuth2Authentication;
 @class UITableViewHeaderFormView;
 

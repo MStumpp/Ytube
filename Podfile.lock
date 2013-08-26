@@ -1,4 +1,5 @@
 PODS:
+  - FSMUIViewController (0.0.9)
   - GData (1.12.0):
     - GData/Core
     - GData/XMLNode
@@ -33,7 +34,6 @@ PODS:
   - SBJson (3.2)
   - SmartNavigationController (0.0.2)
   - SSPullToRefresh (1.1.2)
-  - StatefulUIViewController (0.0.7)
   - UITableViewAtBottomView (0.0.1)
   - UITableViewHeaderFormView (0.0.1)
   - UITableViewHeaderMenuView (0.0.1)
@@ -42,13 +42,13 @@ PODS:
   - ViewHelpers (0.0.1)
 
 DEPENDENCIES:
+  - FSMUIViewController (~> 0.0.9)
   - GData (~> 1.12.0)
   - MBProgressHUD (~> 0.6)
   - NSDate-TimeAgo (~> 0.0.1)
   - QueryManager (~> 0.0.13)
   - SmartNavigationController (~> 0.0.2)
   - SSPullToRefresh (~> 1.1.2)
-  - StatefulUIViewController (~> 0.0.7)
   - UITableViewAtBottomView (~> 0.0.1)
   - UITableViewHeaderFormView (~> 0.0.1)
   - UITableViewHeaderMenuView (~> 0.0.1)
@@ -57,6 +57,7 @@ DEPENDENCIES:
   - ViewHelpers (~> 0.0.1)
 
 SPEC CHECKSUMS:
+  FSMUIViewController: c5e2c3269dfaa09816d31c422960d2ee0cb61e21
   GData: 8bd2d2883a084cf9d3fb75c083413df7c036f63e
   gtm-oauth2: af6d1ff3d4b14b35d3709f7f4bf2be8b43e45e62
   GTMHTTPFetcher: b0af09f18ec87e7a5edeffcc8cb6449fdbf0e83f
@@ -66,7 +67,6 @@ SPEC CHECKSUMS:
   SBJson: e60b4dc22448c2ae1e754b523a4ab53408e85c8d
   SmartNavigationController: 03aa24a8fad83bbb910b7ad6b1a255bdf564c941
   SSPullToRefresh: 8d8360b0ff0dc7b344656b48ddf9732c47e78806
-  StatefulUIViewController: fe5f5d7dd7bb72627e0c738ba33ef89fb87adc5b
   UITableViewAtBottomView: fb372036a11e91ba83fab1515545e3deea033f70
   UITableViewHeaderFormView: 47c112ca7f449e8fdf03b07bf7686c69d38ef3d3
   UITableViewHeaderMenuView: a8a2a8458a79f5ae37acf5ccb4469f9441b9c8cc

@@ -240,8 +240,6 @@
     GDataFeedBase *feed = [args objectForKey:tFeed];
     NSError *error = [args objectForKey:tError];
 
-    NSLog(@"number entries: %i", [[feed entries] count]);
-
     // if there is no error
 
     if (!error) {

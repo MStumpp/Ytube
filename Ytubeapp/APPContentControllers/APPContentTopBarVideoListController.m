@@ -19,20 +19,24 @@
     self = [super init];
     if (self) {
         NSLog(@"APPContentTopBarVideoListController");
+
         self.subtopbarWasVisible = TRUE;
 
-        /*__weak id weakSelf = self;
-        [[self configureDefaultState] onViewState:tDidInitViewState do:^{
-            NSLog(@"APPContentTopBarVideoListController: onViewState:tDidInitViewState");
-            // sets sub topbar to visible initially
-            //[weakSelf setSubtopbarWasVisible:TRUE]; //= TRUE;
-        }];
-        [[self configureDefaultState] onViewState:tDidAppearViewState do:^{
+        [[self configureAllStates] onViewState:tDidAppearViewState mode:tOut do:^{
             NSLog(@"APPContentTopBarVideoListController: onViewState:tDidAppearViewState");
             // shows sub topbar if was visible
-            //if (self.subtopbarWasVisible)
-            //    [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
-        }];   */
+            if ([self.tableViewHeaderFormView isHeaderShown])
+                [self setSubtopbarWasVisible:TRUE];
+            else
+                [self setSubtopbarWasVisible:FALSE];
+        }];
+
+        [[self configureAllStates] onViewState:tDidAppearViewState mode:tIn do:^{
+            NSLog(@"APPContentTopBarVideoListController: onViewState:tDidAppearViewState");
+            // shows sub topbar if was visible
+            if (self.subtopbarWasVisible)
+                [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
+        }];
     }
     return self;
 }
@@ -43,18 +47,6 @@
     NSLog(@"APPContentTopBarVideoListController: loadView");
     self.tableViewHeaderFormView = [[UITableViewHeaderFormView alloc] initWithRootView:self.tableView headerView:nil delegate:self];
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    if (self.subtopbarWasVisible)
-        [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
-}
-
--(void)resetController
-{
-    self.subtopbarWasVisible = TRUE;
-    [self viewDidAppear:TRUE];
 }
 
 -(BOOL)tableViewHeaderFormViewShouldShow:(UITableViewHeaderFormView*)view

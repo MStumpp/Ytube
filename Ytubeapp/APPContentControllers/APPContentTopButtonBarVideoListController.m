@@ -13,7 +13,7 @@
 -(void)subtopbarButtonPress:(UIButton*)sender
 {
     NSLog(@"subtopbarButtonPress");
-    [self.tableView toShowMode:[sender tag]];
+    [self toState:[NSString stringWithFormat:@"%d", [sender tag]]];
 }
 
 // "APPTableView" Protocol

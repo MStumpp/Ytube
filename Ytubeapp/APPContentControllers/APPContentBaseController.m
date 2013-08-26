@@ -17,11 +17,18 @@
     if (self) {
         NSLog(@"APPContentBaseController");
         self.isDefaultMode = TRUE;
-        
+
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
     }
     return self;
+}
+
+-(void)loadView
+{
+    [super loadView];
+    if ([[APPUserManager classInstance] isUserSignedIn])
+        [self toDefaultStateForce];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -35,15 +42,13 @@
 -(void)userSignedIn:(NSNotification*)notification
 {
     NSLog(@"userSignedIn");
-    [self resetController];
-    [self loadContent];
+    [self toDefaultStateForce];
 }
 
 -(void)userSignedOut:(NSNotification*)notification
 {
     NSLog(@"userSignedOut");
-    [self resetController];
-    [self clearContent];
+    [self toState:tClearState];
 }
 
 // "APPSliderViewControllerDelegate" Protocol
@@ -96,22 +101,9 @@
         callback();
 }
 
--(void)resetController
+-(void)processEvent:(NSNotification*)notification
 {
-    NSLog(@"resetController");
-    return;
-}
-
--(void)clearContent
-{
-    NSLog(@"clearContent");
-    return;
-}
-
--(void)loadContent
-{
-    NSLog(@"loadContent");
-    return;
+    NSLog(@"processEvent");
 }
 
 // other stuff
