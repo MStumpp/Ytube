@@ -35,6 +35,7 @@
                     [self.userImageView setImage:image];
             }];
         }];
+
         [self toDefaultStateForce];
     }
     return self;

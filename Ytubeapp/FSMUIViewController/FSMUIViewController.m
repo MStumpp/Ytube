@@ -12,9 +12,11 @@
 @property NSString *previousState;
 @property NSString *currentState;
 @property NSString *defState;
+@property NSString *allState;
 @property int currentControllerViewState;
 @property int currentProcessedViewState;
 @property NSMutableDictionary *states;
+@property NSMutableDictionary *all;
 @end
 
 @implementation FSMUIViewController
@@ -26,13 +28,17 @@
         self.previousState = nil;
         self.currentState = nil;
         self.defState = tDefaultState;
-        
+        self.allState = tAllState;
+
         self.currentControllerViewState = tDidInitViewState;
         self.currentProcessedViewState = self.currentControllerViewState;
         self.states = [NSMutableDictionary dictionary];
+        self.all = [NSMutableDictionary dictionary];
 
         // set up default state
         [self.states setObject:[[State alloc] initWithName:self.defState] forKey:self.defState];
+        // set up state representing all states
+        [self.states setObject:[[State alloc] initWithName:self.allState] forKey:self.allState];
     }
     return self;
 }
@@ -73,9 +79,9 @@
     return [[StateSet alloc] initWithStates:array];         
 }
 
--(StateSet*)configureAllStates
+-(State*)configureAllStates
 {
-   return [self configureStates:[self.states allKeys]]; 
+   return [self configureState:self.allState];
 }
 
 -(void)setDefaultState:(NSString*)state
@@ -89,6 +95,7 @@
     }
 
     State *tmp = [self.states objectForKey:self.defState];
+    [tmp setName:state];
     [self.states removeObjectForKey:self.defState];
     [self.states setObject:tmp forKey:state];
     self.defState = state;
@@ -200,9 +207,12 @@
 -(void)processStateOnInit
 {
     self.currentProcessedViewState = tDidInitViewState;
-    if (self.previousState)
+    if (self.previousState) {
         [(State*)[self.states objectForKey:self.previousState] processStateOut:self.currentProcessedViewState];
+        [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState];
+    }
     [(State*)[self.states objectForKey:self.currentState] processStateIn:self.currentProcessedViewState];
+    [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState];
     [self processStateOnViewDidLoad];
 }
 
@@ -212,9 +222,12 @@
         self.currentControllerViewState <= tDidAppearViewState) {
         if (self.currentProcessedViewState < tDidLoadViewState) {
             self.currentProcessedViewState = tDidLoadViewState;
-            if (self.previousState)
+            if (self.previousState) {
                 [(State*)[self.states objectForKey:self.previousState] processStateOut:self.currentProcessedViewState];
+                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState];
+            }
             [(State*)[self.states objectForKey:self.currentState] processStateIn:self.currentProcessedViewState];
+            [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState];
         }
         [self processStateOnViewWillAppear];
     }
@@ -226,9 +239,12 @@
         self.currentControllerViewState <= tDidAppearViewState) {
         if (self.currentProcessedViewState < tWillAppearViewState) {
             self.currentProcessedViewState = tWillAppearViewState;
-            if (self.previousState)
+            if (self.previousState) {
                 [(State*)[self.states objectForKey:self.previousState] processStateOut:self.currentProcessedViewState];
+                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState];
+            }
             [(State*)[self.states objectForKey:self.currentState] processStateIn:self.currentProcessedViewState];
+            [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState];
         }
         [self processStateOnViewDidAppear];
     }
@@ -240,9 +256,12 @@
         self.currentControllerViewState <= tDidAppearViewState) {
         if (self.currentProcessedViewState < tDidAppearViewState) {
             self.currentProcessedViewState = tDidAppearViewState;
-            if (self.previousState)
-                [(State*)[self.states objectForKey:self.previousState] processStateOut:self.currentProcessedViewState]; 
+            if (self.previousState) {
+                [(State*)[self.states objectForKey:self.previousState] processStateOut:self.currentProcessedViewState];
+                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState];
+            }
             [(State*)[self.states objectForKey:self.currentState] processStateIn:self.currentProcessedViewState];
+            [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState];
         }
     }
 }

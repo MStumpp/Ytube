@@ -33,11 +33,13 @@
 
 -(State*)onViewState:(int)viewState mode:(int)mode do:(ViewCallback)callback
 {
-    if (mode == tIn || mode == tInOut)
+    if (mode == tIn || mode == tInOut) {
         [self addTransitionInViewState:viewState do:callback];
+    }
 
-    if (mode == tOut || mode == tInOut)
+    if (mode == tOut || mode == tInOut) {
         [self addTransitionOutViewState:viewState do:callback];
+    }
 
     return self;
 }

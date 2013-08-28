@@ -11,6 +11,7 @@
 // states
 
 #define tDefaultState @"defaultState"
+#define tAllState @"allState"
 
 // view states
 

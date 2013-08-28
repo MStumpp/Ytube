@@ -19,15 +19,9 @@
 {
     self = [super init];
     if (self) {
-        [[self configureDefaultState] onViewState:tDidInitViewState do:^{
-            self.subtopbarWasVisible1 = TRUE;
-            self.subtopbarWasVisible2 = FALSE;
-        }];
-        [[self configureDefaultState] onViewState:tDidLoadViewState do:^{
-            // reloads table view content
-            [self.tableView clearViewAndReloadAll];
-            [self.tableView toDefaultShowMode];
-        }];
+        self.subtopbarWasVisible1 = TRUE;
+        self.subtopbarWasVisible2 = FALSE;
+
         [[self configureDefaultState] onViewState:tDidAppearViewState do:^{
             [self.tableViewHeaderFormView2 hideOnCompletion:^(BOOL isHidden) {
                 if (isHidden)

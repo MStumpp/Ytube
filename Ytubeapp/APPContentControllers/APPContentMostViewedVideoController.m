@@ -24,6 +24,8 @@
         [[self configureState:[NSString stringWithFormat:@"%d", tToday]] onViewState:tDidAppearViewState do:^{
             [self.tableView toShowMode:tToday];
         }];
+
+        [self toDefaultState];
     }
     return self;
 }
@@ -61,8 +63,6 @@
 
     [self.tableView addDefaultShowMode:tAll];
     [self.tableView addShowMode:tToday];
-
-    [self toDefaultStateForce];
 
     NSLog(@"APPContentMostViewedVideoController: loadView: end");
 }

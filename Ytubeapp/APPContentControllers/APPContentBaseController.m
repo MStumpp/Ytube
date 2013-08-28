@@ -20,15 +20,11 @@
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
+
+        if ([[APPUserManager classInstance] isUserSignedIn])
+            [self toDefaultStateForce];
     }
     return self;
-}
-
--(void)loadView
-{
-    [super loadView];
-    if ([[APPUserManager classInstance] isUserSignedIn])
-        [self toDefaultStateForce];
 }
 
 -(void)viewWillAppear:(BOOL)animated

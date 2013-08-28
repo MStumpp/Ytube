@@ -23,7 +23,7 @@
         self.subtopbarWasVisible = TRUE;
 
         [[self configureAllStates] onViewState:tDidAppearViewState mode:tOut do:^{
-            NSLog(@"APPContentTopBarVideoListController: onViewState:tDidAppearViewState");
+            NSLog(@"APPContentTopBarVideoListController: onViewState:tDidAppearViewState tOut");
             // shows sub topbar if was visible
             if ([self.tableViewHeaderFormView isHeaderShown])
                 [self setSubtopbarWasVisible:TRUE];
@@ -32,7 +32,7 @@
         }];
 
         [[self configureAllStates] onViewState:tDidAppearViewState mode:tIn do:^{
-            NSLog(@"APPContentTopBarVideoListController: onViewState:tDidAppearViewState");
+            NSLog(@"APPContentTopBarVideoListController: onViewState:tDidAppearViewState tIn");
             // shows sub topbar if was visible
             if (self.subtopbarWasVisible)
                 [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
@@ -98,6 +98,7 @@
 {
     NSLog(@"didShow");
     if (self.subtopbarWasVisible) {
+        NSLog(@"didShow self.subtopbarWasVisible");
         [self.tableViewHeaderFormView showOnCompletion:^(BOOL isShown) {
             if (callback)
                 callback();

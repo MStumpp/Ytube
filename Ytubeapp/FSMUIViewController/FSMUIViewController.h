@@ -18,7 +18,7 @@
 -(State*)configureDefaultState;
 
 -(StateSet*)configureStates:(NSArray*)states;
--(StateSet*)configureAllStates;
+-(State*)configureAllStates;
 
 -(void)setDefaultState:(NSString*)state;
 

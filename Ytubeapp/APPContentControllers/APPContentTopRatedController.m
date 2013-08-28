@@ -16,11 +16,6 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_top_rated"];
 
-        [self.tableView addDefaultShowMode:tAll];
-        [self.tableView addShowMode:tToday];
-        [self.tableView addShowMode:tWeek];
-        [self.tableView addShowMode:tMonth];
-
         [self toDefaultStateForce];
     }
     return self;
@@ -73,6 +68,11 @@
             buttonMonth, [NSNumber numberWithInt:tMonth],
             buttonAll, [NSNumber numberWithInt:tAll],
             nil];
+
+    [self.tableView addDefaultShowMode:tAll];
+    [self.tableView addShowMode:tToday];
+    [self.tableView addShowMode:tWeek];
+    [self.tableView addShowMode:tMonth];
 }
 
 -(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p

@@ -10,6 +10,15 @@
 #import "APPUserManager.h"
 #import "MBProgressHUD.h"
 #import "APPContentMostViewedVideoController.h"
+#import "APPContentTopSearchBarController.h"
+#import "APPContentTopRatedController.h"
+#import "APPContentTopFavoritesController.h"
+#import "APPContentFeaturedVideoController.h"
+#import "APPContentFavoritesController.h"
+#import "APPContentPlaylistListController.h"
+#import "APPContentHistoryController.h"
+#import "APPContentWatchLaterController.h"
+#import "APPContentMyVideoController.h"
 
 @interface APPSliderViewController ()
 // left, center and right area on this contoller
@@ -44,26 +53,16 @@
     self = [super init];
     if (self) {
         self.controllers = [[NSDictionary alloc] initWithObjectsAndKeys:
-                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tSearch],
+                            [[APPContentTopSearchBarController alloc] init], [NSNumber numberWithInt:tSearch],
                             [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tMostPopular],
-                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:ttopRated],
-                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:ttopFavorites],
-                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tRecentlyFeatured],
-                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tFavorites],
-                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tPlaylists],
-                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tHistory],
-                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tWatchLater],
-                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tMyVideos],
-                            /*
-                            [[APPMostViewedViewController alloc] init], [NSNumber numberWithInt:tMostPopular],
-                            [[APPTopRatedViewController alloc] init], [NSNumber numberWithInt:ttopRated],
-                            [[APPTopFavoritesViewController alloc] init], [NSNumber numberWithInt:ttopFavorites],
-                            [[APPFeaturedViewController alloc] init], [NSNumber numberWithInt:tRecentlyFeatured],
-                            [[APPFavoritesViewController alloc] init], [NSNumber numberWithInt:tFavorites],
-                            [[APPPlaylistsViewController alloc] init], [NSNumber numberWithInt:tPlaylists],
-                            [[APPHistoryViewController alloc] init], [NSNumber numberWithInt:tHistory],
-                            [[APPWatchLaterViewController alloc] init], [NSNumber numberWithInt:tWatchLater],
-                            [[APPMyVideosViewController alloc] init], [NSNumber numberWithInt:tMyVideos],*/
+                            [[APPContentTopRatedController alloc] init], [NSNumber numberWithInt:ttopRated],
+                            [[APPContentTopFavoritesController alloc] init], [NSNumber numberWithInt:ttopFavorites],
+                            [[APPContentFeaturedVideoController alloc] init], [NSNumber numberWithInt:tRecentlyFeatured],
+                            [[APPContentFavoritesController alloc] init], [NSNumber numberWithInt:tFavorites],
+                            [[APPContentPlaylistListController alloc] init], [NSNumber numberWithInt:tPlaylists],
+                            [[APPContentHistoryController alloc] init], [NSNumber numberWithInt:tHistory],
+                            [[APPContentWatchLaterController alloc] init], [NSNumber numberWithInt:tWatchLater],
+                            [[APPContentMyVideoController alloc] init], [NSNumber numberWithInt:tMyVideos],
                             nil];
         self.defaultContext = tMostPopular;
         self.currentContext = self.defaultContext;

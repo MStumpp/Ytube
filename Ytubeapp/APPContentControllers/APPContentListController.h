@@ -10,5 +10,5 @@
 #import "APPContentBaseController.h"
 
 @interface APPContentListController : APPContentBaseController <APPTableViewDelegate, SelectDelegate>
-@property (nonatomic, strong) APPTableView<APPTableViewProcessResponse> *tableView;
+@property (nonatomic, strong) APPTableView *tableView;
 @end

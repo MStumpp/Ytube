@@ -31,11 +31,13 @@
 -(StateSet*)onViewState:(int)viewState mode:(int)mode do:(ViewCallback)callback
 {
     [self.states enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
-        if (mode == tIn || mode == tInOut)
+        if (mode == tIn || mode == tInOut) {
             [object addTransitionInViewState:viewState do:callback];
+        }
 
-        if (mode == tOut || mode == tInOut)
+        if (mode == tOut || mode == tInOut) {
             [object addTransitionOutViewState:viewState do:callback];
+        }
     }];
     return self;
 }
