@@ -10,7 +10,7 @@
 
 @implementation APPContentListController
 
--(id)initWithTag:(int)tag
+-(id)init
 {
     self = [super init];
     if (self) {
@@ -31,6 +31,7 @@
     NSLog(@"APPContentListController: loadView");
     self.tableView = [[APPTableView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height-44.0) style:UITableViewStylePlain];
     self.tableView._del = self;
+    [self.view addSubview:self.tableView];
 }
 
 -(NSIndexPath*)tableView:(UITableView*)tableView forMode:(int)mode willSelectRowAtIndexPath:(NSIndexPath*)indexPath

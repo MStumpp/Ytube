@@ -125,7 +125,9 @@
 
 -(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return [self._del tableView:tableView canEditRowAtIndexPath:indexPath];
+    return TRUE;
+
+    //return [self._del tableView:tableView canEditRowAtIndexPath:indexPath];
 
     //    if (self.tmpEditingCell) {
     //        if ([self.tmpEditingCell row] == [indexPath row])

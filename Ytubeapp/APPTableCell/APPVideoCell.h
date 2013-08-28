@@ -10,5 +10,5 @@
 #import "APPTableCell.h"
 
 @interface APPVideoCell : APPTableCell
--(void)setVideo:(GDataEntryYouTubeVideo*)video;
+-(void)setVideo:(GDataEntryYouTubeVideo*)v;
 @end

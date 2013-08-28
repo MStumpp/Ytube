@@ -47,6 +47,7 @@
 @synthesize numberdislikes;
 @synthesize views;
 @synthesize durationinseconds;
+@synthesize video;
 
 -(id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier
 {
@@ -221,9 +222,9 @@
     }
 }
 
--(void)setVideo:(GDataEntryYouTubeVideo*)video
+-(void)setVideo:(GDataEntryYouTubeVideo*)v
 {
-    self.video = video;
+    video = v;
 
     self.title = [[self.video title] stringValue];
     self.subtitle = [[self.video title] stringValue];
