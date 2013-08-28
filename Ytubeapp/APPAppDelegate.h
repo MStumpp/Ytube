@@ -6,10 +6,15 @@
 //  Copyright (c) 2012 Matthias Stumpp. All rights reserved.
 //
 
+
 #import <UIKit/UIKit.h>
-#import "GDataServiceGoogleYouTube.h"
 
 @class APPIndexViewController;
 
 @interface APPAppDelegate : UIResponder <UIApplicationDelegate>
+
+@property (strong, nonatomic) UIWindow *window;
+
+@property (strong, nonatomic) APPIndexViewController *viewController;
+
 @end
