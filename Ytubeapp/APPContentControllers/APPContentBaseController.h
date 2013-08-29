@@ -19,11 +19,14 @@
 #import "FSMUIViewController.h"
 
 #define tClearState @"clearState"
+#define tActiveState @"activeState"
+#define tPassiveState @"passiveState"
 
 @interface APPContentBaseController : FSMUIViewController
 @property UIImage *topbarImage;
 @property NSString *topbarTitle;
 @property BOOL isDefaultMode;
+@property NSString *lastActiveState;
 -(void)didShow:(void (^)(void))callback;
 -(void)willHide:(void (^)(void))callback;
 -(void)processEvent:(NSNotification*)notification;

@@ -8,11 +8,6 @@
 
 #import "State.h"
 
-@interface State()
-@property NSMutableDictionary *transitionIn;
-@property NSMutableDictionary *transitionOut;
-@end
-
 @implementation State
 
 -(id)initWithName:(NSString*)name
@@ -34,10 +29,12 @@
 -(State*)onViewState:(int)viewState mode:(int)mode do:(ViewCallback)callback
 {
     if (mode == tIn || mode == tInOut) {
+        NSLog(@"State: onViewState: %i in: %@", viewState, self.name);
         [self addTransitionInViewState:viewState do:callback];
     }
 
     if (mode == tOut || mode == tInOut) {
+        NSLog(@"State: onViewState: %i out: %@", viewState, self.name);
         [self addTransitionOutViewState:viewState do:callback];
     }
 
@@ -64,8 +61,10 @@
 
 -(BOOL)processStateIn:(int)viewState
 {
+    NSLog(@"testtest: %i and name: %@", viewState, self.name);
     if ([self.transitionIn objectForKey:[NSNumber numberWithInteger:viewState]]) {
         [[self.transitionIn objectForKey:[NSNumber numberWithInteger:viewState]] enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+            NSLog(@"testtest2: %i and name: %@", viewState, self.name);
             ((ViewCallback)object)();
         }];
     }
@@ -80,6 +79,25 @@
         }];
     }
     return TRUE;
+}
+
+-(void)mergeState:(State*)state
+{
+    [[state transitionIn] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        if (obj && [obj isKindOfClass:[NSArray class]]) {
+            [obj enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+                [self onViewState:[(NSNumber*)key intValue] mode:tIn do:object];
+            }];
+        }
+    }];
+
+    [[state transitionOut] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        if (obj && [obj isKindOfClass:[NSArray class]]) {
+            [obj enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+                [self onViewState:[(NSNumber*)key intValue] mode:tOut do:object];
+            }];
+        }
+    }];
 }
 
 @end

@@ -34,7 +34,6 @@ PODS:
   - SmartNavigationController (0.0.2)
   - SSPullToRefresh (1.1.2)
   - UITableViewAtBottomView (0.0.1)
-  - UITableViewHeaderFormView (0.0.1)
   - UITableViewHeaderMenuView (0.0.1)
   - UITableViewMaskView (0.0.1)
   - UITableViewSwipeView (0.0.1)
@@ -48,7 +47,6 @@ DEPENDENCIES:
   - SmartNavigationController (~> 0.0.2)
   - SSPullToRefresh (~> 1.1.2)
   - UITableViewAtBottomView (~> 0.0.1)
-  - UITableViewHeaderFormView (~> 0.0.1)
   - UITableViewHeaderMenuView (~> 0.0.1)
   - UITableViewMaskView (~> 0.0.1)
   - UITableViewSwipeView (~> 0.0.1)
@@ -65,7 +63,6 @@ SPEC CHECKSUMS:
   SmartNavigationController: 03aa24a8fad83bbb910b7ad6b1a255bdf564c941
   SSPullToRefresh: 8d8360b0ff0dc7b344656b48ddf9732c47e78806
   UITableViewAtBottomView: fb372036a11e91ba83fab1515545e3deea033f70
-  UITableViewHeaderFormView: 47c112ca7f449e8fdf03b07bf7686c69d38ef3d3
   UITableViewHeaderMenuView: a8a2a8458a79f5ae37acf5ccb4469f9441b9c8cc
   UITableViewMaskView: 0c2f9c83b56d11634c1894f870a32d21ccfeafbb
   UITableViewSwipeView: 1a85aa008264d1aae343967fb8074748e546d101

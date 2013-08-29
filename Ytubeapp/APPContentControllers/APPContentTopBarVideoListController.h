@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "APPContentVideoListController.h"
+#import "UITableViewHeaderFormView.h"
 
 static bool downAtTopOnly = TRUE;
 static int downAtTopDistance = 40;

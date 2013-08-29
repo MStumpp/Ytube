@@ -31,4 +31,11 @@
 -(BOOL)toDefaultStateForce;
 
 -(BOOL)transitionFrom:(State*)from to:(State*)to;
+
+// query
+
+-(NSString*)state;
+-(NSString*)prevState;
+-(BOOL)inState:(NSString*)state;
+
 @end

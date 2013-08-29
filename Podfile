@@ -7,7 +7,6 @@ pod 'QueryManager', '~> 0.0.13'
 
 pod 'SmartNavigationController', '~> 0.0.2'
 pod 'UITableViewAtBottomView', '~> 0.0.1'
-pod 'UITableViewHeaderFormView', '~> 0.0.1'
 pod 'UITableViewHeaderMenuView', '~> 0.0.1'
 pod 'UITableViewMaskView', '~> 0.0.1'
 pod 'UITableViewSwipeView', '~> 0.0.1'

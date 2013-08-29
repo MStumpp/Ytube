@@ -53,16 +53,16 @@
     self = [super init];
     if (self) {
         self.controllers = [[NSDictionary alloc] initWithObjectsAndKeys:
-                            [[APPContentTopSearchBarController alloc] init], [NSNumber numberWithInt:tSearch],
+                            /*[[APPContentTopSearchBarController alloc] init], [NSNumber numberWithInt:tSearch],*/
                             [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tMostPopular],
-                            [[APPContentTopRatedController alloc] init], [NSNumber numberWithInt:ttopRated],
+                            /*[[APPContentTopRatedController alloc] init], [NSNumber numberWithInt:ttopRated],
                             [[APPContentTopFavoritesController alloc] init], [NSNumber numberWithInt:ttopFavorites],
                             [[APPContentFeaturedVideoController alloc] init], [NSNumber numberWithInt:tRecentlyFeatured],
                             [[APPContentFavoritesController alloc] init], [NSNumber numberWithInt:tFavorites],
                             [[APPContentPlaylistListController alloc] init], [NSNumber numberWithInt:tPlaylists],
                             [[APPContentHistoryController alloc] init], [NSNumber numberWithInt:tHistory],
                             [[APPContentWatchLaterController alloc] init], [NSNumber numberWithInt:tWatchLater],
-                            [[APPContentMyVideoController alloc] init], [NSNumber numberWithInt:tMyVideos],
+                            [[APPContentMyVideoController alloc] init], [NSNumber numberWithInt:tMyVideos],*/
                             nil];
         self.defaultContext = tMostPopular;
         self.currentContext = self.defaultContext;

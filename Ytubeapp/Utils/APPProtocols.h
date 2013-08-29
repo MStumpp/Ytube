@@ -18,11 +18,11 @@
 
 // showMode
 
-#define tToday 01
-#define tWeek 02
-#define tMonth 03
-#define tAll 04
-#define tDefault 05
+#define tToday 1
+#define tWeek 2
+#define tMonth 3
+#define tAll 4
+#define tDefault 5
 
 // Content
 

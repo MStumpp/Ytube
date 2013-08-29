@@ -24,8 +24,6 @@
         [[self configureState:[NSString stringWithFormat:@"%d", tToday]] onViewState:tDidAppearViewState do:^{
             [self.tableView toShowMode:tToday];
         }];
-
-        [self toDefaultState];
     }
     return self;
 }

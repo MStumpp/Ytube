@@ -22,20 +22,25 @@
 
         self.subtopbarWasVisible = TRUE;
 
-        [[self configureAllStates] onViewState:tDidAppearViewState mode:tOut do:^{
-            NSLog(@"APPContentTopBarVideoListController: onViewState:tDidAppearViewState tOut");
+        [[self configureState:tPassiveState] onViewState:tDidAppearViewState mode:tIn do:^{
+            NSLog(@"APPContentTopBarVideoListController: configureState:tPassiveState onViewState:tDidAppearViewState tIn");
             // shows sub topbar if was visible
-            if ([self.tableViewHeaderFormView isHeaderShown])
+            self.lastActiveState = [self prevState];
+            if ([self.tableViewHeaderFormView isHeaderShown]) {
                 [self setSubtopbarWasVisible:TRUE];
-            else
+            } else {
                 [self setSubtopbarWasVisible:FALSE];
+            }
+            [self.tableViewHeaderFormView hideOnCompletion:nil animated:YES];
         }];
 
-        [[self configureAllStates] onViewState:tDidAppearViewState mode:tIn do:^{
-            NSLog(@"APPContentTopBarVideoListController: onViewState:tDidAppearViewState tIn");
+        [[self configureStates:@[[NSString stringWithFormat:@"%d", tAll], [NSString stringWithFormat:@"%d", tToday]]]
+                onViewState:tDidAppearViewState mode:tIn do:^{
+            NSLog(@"APPContentTopBarVideoListController: configureStates:tAll, tToday onViewState:tDidAppearViewState tIn");
             // shows sub topbar if was visible
-            if (self.subtopbarWasVisible)
+            if (self.subtopbarWasVisible) {
                 [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
+            }
         }];
     }
     return self;
@@ -51,9 +56,11 @@
 
 -(BOOL)tableViewHeaderFormViewShouldShow:(UITableViewHeaderFormView*)view
 {
-    if (!self.isDefaultMode) {
+    if ([@[[NSString stringWithFormat:@"%d", tAll], [NSString stringWithFormat:@"%d", tToday]] containsObject:[self state]]) {
+        NSLog(@"tableViewHeaderFormViewShouldShow: TRUE");
         return TRUE;
     } else {
+        NSLog(@"tableViewHeaderFormViewShouldShow: FALSE");
         return FALSE;
     }
 }
@@ -77,37 +84,37 @@
     }
 }
 
--(void)willHide:(void (^)(void))callback
-{
-    NSLog(@"willHide");
-    if ([self.tableViewHeaderFormView isHeaderShown]) {
-        self.subtopbarWasVisible = TRUE;
-        [self.tableViewHeaderFormView hideOnCompletion:^(BOOL isHidden) {
-            if (callback)
-                callback();
-        } animated:YES];
-
-    } else {
-        self.subtopbarWasVisible = FALSE;
-        if (callback)
-            callback();
-    }
-}
-
--(void)didShow:(void (^)(void))callback
-{
-    NSLog(@"didShow");
-    if (self.subtopbarWasVisible) {
-        NSLog(@"didShow self.subtopbarWasVisible");
-        [self.tableViewHeaderFormView showOnCompletion:^(BOOL isShown) {
-            if (callback)
-                callback();
-        }  animated:YES];
-
-    } else {
-        if (callback)
-            callback();
-    }
-}
+//-(void)willHide:(void (^)(void))callback
+//{
+//    NSLog(@"willHide");
+//    if ([self.tableViewHeaderFormView isHeaderShown]) {
+//        self.subtopbarWasVisible = TRUE;
+//        [self.tableViewHeaderFormView hideOnCompletion:^(BOOL isHidden) {
+//            if (callback)
+//                callback();
+//        } animated:YES];
+//
+//    } else {
+//        self.subtopbarWasVisible = FALSE;
+//        if (callback)
+//            callback();
+//    }
+//}
+//
+//-(void)didShow:(void (^)(void))callback
+//{
+//    NSLog(@"didShow");
+//    if (self.subtopbarWasVisible) {
+//        NSLog(@"didShow self.subtopbarWasVisible");
+//        [self.tableViewHeaderFormView showOnCompletion:^(BOOL isShown) {
+//            if (callback)
+//                callback();
+//        }  animated:YES];
+//
+//    } else {
+//        if (callback)
+//            callback();
+//    }
+//}
 
 @end

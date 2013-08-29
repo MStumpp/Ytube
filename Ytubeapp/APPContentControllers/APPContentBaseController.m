@@ -52,7 +52,11 @@
 -(void)doDefaultMode:(void (^)(void))callback;
 {
     NSLog(@"doDefaultMode");
-    if (self.isDefaultMode) {
+    [self toState:tPassiveState];
+    if (callback)
+        callback();
+
+    /*if (self.isDefaultMode) {
         if (callback)
             callback();
         return;
@@ -63,13 +67,18 @@
             callback();
     }];
 
-    self.isDefaultMode = TRUE;
+    self.isDefaultMode = TRUE;*/
 }
 
 -(void)undoDefaultMode:(void (^)(void))callback;
 {
     NSLog(@"undoDefaultMode");
-    if (!self.isDefaultMode) {
+    NSLog(@"lastActiveState: %@", self.lastActiveState);
+    [self toState:self.lastActiveState];
+    if (callback)
+        callback();
+
+    /*if (!self.isDefaultMode) {
         if (callback)
             callback();
         return;
@@ -80,22 +89,22 @@
             callback();
     }];
 
-    self.isDefaultMode = FALSE;
+    self.isDefaultMode = FALSE;*/
 }
 
--(void)willHide:(void (^)(void))callback
-{
-    NSLog(@"willHide");
-    if (callback)
-        callback();
-}
-
--(void)didShow:(void (^)(void))callback
-{
-    NSLog(@"didShow");
-    if (callback)
-        callback();
-}
+//-(void)willHide:(void (^)(void))callback
+//{
+//    NSLog(@"willHide");
+//    if (callback)
+//        callback();
+//}
+//
+//-(void)didShow:(void (^)(void))callback
+//{
+//    NSLog(@"didShow");
+//    if (callback)
+//        callback();
+//}
 
 -(void)processEvent:(NSNotification*)notification
 {

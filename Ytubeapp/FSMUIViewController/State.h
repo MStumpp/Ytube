@@ -34,6 +34,8 @@ typedef void(^ViewCallback)();
 
 @interface State : NSObject
 @property NSString *name;
+@property NSMutableDictionary *transitionIn;
+@property NSMutableDictionary *transitionOut;
 -(id)initWithName:(NSString*)name;
 
 -(State*)onViewState:(int)viewState do:(ViewCallback)callback;
@@ -44,4 +46,7 @@ typedef void(^ViewCallback)();
 
 -(BOOL)processStateIn:(int)viewState;
 -(BOOL)processStateOut:(int)viewState;
+
+// merging
+-(void)mergeState:(State*)state;
 @end
