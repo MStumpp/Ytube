@@ -25,9 +25,5 @@
 @interface APPContentBaseController : FSMUIViewController
 @property UIImage *topbarImage;
 @property NSString *topbarTitle;
-@property BOOL isDefaultMode;
-@property NSString *lastActiveState;
--(void)didShow:(void (^)(void))callback;
--(void)willHide:(void (^)(void))callback;
 -(void)processEvent:(NSNotification*)notification;
 @end

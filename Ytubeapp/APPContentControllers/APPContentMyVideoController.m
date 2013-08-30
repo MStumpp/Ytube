@@ -15,8 +15,6 @@
     self = [super init];
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_my_videos"];
-
-        [self toDefaultStateForce];
     }
     return self;
 }

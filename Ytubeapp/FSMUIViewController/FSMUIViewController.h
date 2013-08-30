@@ -34,8 +34,10 @@
 
 // query
 
--(NSString*)state;
--(NSString*)prevState;
+-(State*)state:(NSString*)state;
+-(State*)defaultState;
+-(State*)currentState;
+-(State*)prevState;
 -(BOOL)inState:(NSString*)state;
 
 @end

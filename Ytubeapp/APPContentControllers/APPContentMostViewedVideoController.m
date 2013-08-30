@@ -14,15 +14,14 @@
 {
     self = [super init];
     if (self) {
-        NSLog(@"APPContentMostViewedVideoController");
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_most_popular"];
 
-        // configure tAll as default state
-        [self setDefaultState:[NSString stringWithFormat:@"%d", tAll]];
+        // configure tToday as default state
+        [self setDefaultState:[NSString stringWithFormat:@"%d", tToday]];
 
-        // configure tToday state
-        [[self configureState:[NSString stringWithFormat:@"%d", tToday]] onViewState:tDidAppearViewState do:^{
-            [self.tableView toShowMode:tToday];
+        // configure tAll state
+        [[self configureState:[NSString stringWithFormat:@"%d", tAll]] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toShowMode:tAll];
         }];
     }
     return self;
@@ -31,7 +30,6 @@
 - (void)loadView
 {
     [super loadView];
-    NSLog(@"APPContentMostViewedVideoController: loadView: start");
 
     UIControl *subtopbarContainer = [[UIControl alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0)];
     [subtopbarContainer addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sub_top_bar_back"]]];
@@ -59,21 +57,17 @@
              buttonAll, [NSNumber numberWithInt:tAll],
              nil];
 
-    [self.tableView addDefaultShowMode:tAll];
-    [self.tableView addShowMode:tToday];
-
-    NSLog(@"APPContentMostViewedVideoController: loadView: end");
+    [self.tableView addDefaultShowMode:tToday];
+    [self.tableView addShowMode:tAll];
 }
 
 -(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p
 {
-    NSLog(@"reloadDataConcreteForShowMode");
     return [APPQueryHelper mostViewedVideosOnShowMode:mode withPrio:p delegate:tableView];
 }
 
 -(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)p
 {
-    NSLog(@"loadMoreDataConcreteForShowMode");
     return [APPQueryHelper fetchMore:feed showMode:mode withPrio:p delegate:tableView];
 }
 

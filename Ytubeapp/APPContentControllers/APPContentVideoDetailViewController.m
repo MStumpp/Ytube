@@ -49,12 +49,12 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventVideoLiked object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventVideoUnliked object:nil];
 
-        [[self configureDefaultState] onViewState:tDidLoadViewState do:^{
+        [[self configureDefaultState] onViewState:tDidLoadViewState do:^(State *this, State *other){
             // reloads table view content
             [self.tableView clearViewAndReloadAll];
             [self.tableView toDefaultShowMode];
         }];
-        [[self configureDefaultState] onViewState:tDidAppearViewState do:^{
+        [[self configureDefaultState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [self.tableViewHeaderFormView hideOnCompletion:nil animated:YES];
             [self.tableView scrollsToTop];
         }];
@@ -398,7 +398,7 @@
 
 -(void)tableView:(UITableView*)tableView forMode:(int)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    if (self.isDefaultMode)
+    if ([self inState:tPassiveState])
         return;
 
     if (mode == tRelatedVideos) {

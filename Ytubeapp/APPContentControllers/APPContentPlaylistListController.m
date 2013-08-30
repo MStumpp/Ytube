@@ -24,8 +24,6 @@
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedPlaylist object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventDeletedPlaylist object:nil];
-
-        [self toDefaultStateForce];
     }
     return self;
 }
@@ -116,7 +114,7 @@
 
 -(void)tableView:(UITableView*)tableView forMode:(int)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    if (self.isDefaultMode)
+    if ([self inState:tPassiveState])
         return;
 
     GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];

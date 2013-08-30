@@ -12,7 +12,6 @@
 
 -(void)subtopbarButtonPress:(UIButton*)sender
 {
-    NSLog(@"subtopbarButtonPress");
     [self toState:[NSString stringWithFormat:@"%d", [sender tag]]];
 }
 
@@ -20,14 +19,12 @@
 
 -(void)beforeShowModeChange
 {
-    NSLog(@"beforeShowModeChange");
     if ([self.tableView showMode] && [self.buttons objectForKey:[NSNumber numberWithInt:[self.tableView showMode]]])
         [[self.buttons objectForKey:[NSNumber numberWithInt:[self.tableView showMode]]] setSelected:NO];
 }
 
 -(void)afterShowModeChange
 {
-    NSLog(@"afterShowModeChange");
     if ([self.tableView showMode] && [self.buttons objectForKey:[NSNumber numberWithInt:[self.tableView showMode]]])
         [[self.buttons objectForKey:[NSNumber numberWithInt:[self.tableView showMode]]] setSelected:YES];
 }

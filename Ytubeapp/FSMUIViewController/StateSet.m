@@ -32,18 +32,6 @@
 {
     [self.states enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
         [object onViewState:viewState mode:mode do:callback];
-
-//        if (mode == tIn || mode == tInOut) {
-//            NSLog(@"StateSet: onViewState: in: %@", [object name]);
-//
-//
-//            [object addTransitionInViewState:viewState do:callback];
-//        }
-//
-//        if (mode == tOut || mode == tInOut) {
-//            NSLog(@"StateSet: onViewState: out: %@", [object name]);
-//            [object addTransitionOutViewState:viewState do:callback];
-//        }
     }];
     return self;
 }

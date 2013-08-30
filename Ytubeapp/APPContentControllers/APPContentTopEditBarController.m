@@ -14,7 +14,7 @@
 {
     self = [super init];
     if (self) {
-        [[self configureDefaultState] onViewState:tWillAppearViewState do:^{
+        [[self configureDefaultState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [self.editButton setSelected:NO];
             [self.tableView setEditing:NO animated:YES];
         }];

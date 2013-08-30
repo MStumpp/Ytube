@@ -96,7 +96,6 @@
 
 - (void)showOnCompletion:(void (^)(BOOL isShown))callback animated:(BOOL)animated;
 {
-    NSLog(@"showOnCompletion");
     if (self._headerView && self._headerView.frame.origin.y != 0.0) {
         
         if ([self._delegate respondsToSelector:@selector(tableViewHeaderFormViewShouldShow:)]) {

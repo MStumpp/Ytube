@@ -14,7 +14,6 @@
 
 -(APPTableCell*)tableView:(UITableView*)tableView forMode:(int)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    NSLog(@"cellForRowAtIndexPath");
     APPVideoCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPVideoCell"];
     if (cell == nil)
         cell = [[APPVideoCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPVideoCell"];
@@ -25,8 +24,7 @@
 
 -(void)tableView:(UITableView*)tableView forMode:(int)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    NSLog(@"didSelectRowAtIndexPath");
-    if (self.isDefaultMode)
+    if ([self inState:tPassiveState])
         return;
 
     GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];

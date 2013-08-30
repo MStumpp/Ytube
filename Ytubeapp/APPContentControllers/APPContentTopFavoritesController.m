@@ -16,7 +16,23 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_top_favorites"];
 
-        [self toDefaultStateForce];
+        // configure tToday as default state
+        [self setDefaultState:[NSString stringWithFormat:@"%d", tToday]];
+
+        // configure tWeek state
+        [[self configureState:[NSString stringWithFormat:@"%d", tWeek]] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toShowMode:tWeek];
+        }];
+
+        // configure tMonth state
+        [[self configureState:[NSString stringWithFormat:@"%d", tMonth]] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toShowMode:tMonth];
+        }];
+
+        // configure tAll state
+        [[self configureState:[NSString stringWithFormat:@"%d", tAll]] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toShowMode:tAll];
+        }];
     }
     return self;
 }
@@ -69,10 +85,10 @@
             buttonAll, [NSNumber numberWithInt:tAll],
             nil];
 
-    [self.tableView addDefaultShowMode:tAll];
-    [self.tableView addShowMode:tToday];
+    [self.tableView addDefaultShowMode:tToday];
     [self.tableView addShowMode:tWeek];
     [self.tableView addShowMode:tMonth];
+    [self.tableView addShowMode:tAll];
 }
 
 -(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p

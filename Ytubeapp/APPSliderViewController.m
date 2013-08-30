@@ -53,16 +53,16 @@
     self = [super init];
     if (self) {
         self.controllers = [[NSDictionary alloc] initWithObjectsAndKeys:
-                            /*[[APPContentTopSearchBarController alloc] init], [NSNumber numberWithInt:tSearch],*/
+                            [[APPContentTopSearchBarController alloc] init], [NSNumber numberWithInt:tSearch],
                             [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tMostPopular],
-                            /*[[APPContentTopRatedController alloc] init], [NSNumber numberWithInt:ttopRated],
+                            [[APPContentTopRatedController alloc] init], [NSNumber numberWithInt:ttopRated],
                             [[APPContentTopFavoritesController alloc] init], [NSNumber numberWithInt:ttopFavorites],
                             [[APPContentFeaturedVideoController alloc] init], [NSNumber numberWithInt:tRecentlyFeatured],
                             [[APPContentFavoritesController alloc] init], [NSNumber numberWithInt:tFavorites],
                             [[APPContentPlaylistListController alloc] init], [NSNumber numberWithInt:tPlaylists],
                             [[APPContentHistoryController alloc] init], [NSNumber numberWithInt:tHistory],
                             [[APPContentWatchLaterController alloc] init], [NSNumber numberWithInt:tWatchLater],
-                            [[APPContentMyVideoController alloc] init], [NSNumber numberWithInt:tMyVideos],*/
+                            [[APPContentMyVideoController alloc] init], [NSNumber numberWithInt:tMyVideos],
                             nil];
         self.defaultContext = tMostPopular;
         self.currentContext = self.defaultContext;
@@ -74,8 +74,6 @@
 
 -(void)loadView
 {
-    NSLog(@"APPSliderViewController: start");
-
     CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
     UIView *contentView = [[UIView alloc] initWithFrame:applicationFrame];
     self.view = contentView;
@@ -220,9 +218,6 @@
     [MBProgressHUD showHUDAddedTo:progressView animated:YES];
     [maskView setCustomMaskView:progressView];
     self.view = maskView;
-
-    NSLog(@"check1");
-    NSLog(@"APPSliderViewController: end");
 }
 
 -(void)viewDidLoad
@@ -231,9 +226,7 @@
     CGRect frame = self.view.frame;
     frame.origin.y = frame.origin.y - 20.0;
     self.view.frame = frame;
-    NSLog(@"check2");
     [self toggleContext:self.currentContext];
-    NSLog(@"check3");
 }
 
 // moves the slider to the left

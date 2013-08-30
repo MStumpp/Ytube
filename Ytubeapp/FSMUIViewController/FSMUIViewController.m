@@ -9,8 +9,8 @@
 #import "FSMUIViewController.h"
 
 @interface FSMUIViewController ()
-@property NSString *previousState;
-@property NSString *currentState;
+@property State *previousState;
+@property State *currState;
 @property NSString *defState;
 @property NSString *allState;
 @property int currentControllerViewState;
@@ -26,7 +26,7 @@
     self = [super init];
     if (self) {
         self.previousState = nil;
-        self.currentState = nil;
+        self.currState = nil;
         self.defState = tDefaultState;
         self.allState = tAllState;
 
@@ -39,8 +39,6 @@
         [self.states setObject:[[State alloc] initWithName:self.defState] forKey:self.defState];
         // set up state representing all states
         [self.states setObject:[[State alloc] initWithName:self.allState] forKey:self.allState];
-
-        [self toDefaultState];
     }
     return self;
 }
@@ -54,10 +52,7 @@
         return NULL;    
     }
 
-    if (![self.states objectForKey:state])
-        [self.states setObject:[[State alloc] initWithName:state] forKey:state];
-
-    return [self.states objectForKey:state];
+    return [self getOrNewState:state];
 }
 
 -(State*)configureDefaultState
@@ -74,10 +69,7 @@
 
     NSMutableArray *array = [[NSMutableArray alloc] init];
     [states enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
-        if (![self.states objectForKey:object])
-            [self.states setObject:[[State alloc] initWithName:object] forKey:object];
-        NSLog(@"configureStates: %@", object);
-        [array addObject:[self.states objectForKey:object]];
+        [array addObject:[self getOrNewState:object]];
     }]; 
 
     return [[StateSet alloc] initWithStates:array];         
@@ -94,55 +86,58 @@
         NSLog(@"state must be provided");
     }
 
-    NSLog(@"setDefaultState1: %@", state);
-
     if ([self.defState isEqualToString:state]) {
         NSLog(@"current default state is equal to requested state");
     }
-
-    NSLog(@"setDefaultState2: %@", state);
 
     State *tmp = [self.states objectForKey:self.defState];
     [tmp setName:state];
 
     // merge callbacks from state to be requested as default state
     // into current default state object
-    if ([self.states objectForKey:state])
-        [tmp mergeState:[self.states objectForKey:state]];
-    // if current state is default state, process callback until view state
-    if ([self.currentState isEqualToString:self.defState]) {
-        self.currentState = state;
-        [self processOnInitForPrev:nil andCurrent:[self.states objectForKey:self.currentState]];
+    State *oldState = [self.states objectForKey:state];
+    if (oldState) {
+        // merge viw callbacks in
+        [tmp mergeState:oldState];
+        // remove object which has been eventually merged
+        [self.states removeObjectForKey:oldState.name];
     }
-    // remove object which has been eventually merged
-    [self.states removeObjectForKey:state];
+
+    // if current state is default state, process callback until view state
+    if (self.currState && [self.currState.name isEqualToString:self.defState]) {
+        self.currState = tmp;
+        [self processOnInitForPrev:nil andCurrent:self.currState];
+    }
 
     // further process default state
     [self.states removeObjectForKey:self.defState];
     [self.states setObject:tmp forKey:state];
     self.defState = state;
-    NSLog(@"setDefaultState3: %@", self.defState);
 }
 
 // state transition
 
 -(BOOL)toDefaultState
 {
+    NSLog(@"toDefaultState");
     return [self toState:self.defState];
 }
 
 -(BOOL)toState:(NSString*)state
 {
-    if (!state || ![self.states objectForKey:state]) {
-        NSLog(@"state doesn't exists");
+    if (!state) {
+        NSLog(@"state must not be nil");
         return FALSE;
     }
-        
-    if (![self.currentState isEqualToString:state])
-        return [self toStateForce:state];
 
-    NSLog(@"already in requested state");
-    return FALSE;      
+    State *tmp = [self getOrNewState:state];
+
+    if (self.currState && [self.currState.name isEqualToString:tmp.name]) {
+        NSLog(@"already in requested state");
+        return FALSE;
+    }
+
+    return [self toStateForce:state];
 }
 
 -(BOOL)toDefaultStateForce
@@ -152,45 +147,74 @@
 
 -(BOOL)toStateForce:(NSString*)state
 {
-    if (!state || ![self.states objectForKey:state]) {
-        NSLog(@"state doesn't exists");
+    if (!state) {
+        NSLog(@"state must not be nil");
         return FALSE;  
     }
 
     NSLog(@"toStateForce: %@", state);
 
-    if (![self transitionFrom:[self.states objectForKey:self.currentState] to:[self.states objectForKey:state]]) {
+    State *tmp = [self getOrNewState:state];
+
+    if (![self transitionFrom:[self.states objectForKey:self.currState] to:tmp]) {
         NSLog(@"state transition not allowed");
         return FALSE;
     }
 
-    self.previousState = self.currentState;   
-    self.currentState = state; 
+    self.previousState = self.currState;
+    self.currState = tmp;
 
-    [self processOnInitForPrev:[self.states objectForKey:self.previousState] andCurrent:[self.states objectForKey:self.currentState]];
+    [self.currState processForwardFromState:self.previousState andCallback:^(State *state, BOOL skip) {
+        // if state and skip, immediately forward to requested state
+        if (state && skip) {
+            NSLog(@"toStateForce2: %@", self.currState.name);
+            [self toStateForce:[state name]];
+        // if state but not skip, process current state first, then forward to requested state
+        } else if (state && !skip) {
+            NSLog(@"toStateForce3: %@", self.currState.name);
+            [self processOnInitForPrev:self.previousState andCurrent:self.currState];
+            [self toStateForce:[state name]];
+        // if no state, just process current state
+        } else {
+            NSLog(@"toStateForce4: %@", self.currState.name);
+            [self processOnInitForPrev:self.previousState andCurrent:self.currState];
+        }
+    }];
 
     return TRUE;
 }
 
 // query
 
--(NSString*)state
+-(State*)state:(NSString*)state
 {
-    return self.currentState;
+    return [self.states objectForKey:state];
 }
 
--(NSString*)prevState
+-(State*)defaultState
+{
+    return [self state:self.defState];
+}
+
+-(State*)currentState
+{
+    return self.currState;
+}
+
+-(State*)prevState
 {
     return self.previousState;
 }
 
 -(BOOL)inState:(NSString*)state
 {
-    if (!state) {
+    if (!state)
         NSLog(@"state must be provided");
-    }
 
-    return [self.currentState isEqualToString:state];
+    if (self.currState)
+        return [self.currState.name isEqualToString:state];
+    else
+        return FALSE;
 }
 
 // may be overwritten in sub class
@@ -200,27 +224,39 @@
     return TRUE;
 }
 
+// helper
+
+-(State*)getOrNewState:(NSString*)state
+{
+    if (![self.states objectForKey:state]) {
+        State *newState = [[State alloc] initWithName:state];
+        [self.states setObject:newState forKey:state];
+    }
+
+    return [self.states objectForKey:state];
+}
+
 // internal processing of state transisions
 
 -(void)viewDidLoad
 {
     [super viewDidLoad];
     self.currentControllerViewState = tDidLoadViewState;
-    [self processOnViewDidLoadForPrev:[self.states objectForKey:self.previousState] andCurrent:[self.states objectForKey:self.currentState]];
+    [self processOnViewDidLoadForPrev:self.previousState andCurrent:self.currState];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     self.currentControllerViewState = tWillAppearViewState;
-    [self processOnViewWillAppearForPrev:[self.states objectForKey:self.previousState] andCurrent:[self.states objectForKey:self.currentState]];
+    [self processOnViewWillAppearForPrev:self.previousState andCurrent:self.currState];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     self.currentControllerViewState = tDidAppearViewState;
-    [self processOnViewDidAppearForPrev:[self.states objectForKey:self.previousState] andCurrent:[self.states objectForKey:self.currentState]];
+    [self processOnViewDidAppearForPrev:self.previousState andCurrent:self.currState];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -253,31 +289,33 @@
 
 -(void)processOnInitForPrev:(State*)previousState andCurrent:(State*)currentState
 {
+    NSLog(@"processOnInitForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
     self.currentProcessedViewState = tDidInitViewState;
     if (previousState) {
-        [previousState processStateOut:self.currentProcessedViewState];
-        [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState];
+        [previousState processStateOut:self.currentProcessedViewState toState:currentState];
+        [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState toState:currentState];
     }
     if (currentState) {
-        [currentState processStateIn:self.currentProcessedViewState];
-        [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState];
+        [currentState processStateIn:self.currentProcessedViewState fromState:previousState];
+        [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState fromState:previousState];
     }
     [self processOnViewDidLoadForPrev:previousState andCurrent:currentState];
 }
 
 -(void)processOnViewDidLoadForPrev:(State*)previousState andCurrent:(State*)currentState
 {
+    NSLog(@"processOnViewDidLoadForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
     if (tDidLoadViewState <= self.currentControllerViewState &&
         self.currentControllerViewState <= tDidAppearViewState) {
         if (self.currentProcessedViewState < tDidLoadViewState) {
             self.currentProcessedViewState = tDidLoadViewState;
             if (previousState) {
-                [previousState processStateOut:self.currentProcessedViewState];
-                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState];
+                [previousState processStateOut:self.currentProcessedViewState toState:currentState];
+                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState toState:currentState];
             }
             if (currentState) {
-                [currentState processStateIn:self.currentProcessedViewState];
-                [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState];
+                [currentState processStateIn:self.currentProcessedViewState fromState:previousState];
+                [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState fromState:previousState];
             }
         }
         [self processOnViewWillAppearForPrev:previousState andCurrent:currentState];
@@ -286,17 +324,18 @@
 
 -(void)processOnViewWillAppearForPrev:(State*)previousState andCurrent:(State*)currentState
 {
+    NSLog(@"processOnViewWillAppearForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
     if (tWillAppearViewState <= self.currentControllerViewState &&
         self.currentControllerViewState <= tDidAppearViewState) {
         if (self.currentProcessedViewState < tWillAppearViewState) {
             self.currentProcessedViewState = tWillAppearViewState;
             if (previousState) {
-                [previousState processStateOut:self.currentProcessedViewState];
-                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState];
+                [previousState processStateOut:self.currentProcessedViewState toState:currentState];
+                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState toState:currentState];
             }
             if (self.currentState) {
-                [currentState processStateIn:self.currentProcessedViewState];
-                [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState];
+                [currentState processStateIn:self.currentProcessedViewState fromState:previousState];
+                [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState fromState:previousState];
             }
         }
         [self processOnViewDidAppearForPrev:previousState andCurrent:currentState];
@@ -305,17 +344,18 @@
 
 -(void)processOnViewDidAppearForPrev:(State*)previousState andCurrent:(State*)currentState
 {
+    NSLog(@"processOnViewDidAppearForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
     if (tDidAppearViewState <= self.currentControllerViewState &&
         self.currentControllerViewState <= tDidAppearViewState) {
         if (self.currentProcessedViewState < tDidAppearViewState) {
             self.currentProcessedViewState = tDidAppearViewState;
             if (previousState) {
-                [previousState processStateOut:self.currentProcessedViewState];
-                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState];
+                [previousState processStateOut:self.currentProcessedViewState toState:currentState];
+                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState toState:currentState];
             }
             if (currentState) {
-                [currentState processStateIn:self.currentProcessedViewState];
-                [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState];
+                [currentState processStateIn:self.currentProcessedViewState fromState:previousState];
+                [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState fromState:previousState];
             }
         }
     }

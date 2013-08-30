@@ -15,8 +15,6 @@
     self = [super init];
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_featured"];
-
-        [self toDefaultStateForce];
     }
     return self;
 }

@@ -28,15 +28,13 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedCommentToVideo object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventDeletedCommentFromVideo object:nil];
 
-        [[self configureDefaultState] onViewState:tDidLoadViewState do:^{
+        [[self configureDefaultState] onViewState:tDidLoadViewState do:^(State *this, State *other){
             [self.userImageView setImage:nil];
             [[APPUserManager classInstance] imageForCurrentUserWithCallback:^(UIImage *image) {
                 if (image)
                     [self.userImageView setImage:image];
             }];
         }];
-
-        [self toDefaultStateForce];
     }
     return self;
 }
@@ -158,7 +156,7 @@
 
 -(void)tableView:(UITableView*)tableView forMode:(int)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    if (self.isDefaultMode)
+    if ([self inState:tPassiveState])
         return;
 
     GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];

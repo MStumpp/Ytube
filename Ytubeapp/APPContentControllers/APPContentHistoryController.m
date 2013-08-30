@@ -17,8 +17,6 @@
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_history"];
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventVideoWatched object:nil];
-
-        [self toDefaultStateForce];
     }
     return self;
 }

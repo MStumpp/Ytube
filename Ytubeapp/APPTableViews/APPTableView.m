@@ -65,7 +65,6 @@
 
 -(UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    NSLog(@"cellForRowAtIndexPath");
     if (self.showMode) {
         APPTableCell *cell = [self._del tableView:tableView forMode:self.showMode cellForRowAtIndexPath:indexPath];
         cell.indexPath = indexPath;
@@ -89,7 +88,6 @@
 
 -(NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSLog(@"numberOfRowsInSection");
     if (self.showMode) {
         if ([self currentCustomFeedForShowMode:self.showMode]) {
             return [[self currentCustomFeedForShowMode:self.showMode] count];
@@ -236,8 +234,6 @@
 
 -(void)reloadDataResponse:(NSDictionary*)args
 {
-    NSLog(@"reloadDataResponse");
-
     int mode = [[args objectForKey:tMode] intValue];
     GDataFeedBase *feed = [args objectForKey:tFeed];
     NSError *error = [args objectForKey:tError];
@@ -325,12 +321,10 @@
 {
     if (!mode || [self hasShowMode:mode])
         return FALSE;
-    NSLog(@"addShowMode: start");
     [self.queriesReload setObject:[NSNull new] forKey:[NSNumber numberWithInt:mode]];
     [self.queriesLoadMore setObject:[NSNull new] forKey:[NSNumber numberWithInt:mode]];
     [self.feeds setObject:[NSNull new] forKey:[NSNumber numberWithInt:mode]];
     [self.customFeeds setObject:[[NSMutableArray alloc] init] forKey:[NSNumber numberWithInt:mode]];
-    NSLog(@"addShowMode: end");
     return TRUE;
 }
 
@@ -344,13 +338,13 @@
 
 -(void)toShowMode:(int)mode
 {
-    NSLog(@"toShowMode");
-
+    NSLog(@"toShowMode %i", mode);
     if (!mode || ![self hasShowMode:mode])
         [NSException raise:@"show mode is nil or doesn't exists" format:@"show mode is nil or doesn't exists"];
 
     // if current show mode equal to requested show mode, then just scroll to top
     if (self.showMode == mode) {
+        NSLog(@"testtesttest");
         [self scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
         return;
     }
@@ -375,6 +369,7 @@
 
 -(void)toDefaultShowMode
 {
+    NSLog(@"toDefaultShowMode");
     [self toShowMode:self.defaultShowMode];
 }
 

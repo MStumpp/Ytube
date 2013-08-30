@@ -30,7 +30,6 @@
 
 -(void)loadView
 {
-    NSLog(@"APPIndexViewController: start");
     CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
     UIView *contentView = [[UIView alloc] initWithFrame:applicationFrame];
     self.view = contentView;
@@ -95,8 +94,6 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
-
-    NSLog(@"APPIndexViewController: end");
 }
 
 -(void)topbarButtonPress:(UIButton*)sender

@@ -8,6 +8,10 @@
 
 #import "State.h"
 
+@interface State()
+@property id forwardCallback;
+@end
+
 @implementation State
 
 -(id)initWithName:(NSString*)name
@@ -29,16 +33,35 @@
 -(State*)onViewState:(int)viewState mode:(int)mode do:(ViewCallback)callback
 {
     if (mode == tIn || mode == tInOut) {
-        NSLog(@"State: onViewState: %i in: %@", viewState, self.name);
         [self addTransitionInViewState:viewState do:callback];
     }
 
     if (mode == tOut || mode == tInOut) {
-        NSLog(@"State: onViewState: %i out: %@", viewState, self.name);
         [self addTransitionOutViewState:viewState do:callback];
     }
 
     return self;
+}
+
+// state forwarding
+
+-(State*)forwardToState:(ForwardCallback)callback
+{
+    if (callback)
+        self.forwardCallback = callback;
+    return self;
+}
+
+-(void)processForwardFromState:(State*)from andCallback:(ForwardResponseCallback)callback
+{
+    if (!callback)
+        return;
+
+    if (self.forwardCallback) {
+        ((ForwardCallback)self.forwardCallback)(self, from, callback);
+    } else {
+        callback(nil, FALSE);
+    }
 }
 
 -(void)addTransitionInViewState:(int)viewState do:(ViewCallback)callback
@@ -59,27 +82,29 @@
     }
 }
 
--(BOOL)processStateIn:(int)viewState
+-(BOOL)processStateIn:(int)viewState fromState:(State*)from
 {
-    NSLog(@"testtest: %i and name: %@", viewState, self.name);
+    // process own callbacks first
     if ([self.transitionIn objectForKey:[NSNumber numberWithInteger:viewState]]) {
         [[self.transitionIn objectForKey:[NSNumber numberWithInteger:viewState]] enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
-            NSLog(@"testtest2: %i and name: %@", viewState, self.name);
-            ((ViewCallback)object)();
+            ((ViewCallback)object)(self, from);
         }];
     }
     return TRUE;
 }
 
--(BOOL)processStateOut:(int)viewState
+-(BOOL)processStateOut:(int)viewState toState:(State*)to
 {
+    // process own callbacks first
     if ([self.transitionOut objectForKey:[NSNumber numberWithInteger:viewState]]) {
         [[self.transitionOut objectForKey:[NSNumber numberWithInteger:viewState]] enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
-            ((ViewCallback)object)();
+            ((ViewCallback)object)(self, to);
         }];
     }
     return TRUE;
 }
+
+// merging
 
 -(void)mergeState:(State*)state
 {

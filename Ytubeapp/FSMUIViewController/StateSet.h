@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "State.h"
 
-typedef void(^ViewCallback)();
+typedef void(^ViewCallback)(State *from, State *to);
 
 @interface StateSet : NSObject
 -(id)initWithStates:(NSArray*)states;

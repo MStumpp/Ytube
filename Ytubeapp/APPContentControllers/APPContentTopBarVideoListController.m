@@ -18,29 +18,37 @@
 {
     self = [super init];
     if (self) {
-        NSLog(@"APPContentTopBarVideoListController");
-
         self.subtopbarWasVisible = TRUE;
 
-        [[self configureState:tPassiveState] onViewState:tDidAppearViewState mode:tIn do:^{
-            NSLog(@"APPContentTopBarVideoListController: configureState:tPassiveState onViewState:tDidAppearViewState tIn");
-            // shows sub topbar if was visible
-            self.lastActiveState = [self prevState];
+        [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            // save the last active state
+            [[self state:tActiveState] setData:other.name];
+
+            // save state of header form
             if ([self.tableViewHeaderFormView isHeaderShown]) {
                 [self setSubtopbarWasVisible:TRUE];
             } else {
                 [self setSubtopbarWasVisible:FALSE];
             }
-            [self.tableViewHeaderFormView hideOnCompletion:nil animated:YES];
+            [self.tableViewHeaderFormView hideOnCompletion:^(BOOL isHidden) {
+
+            } animated:YES];
         }];
 
-        [[self configureStates:@[[NSString stringWithFormat:@"%d", tAll], [NSString stringWithFormat:@"%d", tToday]]]
-                onViewState:tDidAppearViewState mode:tIn do:^{
-            NSLog(@"APPContentTopBarVideoListController: configureStates:tAll, tToday onViewState:tDidAppearViewState tIn");
-            // shows sub topbar if was visible
+        [[self configureState:tActiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            // show header form if was visible
             if (self.subtopbarWasVisible) {
-                [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
+                [self.tableViewHeaderFormView showOnCompletion:^(BOOL isShown){
+
+                } animated:YES];
             }
+        }];
+
+        [[self configureState:tActiveState] forwardToState:^(State *this, State *from, ForwardResponseCallback callback){
+            if (from && [[from name] isEqualToString:tPassiveState])
+                callback(this.data, FALSE);
+            else
+                callback([self defaultState], FALSE);
         }];
     }
     return self;
@@ -49,20 +57,15 @@
 -(void)loadView
 {
     [super loadView];
-    NSLog(@"APPContentTopBarVideoListController: loadView");
     self.tableViewHeaderFormView = [[UITableViewHeaderFormView alloc] initWithRootView:self.tableView headerView:nil delegate:self];
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
 }
 
 -(BOOL)tableViewHeaderFormViewShouldShow:(UITableViewHeaderFormView*)view
 {
-    if ([@[[NSString stringWithFormat:@"%d", tAll], [NSString stringWithFormat:@"%d", tToday]] containsObject:[self state]]) {
-        NSLog(@"tableViewHeaderFormViewShouldShow: TRUE");
-        return TRUE;
-    } else {
-        NSLog(@"tableViewHeaderFormViewShouldShow: FALSE");
+    if ([self inState:tPassiveState])
         return FALSE;
-    }
+    return TRUE;
 }
 
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
@@ -83,38 +86,5 @@
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
-
-//-(void)willHide:(void (^)(void))callback
-//{
-//    NSLog(@"willHide");
-//    if ([self.tableViewHeaderFormView isHeaderShown]) {
-//        self.subtopbarWasVisible = TRUE;
-//        [self.tableViewHeaderFormView hideOnCompletion:^(BOOL isHidden) {
-//            if (callback)
-//                callback();
-//        } animated:YES];
-//
-//    } else {
-//        self.subtopbarWasVisible = FALSE;
-//        if (callback)
-//            callback();
-//    }
-//}
-//
-//-(void)didShow:(void (^)(void))callback
-//{
-//    NSLog(@"didShow");
-//    if (self.subtopbarWasVisible) {
-//        NSLog(@"didShow self.subtopbarWasVisible");
-//        [self.tableViewHeaderFormView showOnCompletion:^(BOOL isShown) {
-//            if (callback)
-//                callback();
-//        }  animated:YES];
-//
-//    } else {
-//        if (callback)
-//            callback();
-//    }
-//}
 
 @end
