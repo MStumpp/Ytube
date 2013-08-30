@@ -110,7 +110,8 @@
         CGPoint toValue2 = CGPointMake(self._rootView.layer.position.x, self._rootView.layer.position.y+self._headerView.layer.bounds.size.height/2);
         CGRect toValue3 = CGRectMake(self._rootView.layer.bounds.origin.x, self._rootView.layer.bounds.origin.y, self._rootView.layer.bounds.size.width, self._rootView.layer.bounds.size.height-self._headerView.layer.bounds.size.height);
 
-        if (animated) {                        
+        if (animated) {
+            __block BOOL done = NO;
             [CATransaction begin]; {
                 [CATransaction setCompletionBlock:^{
                     if ([self._delegate respondsToSelector:@selector(tableViewHeaderFormViewDidShow:)])
@@ -118,6 +119,10 @@
                     
                     if (callback) {
                         callback(TRUE);
+                        return;
+
+                    } else {
+                        done = YES;
                     }
                 }];
 
@@ -162,7 +167,11 @@
                 [self._rootView.layer addAnimation:animation3 forKey:@"animateBounds"];
                 
             } [CATransaction commit];
-    
+
+            while (done == NO)
+                [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+            return;
+
         } else {
             [self._headerView.layer setPosition:toValue1];
             [self._rootView.layer setPosition:toValue2];
@@ -170,11 +179,13 @@
             
             if (callback)
                 callback(TRUE);
+            return;
         }
         
     } else {
         if (callback)
             callback(TRUE);
+        return;
     }
 }
 
@@ -194,7 +205,8 @@
         CGPoint toValue2 = CGPointMake(self._rootView.layer.position.x, self._rootView.layer.position.y-self._headerView.layer.bounds.size.height/2);
         CGRect toValue3 = CGRectMake(self._rootView.layer.bounds.origin.x, self._rootView.layer.bounds.origin.y, self._rootView.layer.bounds.size.width, self._rootView.layer.bounds.size.height+self._headerView.layer.bounds.size.height);
         
-        if (animated) {            
+        if (animated) {
+            __block BOOL done = NO;
             [CATransaction begin]; {
                 [CATransaction setCompletionBlock:^{
                     if ([self._delegate respondsToSelector:@selector(tableViewHeaderFormViewDidHide:)])
@@ -202,6 +214,10 @@
                     
                     if (callback) {
                         callback(TRUE);
+                        return;
+
+                    } else {
+                        done = YES;
                     }
                 }];
                 
@@ -245,6 +261,10 @@
                 [self._rootView.layer addAnimation:animation3 forKey:@"animateBounds"];
         
             } [CATransaction commit];
+
+            while (done == NO)
+                [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+            return;
             
         } else {
             [self._headerView.layer setPosition:toValue1];
@@ -253,11 +273,13 @@
             
             if (callback)
                 callback(TRUE);
+            return;
         }
         
     } else {
         if (callback)
             callback(TRUE);
+        return;
     }
 }
 

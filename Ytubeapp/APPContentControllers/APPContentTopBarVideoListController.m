@@ -22,7 +22,7 @@
 
         [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             // save the last active state
-            [[self state:tActiveState] setData:other.name];
+            [[self state:tActiveState] setData:other];
 
             // save state of header form
             if ([self.tableViewHeaderFormView isHeaderShown]) {
@@ -30,18 +30,13 @@
             } else {
                 [self setSubtopbarWasVisible:FALSE];
             }
-            [self.tableViewHeaderFormView hideOnCompletion:^(BOOL isHidden) {
-
-            } animated:YES];
+            [self.tableViewHeaderFormView hideOnCompletion:nil animated:YES];
         }];
 
         [[self configureState:tActiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             // show header form if was visible
-            if (self.subtopbarWasVisible) {
-                [self.tableViewHeaderFormView showOnCompletion:^(BOOL isShown){
-
-                } animated:YES];
-            }
+            if (self.subtopbarWasVisible)
+                [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
         }];
 
         [[self configureState:tActiveState] forwardToState:^(State *this, State *from, ForwardResponseCallback callback){

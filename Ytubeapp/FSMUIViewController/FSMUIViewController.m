@@ -164,16 +164,16 @@
     self.previousState = self.currState;
     self.currState = tmp;
 
-    [self.currState processForwardFromState:self.previousState andCallback:^(State *state, BOOL skip) {
+    [self.currState processForwardFromState:self.previousState andCallback:^(State *toState, BOOL skip) {
         // if state and skip, immediately forward to requested state
-        if (state && skip) {
-            NSLog(@"toStateForce2: %@", self.currState.name);
-            [self toStateForce:[state name]];
+        if (toState && skip) {
+            NSLog(@"toStateForce2: %@", toState.name);
+            [self toStateForce:toState.name];
         // if state but not skip, process current state first, then forward to requested state
-        } else if (state && !skip) {
-            NSLog(@"toStateForce3: %@", self.currState.name);
+        } else if (toState && !skip) {
+            NSLog(@"toStateForce3: %@", toState.name);
             [self processOnInitForPrev:self.previousState andCurrent:self.currState];
-            [self toStateForce:[state name]];
+            [self toStateForce:toState.name];
         // if no state, just process current state
         } else {
             NSLog(@"toStateForce4: %@", self.currState.name);
