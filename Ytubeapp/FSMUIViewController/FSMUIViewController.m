@@ -9,14 +9,14 @@
 #import "FSMUIViewController.h"
 
 @interface FSMUIViewController ()
-@property State *previousState;
-@property State *currState;
-@property NSString *defState;
-@property NSString *allState;
+@property (atomic) State *previousState;
+@property (atomic) State *currState;
+@property (atomic) NSString *defState;
+@property (atomic) NSString *allState;
 @property int currentControllerViewState;
 @property int currentProcessedViewState;
-@property NSMutableDictionary *states;
-@property NSMutableDictionary *all;
+@property (atomic) NSMutableDictionary *states;
+@property (atomic) NSMutableDictionary *all;
 @end
 
 @implementation FSMUIViewController
@@ -41,6 +41,13 @@
         [self.states setObject:[[State alloc] initWithName:self.allState] forKey:self.allState];
     }
     return self;
+}
+
+-(void)loadView
+{
+    CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
+    UIView *contentView = [[UIView alloc] initWithFrame:applicationFrame];
+    self.view = contentView;
 }
 
 // state configuration
@@ -119,7 +126,7 @@
 
 -(BOOL)toDefaultState
 {
-    NSLog(@"toDefaultState");
+    //NSLog(@"toDefaultState");
     return [self toState:self.defState];
 }
 
@@ -131,8 +138,10 @@
     }
 
     State *tmp = [self getOrNewState:state];
-
+    
     if (self.currState && [self.currState.name isEqualToString:tmp.name]) {
+        NSLog(@"curr state: %@", self.currState.name);
+        NSLog(@"tmp state: %@", tmp.name);
         NSLog(@"already in requested state");
         return FALSE;
     }
@@ -152,7 +161,7 @@
         return FALSE;  
     }
 
-    NSLog(@"toStateForce: %@", state);
+    //NSLog(@"toStateForce: %@", state);
 
     State *tmp = [self getOrNewState:state];
 
@@ -167,16 +176,16 @@
     [self.currState processForwardFromState:self.previousState andCallback:^(State *toState, BOOL skip) {
         // if state and skip, immediately forward to requested state
         if (toState && skip) {
-            NSLog(@"toStateForce2: %@", toState.name);
+            //NSLog(@"toStateForce2: %@", toState.name);
             [self toStateForce:toState.name];
         // if state but not skip, process current state first, then forward to requested state
         } else if (toState && !skip) {
-            NSLog(@"toStateForce3: %@", toState.name);
+            //NSLog(@"toStateForce3: %@", toState.name);
             [self processOnInitForPrev:self.previousState andCurrent:self.currState];
             [self toStateForce:toState.name];
         // if no state, just process current state
         } else {
-            NSLog(@"toStateForce4: %@", self.currState.name);
+            //NSLog(@"toStateForce4: %@", self.currState.name);
             [self processOnInitForPrev:self.previousState andCurrent:self.currState];
         }
     }];
@@ -289,7 +298,7 @@
 
 -(void)processOnInitForPrev:(State*)previousState andCurrent:(State*)currentState
 {
-    NSLog(@"processOnInitForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
+    //NSLog(@"processOnInitForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
     self.currentProcessedViewState = tDidInitViewState;
     if (previousState) {
         [previousState processStateOut:self.currentProcessedViewState toState:currentState];
@@ -304,7 +313,7 @@
 
 -(void)processOnViewDidLoadForPrev:(State*)previousState andCurrent:(State*)currentState
 {
-    NSLog(@"processOnViewDidLoadForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
+    //NSLog(@"processOnViewDidLoadForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
     if (tDidLoadViewState <= self.currentControllerViewState &&
         self.currentControllerViewState <= tDidAppearViewState) {
         if (self.currentProcessedViewState < tDidLoadViewState) {
@@ -324,7 +333,7 @@
 
 -(void)processOnViewWillAppearForPrev:(State*)previousState andCurrent:(State*)currentState
 {
-    NSLog(@"processOnViewWillAppearForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
+    //NSLog(@"processOnViewWillAppearForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
     if (tWillAppearViewState <= self.currentControllerViewState &&
         self.currentControllerViewState <= tDidAppearViewState) {
         if (self.currentProcessedViewState < tWillAppearViewState) {
@@ -344,7 +353,7 @@
 
 -(void)processOnViewDidAppearForPrev:(State*)previousState andCurrent:(State*)currentState
 {
-    NSLog(@"processOnViewDidAppearForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
+    //NSLog(@"processOnViewDidAppearForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
     if (tDidAppearViewState <= self.currentControllerViewState &&
         self.currentControllerViewState <= tDidAppearViewState) {
         if (self.currentProcessedViewState < tDidAppearViewState) {

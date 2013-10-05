@@ -245,11 +245,11 @@
 
     // sub view set up
 
-    [[APPVideoIsFavorite instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+    /*[[APPVideoIsFavorite instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
-      onStateChange:^(Query *query, id data) {
-          if ([query isFinished]) {
-              if (![query isCancelled] && ![(APPAbstractQuery*)query hasError]) {
+      onStateChange:^(NSString *state, id data) {
+          if ([state isEqual:tFinished]) {
+              if (![(NSDictionary*)data objectForKey:@"error"]) {
                   if([(NSDictionary*)data objectForKey:@"favorite"])
                     [self.favoritesButton setSelected:YES];
               } else {
@@ -260,16 +260,16 @@
 
     [[APPVideoIsWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
-      onStateChange:^(Query *query, id data) {
-          if ([query isFinished]) {
-              if (![query isCancelled] && ![(APPAbstractQuery*)query hasError]) {
+      onStateChange:^(NSString *state, id data) {
+          if ([state isEqual:tFinished]) {
+              if (![(NSDictionary*)data objectForKey:@"error"]) {
                   if([(NSDictionary*)data objectForKey:@"playlist"])
                       [self.watchLaterButton setSelected:YES];
               } else {
                   NSLog(@"APPVideoIsWatchLater: error");
               }
           }
-      }];
+      }];*/
 }
 
 -(void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event

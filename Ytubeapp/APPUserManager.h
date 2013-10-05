@@ -19,6 +19,8 @@
 
 #define eventUserSignedIn @"userSignedIn"
 #define eventUserSignedOut @"userSignedOut"
+#define eventAuthTokenValidated @"authTokenValidated"
+#define eventAuthTokenInvalidated @"authTokenInvalidated"
 
 +(APPUserManager*)classInstance;
 

@@ -14,7 +14,8 @@
 +(NSString*)timeString:(int)timeKey;
 +(int)likeStateOfVideo:(GDataEntryYouTubeVideo*)video;
 +(BOOL)isUser:(GDataEntryYouTubeUserProfile*)user authorOf:(GDataEntryBase*)entry;
-+(void)loadImage:(NSURL*)url callback:(void (^)(UIImage *image))callback;
 +(void)smallImageOfVideo:(GDataEntryYouTubeVideo*)video callback:(void (^)(UIImage *image))callback;
 +(void)largeImageOfVideo:(GDataEntryYouTubeVideo*)video callback:(void (^)(UIImage *image))callback;
++(void)smallImageOfUser:(GDataEntryYouTubeUserProfile*)user callback:(void (^)(UIImage *image))callback;
++(void)loadImage:(NSURL*)url callback:(void (^)(UIImage *image))callback;
 @end

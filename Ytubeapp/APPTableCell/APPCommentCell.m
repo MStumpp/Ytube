@@ -154,9 +154,9 @@
 
     [[APPVideoImageOfComment instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:self.comment, @"comment", nil]
-      onStateChange:^(Query *query, id data) {
-          if ([query isFinished]) {
-              if (![query isCancelled] && ![(APPAbstractQuery*)query hasError]) {
+    onStateChange:^(NSString *state, id data) {
+          if ([state isEqual:tFinished]) {
+              if (![(NSDictionary*)data objectForKey:@"error"]) {
                   UIImage *image = (UIImage*)[(NSDictionary*)data objectForKey:@"image"];
                   if (image)
                       self.profilePic = image;

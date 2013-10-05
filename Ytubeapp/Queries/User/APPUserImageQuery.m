@@ -18,17 +18,23 @@
         GDataMediaThumbnail *thumb = [user thumbnail];
         NSString *url = [thumb URLString];
         if (url) {
-            dispatch_queue_t downloadQueue = dispatch_queue_create("image downloader", NULL);
-            dispatch_async(downloadQueue, ^{
-                NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
-                UIImage *image = [UIImage imageWithData:data];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [this addToDataWithValue:image andKey:@"image"];
-                    [this loaded];
-                    return;
-                });
-            });
-            dispatch_release(downloadQueue);
+            NSLog(@"APPUserImageQuery 1");
+            NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
+            UIImage *image = [[UIImage alloc] initWithData:data];
+            //dispatch_queue_t downloadQueue = dispatch_queue_create("image downloader", NULL);
+            //dispatch_async(downloadQueue, ^{
+                //NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
+                //UIImage *image = [UIImage imageWithData:data];
+                //dispatch_async(dispatch_get_main_queue(), ^{
+            if (image)
+                NSLog(@"APPUserImageQuery 2");
+
+            [this addToDataWithValue:image andKey:@"image"];
+            [this loaded];
+                //});
+            //});
+            //dispatch_release(downloadQueue);
+            return;
         }
 
         [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"something went wrong"] code:1 userInfo:nil] andKey:@"error"];

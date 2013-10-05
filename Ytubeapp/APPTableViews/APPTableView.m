@@ -241,7 +241,7 @@
     // if there is no error
 
     if (!error) {
-
+        
         // replace current feed for mode
         [self currentFeed:feed forShowMode:mode];
 
@@ -258,7 +258,7 @@
             [self.tableViewMaskView unmaskOnCompletion:^(BOOL isUnmasked) {
                 if (isUnmasked) {
                     [self.pullToRefreshView finishLoading];
-                    [self reloadData];
+                    [self performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
                 }
             }];
         }
@@ -271,7 +271,7 @@
             [self.tableViewMaskView unmaskOnCompletion:^(BOOL isUnmasked) {
                 if (isUnmasked) {
                     [self.pullToRefreshView finishLoading];
-                    [self reloadData];
+                    [self performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
                     [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
                                                 message:[NSString stringWithFormat:@"We could not reload your data. Please try again later."]
                                                delegate:nil
@@ -301,7 +301,7 @@
         // update shown data
         if (mode == self.showMode)
         {
-            [self reloadData];
+            [self performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
         }
 
     } else {
@@ -362,7 +362,7 @@
             [self queryForMode:mode forType:self.queriesReload] != (id)[NSNull new] &&
             [[self queryForMode:mode forType:self.queriesReload] isFinished] &&
             ![(APPAbstractQuery*)[self queryForMode:mode forType:self.queriesReload] hasError])
-        [self reloadData];
+        [self performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
     else
         [self reloadDataForShowMode:mode withPrio:tVisibleload];
 }
@@ -442,7 +442,7 @@
     NSArray* keys = [self.queriesReload allKeys];
     for(NSNumber* key in keys)
         [self resetShowMode:[key intValue]];
-    [self reloadData];
+    [self performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 -(BOOL)resetShowMode:(int)mode

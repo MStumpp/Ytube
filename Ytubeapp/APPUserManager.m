@@ -34,34 +34,7 @@ static APPUserManager *classInstance = nil;
 
 -(void)initWithAuth:(GTMOAuth2Authentication*)auth onCompletion:(void (^)(GDataEntryYouTubeUserProfile *user, NSError *error))callback
 {
-    // if auth parameter nil, do nothing
-    // check if auth object can authorize
-    if (!auth || !auth.canAuthorize) {
-        if (callback)
-            callback(nil, [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"auth is nil or auth cannot authorize"] code:1 userInfo:nil]);
-        return;
-    }
-
-    [self signOutOnCompletion:^(BOOL isSignedOut) {
-        if (isSignedOut) {
-            self.auth = auth;
-
-            [self currentUserProfileWithCallback:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
-                if (user && !error) {
-                    if (callback)
-                        callback(user, nil);
-                    
-                } else {
-                    if (callback)
-                        callback(nil, error);
-                }
-            }];
-
-        } else {
-            if (callback)
-                callback(nil, [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"could not sign user out"] code:1 userInfo:nil]);
-        }
-    }];
+    [self signIn:auth onCompletion:callback];
 }
 
 -(void)signIn:(GTMOAuth2Authentication*)auth onCompletion:(void (^)(GDataEntryYouTubeUserProfile *user, NSError *error))callback
@@ -77,12 +50,14 @@ static APPUserManager *classInstance = nil;
     [self signOutOnCompletion:^(BOOL isSignedOut) {
         if (isSignedOut) {
             self.auth = auth;
+            
+            // inform observers
+            [[NSNotificationCenter defaultCenter] postNotificationName:eventAuthTokenValidated object:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.auth, @"auth", nil]];
 
             [self currentUserProfileWithCallback:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
                 if (user && !error) {
-
                     // inform observers
-                    [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedIn object:[NSMutableDictionary dictionaryWithObjectsAndKeys:user, @"user", self.auth, @"auth", nil]];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedIn object:[NSMutableDictionary dictionaryWithObjectsAndKeys:user, @"user", nil]];
 
                     if (callback)
                         callback(user, nil);
@@ -102,31 +77,30 @@ static APPUserManager *classInstance = nil;
 
 -(void)signOutOnCompletion:(void (^)(BOOL isSignedOut))callback
 {
-    if (self.currentUserProfile) {
-        self.currentUserProfile = nil;
-        self.currentUserImage = nil;
+    self.currentUserProfile = nil;
+    self.currentUserImage = nil;
 
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
-        NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
+    NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
 
-        // remove the stored Google authentication from the keychain, if any
-        [GTMOAuth2ViewControllerTouch removeAuthFromKeychainForName:[settings objectForKey:@"kKeychainItemName"]];
-                
+    // remove the stored Google authentication from the keychain, if any
+    [GTMOAuth2ViewControllerTouch removeAuthFromKeychainForName:[settings objectForKey:@"kKeychainItemName"]];
+    
+    if (self.auth) {
         // remove the token from Google's servers
         [GTMOAuth2ViewControllerTouch revokeTokenForGoogleAuthentication:self.auth];
 
-        self.auth = nil;
-
         // inform observers
-        [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedOut object:nil];
-
-        if (callback)
-            callback(TRUE);
-    
-    } else {
-        if (callback)
-            callback(TRUE);
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventAuthTokenInvalidated object:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.auth, @"auth", nil]];
+        
+        self.auth = nil;
     }
+
+    // inform observers
+    [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedOut object:nil];
+    
+    if (callback)
+        callback(TRUE);
 }
 
 -(BOOL)canAuthorize
@@ -154,7 +128,7 @@ static APPUserManager *classInstance = nil;
 
 -(void)currentUserProfileWithCallback:(void (^)(GDataEntryYouTubeUserProfile *user, NSError *error))callback
 {
-    if ([self isUserSignedIn]) {
+    if (self.currentUserProfile) {
         if (callback)
             callback(self.currentUserProfile, nil);
         return;
@@ -164,10 +138,11 @@ static APPUserManager *classInstance = nil;
         // here we have to get the queue
         [[APPDefaultUserProfileQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                 execute:nil
-          onStateChange:^(Query *query, id data) {
-              if ([query isFinished]) {
-                  if (![query isCancelled] && ![(APPAbstractQuery*)query hasError]) {
+          onStateChange:^(NSString *state, id data) {
+              if ([state isEqual:tFinished]) {
+                  if (![(NSDictionary*)data objectForKey:@"error"]) {
                       self.currentUserProfile = (GDataEntryYouTubeUserProfile*)[(NSDictionary*)data objectForKey:@"entry"];
+                      if (self.currentUserProfile)
                       if (callback)
                           callback(self.currentUserProfile, nil);
                   } else {
@@ -179,38 +154,28 @@ static APPUserManager *classInstance = nil;
 
     } else {
         if (callback)
-            callback(nil, nil);
+            callback(nil, [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"user cannot authorize"] code:1 userInfo:nil]);
     }
 }
 
 -(void)imageForCurrentUserWithCallback:(void (^)(UIImage *image))callback
 {
-    if (![self isUserSignedIn]) {
-        if (callback)
-            callback(nil);
-        return;
-    }
-
     if (self.currentUserImage) {
         if (callback)
             callback(self.currentUserImage);
         return;
     }
-
-    [[APPUserImageQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
-            execute:[NSDictionary dictionaryWithObjectsAndKeys:[self getUserProfile], @"user", nil]
-      onStateChange:^(Query *query, id data) {
-          if ([query isFinished]) {
-              if (![query isCancelled] && ![(APPAbstractQuery*)query hasError]) {
-                  self.currentUserImage = (UIImage*)[(NSDictionary*)data objectForKey:@"image"];
-                  if (callback)
-                      callback(self.currentUserImage);
-              } else {
-                  if (callback)
-                      callback(nil);
-              }
-          }
-      }];
+    
+    if (![self isUserSignedIn]) {
+        if (callback)
+            callback(nil);
+        return;
+    }
+    
+    [APPContent smallImageOfUser:self.currentUserProfile callback:^(UIImage *image) {
+        if (callback)
+            callback(image);
+    }];
 }
 
 // allowed to visit when not signed in

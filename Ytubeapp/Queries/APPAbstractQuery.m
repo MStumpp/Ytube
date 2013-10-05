@@ -14,29 +14,25 @@
 -(GDataServiceGoogleYouTube*)service
 {
     GDataServiceGoogleYouTube *ytService = (GDataServiceGoogleYouTube*)[[APPGlobals classInstance] getGlobalForKey:@"service"];
-    if (ytService)
-        return ytService;
+    if (ytService) return ytService;
     return nil;
 }
 
 -(void)cancelled:(id)data
 {
-    if (self.ticket)
-        [self.ticket cancelTicket];
+    if (self.ticket) [self.ticket cancelTicket];
 }
 
 -(void)addToDataWithValue:(id)object andKey:(NSString*)key
 {
-    if (!object)
-        return;
+    if (!object) return;
     NSMutableDictionary *dict = (NSMutableDictionary*)self.data;
     [dict setObject:object forKey:key];
 }
 
 -(BOOL)hasError
 {
-    if ([(NSDictionary*)self.data objectForKey:@"error"])
-        return true;
+    if ([(NSDictionary*)self.data objectForKey:@"error"]) return true;
     return false;
 }
 

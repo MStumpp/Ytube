@@ -11,15 +11,23 @@
 #import "APPIndexViewController.h"
 #import "APPUserManager.h"
 #import "APPGlobals.h"
+#import "DataCache.h"
 
 @implementation APPAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.viewController = [[APPIndexViewController alloc] init];
+    self.viewController = [APPIndexViewController new];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
+    
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
+        [application setStatusBarStyle:UIStatusBarStyleLightContent];
+        self.window.clipsToBounds = YES;
+        self.window.frame = CGRectMake(0, 20, self.window.frame.size.width, self.window.frame.size.height-20);
+        self.window.bounds = CGRectMake(0, 20, self.window.frame.size.width, self.window.frame.size.height);
+    }
 
     NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
     NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
@@ -27,14 +35,14 @@
     GTMOAuth2Authentication *auth = [GTMOAuth2ViewControllerTouch authForGoogleFromKeychainForName:[settings objectForKey:@"kKeychainItemName"]
                                                                                           clientID:[settings objectForKey:@"kMyClientID"]
                                                                                       clientSecret:[settings objectForKey:@"kMyClientSecret"]];
-
+    
     // set up the service instance
     GDataServiceGoogleYouTube *service = [[GDataServiceGoogleYouTube alloc] init];
     [service setYouTubeDeveloperKey:[settings objectForKey:@"key"]];
     [service setUserAgent:@"AppWhirl-UserApp-1.0"];
     [service setShouldCacheDatedData:TRUE];
-    //[service setServiceShouldFollowNextLinks:FALSE];
     [service setAuthorizer:auth];
+    //[service setServiceShouldFollowNextLinks:FALSE];
     [[APPGlobals classInstance] setGlobalObject:service forKey:@"service"];
 
     // set up QueryManager and Queues
@@ -46,9 +54,9 @@
     [[APPGlobals classInstance] setGlobalObject:[UIImage imageNamed:@"silhouette"] forKey:@"silhouetteImage"];
     [[APPGlobals classInstance] setGlobalObject:[UIImage imageNamed:@"no_preview"] forKey:@"noPreviewImage"];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
-
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authTokenValidated:) name:eventAuthTokenValidated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authTokenInvalidated:) name:eventAuthTokenInvalidated object:nil];
+    
     // init APPUserManager with retrieved auth object, no matter if it can or cannot authorize
     dispatch_semaphore_t sema = dispatch_semaphore_create(1);
     [[APPUserManager classInstance] initWithAuth:auth onCompletion:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
@@ -56,6 +64,10 @@
     }];
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
 
+    // set up data cache
+    DataCache *dataCache = [DataCache instance];
+    [[APPGlobals classInstance] setGlobalObject:dataCache forKey:@"dataCache"];
+    
     return YES;
 }
 
@@ -86,18 +98,23 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
--(void)userSignedIn:(NSNotification*)notification
+-(void)authTokenValidated:(NSNotification*)notification
 {
     GDataServiceGoogleYouTube *service = [[APPGlobals classInstance] getGlobalForKey:@"service"];
-    if (service && [(NSDictionary*)[notification object] objectForKey:@"auth"])
-        [service setAuthorizer:[(NSDictionary*)[notification object] objectForKey:@"auth"]];
+    GTMOAuth2Authentication *auth = [(NSDictionary*)[notification object] objectForKey:@"auth"];
+    if (service && auth) {
+        [service setAuthorizer:auth];
+        NSLog(@"authTokenValidated");
+    }
 }
 
--(void)userSignedOut:(NSNotification*)notification
+-(void)authTokenInvalidated:(NSNotification*)notification
 {
     GDataServiceGoogleYouTube *service = [[APPGlobals classInstance] getGlobalForKey:@"service"];
-    if (service)
+    if (service) {
         [service setAuthorizer:nil];
+        NSLog(@"authTokenInvalidated");
+    }
 }
 
 @end

@@ -32,15 +32,21 @@
 {
     CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
     UIView *contentView = [[UIView alloc] initWithFrame:applicationFrame];
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
+        contentView.clipsToBounds = YES;
+        contentView.frame = CGRectMake(0, -20, contentView.frame.size.width, contentView.frame.size.height-20);
+        contentView.bounds = CGRectMake(0, -20, contentView.frame.size.width, contentView.frame.size.height);
+    }
     self.view = contentView;
-
+    
     // Set up UI
     [self.view addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main_back"]]];
 
     // toolbar
     self.toolbar = [[UIToolbar alloc] init];
     self.toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
-    [ViewHelpers setToolbar:self.toolbar withBackgroundImage:[UIImage imageNamed:@"top_bar_back"]];
+    self.toolbar.backgroundColor = [UIColor redColor];
+    [self.toolbar setBackgroundImage:[UIImage imageNamed:@"top_bar_back"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
     self.toolbarLabel = [[UILabel alloc] initWithFrame:CGRectMake(65.0, 8.0, self.view.frame.size.width-120.0, 32.0)];
     [self.toolbarLabel setFont:[UIFont fontWithName:@"Nexa Bold" size:16]];
     [self.toolbarLabel setTextColor:[UIColor whiteColor]];
@@ -62,7 +68,7 @@
     
     // right button
     // TODO: Examplarily implement reactive pattern for pervasive here
-    self.rightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 32, 31)];
+    self.rightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
     if ([[APPUserManager classInstance] isUserSignedIn])
         [self setRightButtonForUserSignedIn];
     else
@@ -91,7 +97,7 @@
     self.mainController.navigationBar.hidden = YES;
     self.mainController.delegate = self;
     [self.view addSubview:self.mainController.view];
-
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
 }

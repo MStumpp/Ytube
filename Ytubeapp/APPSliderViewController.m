@@ -129,7 +129,7 @@
     [self.leftImageView addSubview:buttonRecentlyFeatured];
 
     // right image view
-    self.rightImageView = [[UIControl alloc] initWithFrame:CGRectMake(402, 0, 82, self.view.frame.size.height)];
+    self.rightImageView = [[UIControl alloc] initWithFrame:CGRectMake(self.view.frame.size.width+82, 0, 82, self.view.frame.size.height)];
     [self.rightImageView addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"nav_right"]]];
     [self.mainView addSubview:self.rightImageView];
     
@@ -200,7 +200,6 @@
     [self.mainView addSubview:self.centerView];
     self.centerController = [[SmartNavigationController alloc] init];
     self.centerController.delegate = self;
-    self.centerController.view.frame = CGRectOffset(self.centerController.view.frame, 0.0, -20.0);
     [self.centerView addSubview:self.centerController.view];
     
     // shadows

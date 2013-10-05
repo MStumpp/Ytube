@@ -70,24 +70,6 @@
     return FALSE;
 }
 
-+(void)loadImage:(NSURL*)url callback:(void (^)(UIImage *image))callback
-{
-    if (url) {
-        dispatch_queue_t downloadQueue = dispatch_queue_create("image downloader", NULL);
-        dispatch_async(downloadQueue, ^{
-            NSData *data = [NSData dataWithContentsOfURL:url];
-            UIImage *image = [UIImage imageWithData:data];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (callback) {
-                    callback(image);
-                    return;
-                }
-            });
-        });
-        dispatch_release(downloadQueue);
-    }
-}
-
 +(void)smallImageOfVideo:(GDataEntryYouTubeVideo*)video callback:(void (^)(UIImage *image))callback
 {
     GDataYouTubeMediaGroup *mediaGroup = [video mediaGroup];
@@ -108,6 +90,34 @@
             callback(image);
         return;
     }];
+}
+
++(void)smallImageOfUser:(GDataEntryYouTubeUserProfile*)user callback:(void (^)(UIImage *image))callback
+{
+    GDataMediaThumbnail *thumb = [user thumbnail];
+    [self loadImage:[NSURL URLWithString:[thumb URLString]] callback:^(UIImage *image) {
+        if (callback)
+            callback(image);
+        return;
+    }];
+}
+
++(void)loadImage:(NSURL*)url callback:(void (^)(UIImage *image))callback
+{
+    if (url) {
+        dispatch_queue_t downloadQueue = dispatch_queue_create("image downloader", NULL);
+        dispatch_async(downloadQueue, ^{
+            NSData *data = [NSData dataWithContentsOfURL:url];
+            UIImage *image = [UIImage imageWithData:data];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (callback) {
+                    callback(image);
+                    return;
+                }
+            });
+        });
+        dispatch_release(downloadQueue);
+    }
 }
 
 @end
