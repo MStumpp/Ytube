@@ -7,6 +7,10 @@
 
 
 #import "APPContentFeaturedVideoController.h"
+#import "APPVideoRecentlyFeatured.h"
+#import "APPFetchMoreQuery.h"
+
+#define tFeatured @"featured"
 
 @implementation APPContentFeaturedVideoController
 
@@ -15,18 +19,39 @@
     self = [super init];
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_featured"];
+        
+        [self.dataCache configureReloadDataForKey:tFeatured withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            queryHandler(key, [[APPVideoRecentlyFeatured instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:NULL
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
+        }];
+        
+        [self.dataCache configureLoadMoreDataForKey:tFeatured withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            
+            queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
+        }];
     }
     return self;
-}
-
--(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p
-{
-    return [APPQueryHelper featuredVideosOnShowMode:mode withPrio:p delegate:tableView];
-}
-
--(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)p
-{
-    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:p delegate:tableView];
 }
 
 @end

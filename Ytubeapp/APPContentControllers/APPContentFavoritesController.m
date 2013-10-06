@@ -7,6 +7,10 @@
 
 
 #import "APPContentFavoritesController.h"
+#import "APPFavorites.h"
+#import "APPFetchMoreQuery.h"
+
+#define tFavorites @"favorites"
 
 @implementation APPContentFavoritesController
 
@@ -18,26 +22,47 @@
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToFavorites object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromFavorites object:nil];
+        
+        [self.dataCache configureReloadDataForKey:tFavorites withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            queryHandler(key, [[APPFavorites instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:NULL
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
+        }];
+        
+        [self.dataCache configureLoadMoreDataForKey:tFavorites withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            
+            queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
+        }];
     }
     return self;
-}
-
--(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p
-{
-    return [APPQueryHelper favoriteVideosOnShowMode:mode withPrio:p delegate:tableView];
-}
-
--(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)p
-{
-    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:p delegate:tableView];
 }
 
 #pragma mark -
 #pragma mark Table View Data Source Methods
 // TODO: Remove table cell locally
--(void)tableView:(UITableView*)tableView forMode:(int)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
+-(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    GDataEntryYouTubeFavorite *favorite = (GDataEntryYouTubeFavorite*) [[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
+    GDataEntryYouTubeFavorite *favorite = (GDataEntryYouTubeFavorite*) [[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
     if (editingStyle == UITableViewCellEditingStyleDelete)
         [APPQueryHelper removeVideoFromFavorites:favorite];
 }

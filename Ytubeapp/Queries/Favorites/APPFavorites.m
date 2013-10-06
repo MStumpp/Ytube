@@ -10,7 +10,7 @@
 
 @implementation APPFavorites
 
--(void)load:(id)data
+-(void)load:(id)prop
 {
     NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/users/default/favorites?v=2"]];
     [self fetchFeedWithURL:feedURL];

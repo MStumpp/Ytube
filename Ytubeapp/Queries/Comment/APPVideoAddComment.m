@@ -10,9 +10,9 @@
 
 @implementation APPVideoAddComment
 
--(void)load:(id)data
+-(void)load:(id)props
 {
-    NSDictionary *dict = (NSDictionary*) data;
+    NSDictionary *dict = (NSDictionary*) props;
     GDataEntryYouTubeVideo *video = [dict objectForKey:@"video"];
     GDataEntryYouTubeComment *comment = [dict objectForKey:@"comment"];
     [self fetchEntryByInsertingEntry:comment andURL:[[[video comment] feedLink] URL]];

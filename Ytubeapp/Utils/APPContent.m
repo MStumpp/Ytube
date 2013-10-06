@@ -22,27 +22,18 @@
     return [mediaGroupVideo videoID];
 }
 
-+(NSString*)timeString:(int)timeKey
++(NSString*)timeString:(NSString*)key
 {
-    switch (timeKey)
-    {
-        case tToday:
-        {
-            return tTodayStr;
-        }
-        case tWeek:
-        {
-            return tWeekStr;
-        }
-        case tMonth:
-        {
-            return tMonthStr;
-        }
-        default:
-        {
-            return tAllStr;
-        }
-    }
+    NSString *mode = NULL;
+    if ([key isEqualToString:tToday])
+        mode = tTodayStr;
+    else if ([key isEqualToString:tWeek])
+        mode = tWeekStr;
+    else if ([key isEqualToString:tMonth])
+        mode = tMonthStr;
+    else
+        mode = tAllStr;
+    return mode;
 }
 
 +(int)likeStateOfVideo:(GDataEntryYouTubeVideo*)video

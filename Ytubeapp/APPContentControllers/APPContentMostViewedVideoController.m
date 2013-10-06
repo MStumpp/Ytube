@@ -7,6 +7,11 @@
 
 
 #import "APPContentMostViewedVideoController.h"
+#import "APPVideoMostViewed.h"
+#import "APPFetchMoreQuery.h"
+
+#define tMostViewedToday @"most_viewed_today"
+#define tMostViewedAll @"most_viewed_all"
 
 @implementation APPContentMostViewedVideoController
 
@@ -17,11 +22,42 @@
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_most_popular"];
 
         // configure tToday as default state
-        [self setDefaultState:[NSString stringWithFormat:@"%d", tToday]];
+        [self setDefaultState:tMostViewedToday];
 
         // configure tAll state
-        [[self configureState:[NSString stringWithFormat:@"%d", tAll]] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            [self.tableView toShowMode:tAll];
+        [[self configureState:tAll] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toShowMode:tMostViewedAll];
+        }];
+        
+        [self.dataCache configureReloadDataForKeys:@[tMostViewedToday, tMostViewedAll] withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            queryHandler(key, [[APPVideoMostViewed instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                    execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:[self getMode:key], @"mode", nil]
+                    context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                    onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                        if ([state isEqual:tFinished]) {
+                            responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                            [(NSDictionary*)context objectForKey:@"context"],
+                                            data,
+                                            error);
+                        }
+                    }]
+            );
+        }];
+        
+        [self.dataCache configureLoadMoreDataForKeys:@[tMostViewedToday, tMostViewedAll] withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            
+            queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                    execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
+                    context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                    onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                        if ([state isEqual:tFinished]) {
+                            responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                            [(NSDictionary*)context objectForKey:@"context"],
+                                            data,
+                                            error);
+                        }
+                    }]
+            );
         }];
     }
     return self;
@@ -39,7 +75,7 @@
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_up_2"] forState:UIControlStateNormal];
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_down_2"] forState:UIControlStateHighlighted];
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_down_2"] forState:UIControlStateSelected];
-    [buttonToday setTag:tToday];
+    [buttonToday setTag:tMostViewedToday];
     [subtopbarContainer addSubview:buttonToday];
 
     UIButton *buttonAll = [[UIButton alloc] initWithFrame:CGRectMake(172, 6, 132, 30)];
@@ -47,28 +83,29 @@
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_up_2"] forState:UIControlStateNormal];
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_down_2"] forState:UIControlStateHighlighted];
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_down_2"] forState:UIControlStateSelected];
-    [buttonAll setTag:tAll];
+    [buttonAll setTag:tMostViewedAll];
     [subtopbarContainer addSubview:buttonAll];
 
     [self.tableViewHeaderFormView setHeaderView:subtopbarContainer];
 
     self.buttons = [[NSDictionary alloc] initWithObjectsAndKeys:
-             buttonToday, [NSNumber numberWithInt:tToday],
-             buttonAll, [NSNumber numberWithInt:tAll],
+             buttonToday, tMostViewedToday,
+             buttonAll, tMostViewedAll,
              nil];
 
-    [self.tableView addDefaultShowMode:tToday];
-    [self.tableView addShowMode:tAll];
+    [self.tableView addDefaultShowMode:tMostViewedToday];
+    [self.tableView addShowMode:tMostViewedAll];
 }
 
--(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p
+-(NSString*)getMode:(NSString*)key
 {
-    return [APPQueryHelper mostViewedVideosOnShowMode:mode withPrio:p delegate:tableView];
-}
-
--(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)p
-{
-    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:p delegate:tableView];
+    // set up mode based on key
+    NSString *mode = NULL;
+    if ([key isEqualToString:tMostViewedToday])
+        mode = tToday;
+    if ([key isEqualToString:tMostViewedAll])
+        mode = tAll;
+    return mode;
 }
 
 @end

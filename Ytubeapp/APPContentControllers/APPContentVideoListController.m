@@ -9,25 +9,25 @@
 #import "APPContentVideoListController.h"
 #import "APPContentVideoDetailViewController.h"
 #import "APPVideoCell.h"
+#import "DataCache.h"
 
 @implementation APPContentVideoListController
 
--(APPTableCell*)tableView:(UITableView*)tableView forMode:(int)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath;
+-(APPTableCell*)tableView:(UITableView*)tableView forMode:(NSString*)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     APPVideoCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPVideoCell"];
     if (cell == nil)
         cell = [[APPVideoCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPVideoCell"];
 
-    [cell setVideo:(GDataEntryYouTubeVideo*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]]];
+    [cell setVideo:(GDataEntryYouTubeVideo*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]]];
     return cell;
 }
 
--(void)tableView:(UITableView*)tableView forMode:(int)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
+-(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    if ([self inState:tPassiveState])
-        return;
+    if ([self inState:tPassiveState]) return;
 
-    GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
+    GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
 
     if (self.afterSelect) {
         [self.navigationController popViewControllerAnimated:YES];

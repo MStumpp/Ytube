@@ -10,7 +10,7 @@
 
 @implementation APPVideoWatchHistory
 
--(void)load:(id)data
+-(void)load:(id)props
 {
     NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/users/default/watch_history?v=2"]];
     [self fetchFeedWithURL:feedURL];

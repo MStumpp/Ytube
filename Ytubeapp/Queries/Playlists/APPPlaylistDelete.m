@@ -10,9 +10,9 @@
 
 @implementation APPPlaylistDelete
 
--(void)load:(id)data
+-(void)load:(id)props
 {
-    NSDictionary *dict = (NSDictionary*) data;
+    NSDictionary *dict = (NSDictionary*) props;
     GDataEntryYouTubePlaylistLink *playlist = [dict objectForKey:@"playlist"];
     [self deleteEntry:playlist];
 }

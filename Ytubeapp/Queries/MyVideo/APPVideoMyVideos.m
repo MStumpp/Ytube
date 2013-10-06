@@ -10,7 +10,7 @@
 
 @implementation APPVideoMyVideos
 
--(void)load:(id)data
+-(void)load:(id)props
 {
     NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/users/default/uploads"]];
     [self fetchFeedWithURL:feedURL];

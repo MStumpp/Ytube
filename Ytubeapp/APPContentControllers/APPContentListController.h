@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "APPContentBaseController.h"
+#import "DataCache.h"
 
 @interface APPContentListController : APPContentBaseController <APPTableViewDelegate, SelectDelegate>
 @property (strong) APPTableView *tableView;
+@property DataCache *dataCache;
 @end

@@ -10,9 +10,9 @@
 
 @implementation APPFetchMoreQuery
 
--(void)load:(id)data
+-(void)load:(id)props
 {
-    NSDictionary *dict = (NSDictionary*) data;
+    NSDictionary *dict = (NSDictionary*) props;
     GDataFeedBase *feed = [dict objectForKey:@"feed"];
     [self fetchFeedWithURL:[[feed nextLink] URL]];
 }

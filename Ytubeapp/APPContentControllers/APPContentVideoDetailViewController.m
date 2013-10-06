@@ -15,6 +15,12 @@
 #import "APPCommentCell.h"
 #import "APPContentPlaylistListController.h"
 #import "APPContentCommentListController.h"
+#import "APPVideoRelatedVideos.h"
+#import "APPVideoComments.h"
+#import "APPFetchMoreQuery.h"
+
+#define tRelatedVideos @"related_videos"
+#define tCommentsVideos @"comments_videos"
 
 @interface APPContentVideoDetailViewController ()
 @property UIWebView *webView;
@@ -31,6 +37,7 @@
 @property CGFloat heightVideoView;
 @property BOOL downAtTopOnly;
 @property int downAtTopDistance;
+@property DataCache *dataCache;
 @end
 
 @implementation APPContentVideoDetailViewController
@@ -39,7 +46,9 @@
 {
     self = [super init];
     if (self) {
-        [self.tableView addDefaultShowMode:tComments];
+        self.dataCache = [[APPGlobals classInstance] getGlobalForKey:@"dataCache"];
+        
+        [self.tableView addDefaultShowMode:tCommentsVideos];
         [self.tableView addShowMode:tRelatedVideos];
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToFavorites object:nil];
@@ -59,6 +68,68 @@
             [self.tableView scrollsToTop];
         }];
         [self toDefaultStateForce];
+        
+        [self.dataCache configureReloadDataForKey:tCommentsVideos withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            queryHandler(key, [[APPVideoComments instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
+        }];
+        
+        [self.dataCache configureLoadMoreDataForKey:tCommentsVideos withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            
+            queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
+        }];
+        
+        [self.dataCache configureReloadDataForKey:tRelatedVideos withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            queryHandler(key, [[APPVideoRelatedVideos instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
+        }];
+        
+        [self.dataCache configureLoadMoreDataForKey:tRelatedVideos withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            
+            queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
+        }];
     }
     return self;
 }
@@ -152,10 +223,11 @@
 
     [[APPVideoIsWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
-      onStateChange:^(NSString *state, id data) {
+            context:NULL
+      onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (![(NSDictionary*)data objectForKey:@"error"]) {
-                  if([(NSDictionary*)data objectForKey:@"playlist"])
+              if (!error) {
+                  if(data)
                       [self.watchLaterButton setSelected:YES];
               } else {
                   NSLog(@"APPVideoIsWatchLater: error");
@@ -175,10 +247,11 @@
 
     [[APPVideoIsFavorite instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
-      onStateChange:^(NSString *state, id data) {
+            context:NULL
+      onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (![(NSDictionary*)data objectForKey:@"error"]) {
-                  if([(NSDictionary*)data objectForKey:@"favorite"])
+              if (!error) {
+                  if(data)
                       [self.favoritesButton setSelected:YES];
               } else {
                   NSLog(@"APPVideoIsFavorite: error");
@@ -216,7 +289,7 @@
     [self.commentsButton setImage:[UIImage imageNamed:@"sub_top_bar_button_comments_up_2"] forState:UIControlStateNormal];
     [self.commentsButton setImage:[UIImage imageNamed:@"sub_top_bar_button_comments_down_2"] forState:UIControlStateHighlighted];
     [self.commentsButton setImage:[UIImage imageNamed:@"sub_top_bar_button_comments_down_2"] forState:UIControlStateSelected];
-    [self.commentsButton setTag:tComments];
+    [self.commentsButton setTag:tCommentsVideos];
     [subtopbarContainer2 addSubview:self.commentsButton];
     
     self.relatedVideosButton = [[UIButton alloc] initWithFrame:CGRectMake(172.0, 6.0, 132.0, 30.0)];
@@ -336,12 +409,17 @@
             [self.navigationController pushViewController:select animated:YES];
             break;
         }
+            
+        default:
+        {
+            NSLog(@"default");
+        }
     }
 }
 
 -(void)subtopbarButtonPress2:(UIButton*)sender
 {
-    [self.tableView toShowMode:[sender tag]];
+    //[self.tableView toShowMode:[sender tag]];
 }
 
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
@@ -363,47 +441,34 @@
     }
 }
 
--(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p
+-(APPTableCell*)tableView:(UITableView*)tableView forMode:(NSString*)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    if (mode == tRelatedVideos)
-        return [APPQueryHelper relatedVideos:self.video showMode:mode withPrio:p delegate:tableView];
-    else if (mode == tComments)
-        return [APPQueryHelper videoComments:self.video showMode:mode withPrio:p delegate:tableView];
-}
-
--(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)p
-{
-    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:p delegate:tableView];
-}
-
--(APPTableCell*)tableView:(UITableView*)tableView forMode:(int)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath
-{
-    if (mode == tRelatedVideos) {
+    if ([mode isEqualToString:tRelatedVideos]) {
         APPVideoCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPVideoCell"];
         if (cell == nil)
             cell = [[APPVideoCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPVideoCell"];
 
-        [cell setVideo:(GDataEntryYouTubeVideo*)[[self.tableView currentCustomFeedForShowMode:mode] objectAtIndex:[indexPath row]]];
+        [cell setVideo:(GDataEntryYouTubeVideo*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]]];
         return cell;
 
-    } else if (mode == tComments) {
+    } else if ([mode isEqualToString:tCommentsVideos]) {
         APPCommentCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPCommentCell"];
         if (cell == nil)
             cell = [[APPCommentCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPCommentCell"];
 
-        [cell setComment:(GDataEntryYouTubeComment*)[[self.tableView currentCustomFeedForShowMode:mode] objectAtIndex:[indexPath row]]];
+        [cell setComment:(GDataEntryYouTubeComment*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]]];
         return cell;
     }
 }
 
--(void)tableView:(UITableView*)tableView forMode:(int)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath
+-(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
     if ([self inState:tPassiveState])
         return;
 
-    if (mode == tRelatedVideos) {
+    if ([mode isEqualToString:tRelatedVideos]) {
 
-        GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
+        GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
 
         if (self.afterSelect) {
             [self.navigationController popViewControllerAnimated:YES];
@@ -412,7 +477,7 @@
             [self.navigationController pushViewController:[[APPContentVideoDetailViewController alloc] initWithVideo:video] animated:YES];
         }
 
-    } else if (mode == tComments) {
+    } else if ([mode isEqualToString:tCommentsVideos]) {
         NSLog(@"not yet implemented");
     }
 }

@@ -10,9 +10,9 @@
 
 @implementation APPVideoIsFavorite
 
--(void)load:(id)data
+-(void)load:(id)props
 {
-    NSDictionary *dict = (NSDictionary*) data;
+    NSDictionary *dict = (NSDictionary*) props;
     GDataEntryYouTubeVideo *video = [dict objectForKey:@"video"];
     GDataYouTubeMediaGroup *mediaGroupVideo = [video mediaGroup];
     NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/users/default/favorites?v=2"]];
@@ -25,7 +25,7 @@
                     favorite = (GDataEntryYouTubeFavorite*)entryBase;
                     GDataYouTubeMediaGroup *mediaGroupEntry = [favorite mediaGroup];
                     if ([[mediaGroupVideo videoID] isEqualToString:[mediaGroupEntry videoID]]) {
-                        [this addToDataWithValue:favorite andKey:@"favorite"];
+                        [this setResult:favorite];
                         [this loaded];
                         return;
                     }
@@ -33,13 +33,13 @@
                 [this loaded];
 
             } else {
-                [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"unable to fetch favorites"] code:1 userInfo:nil] andKey:@"error"];
+                [this setError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"unable to fetch favorites"] code:1 userInfo:nil]];
                 [this loaded];
 
             }
         }];
     } else {
-        [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil] andKey:@"error"];
+        [this setError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil]];
         [this loaded];
     }
 }

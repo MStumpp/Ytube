@@ -9,6 +9,10 @@
 #import "APPContentPlaylistListController.h"
 #import "APPContentPlaylistVideosController.h"
 #import "APPPlaylistCell.h"
+#import "APPPlaylists.h"
+#import "APPFetchMoreQuery.h"
+
+#define tPlaylists @"playlists"
 
 @interface APPContentPlaylistListController ()
 @property UITextField *textField;
@@ -24,6 +28,37 @@
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedPlaylist object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventDeletedPlaylist object:nil];
+        
+        [self.dataCache configureReloadDataForKey:tPlaylists withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            queryHandler(key, [[APPPlaylists instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:NULL
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
+        }];
+        
+        [self.dataCache configureLoadMoreDataForKey:tPlaylists withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            
+            queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
+        }];
     }
     return self;
 }
@@ -82,42 +117,32 @@
     }
 }
 
--(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p
-{
-    return [APPQueryHelper playlistsOnShowMode:mode withPrio:p delegate:tableView];
-}
-
--(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)p
-{
-    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:p delegate:tableView];
-}
-
--(APPTableCell*)tableView:(UITableView*)tableView forMode:(int)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath;
+-(APPTableCell*)tableView:(UITableView*)tableView forMode:(NSString*)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     APPPlaylistCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPPlaylistCell"];
     if (cell == nil)
         cell = [[APPPlaylistCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPPlaylistCell"];
 
-    [cell setPlaylist:(GDataEntryYouTubePlaylistLink *)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]]];
+    [cell setPlaylist:(GDataEntryYouTubePlaylistLink *)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]]];
     return cell;
 }
 
 #pragma mark -
 #pragma mark Table View Data Source Methods
 // TODO: Remove table cell locally
--(void)tableView:(UITableView*)tableView forMode:(int)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
+-(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink *)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
+    GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink *)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
     if (editingStyle == UITableViewCellEditingStyleDelete)
         [APPQueryHelper deletePlaylist:playlist];
 }
 
--(void)tableView:(UITableView*)tableView forMode:(int)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
+-(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     if ([self inState:tPassiveState])
         return;
 
-    GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
+    GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
 
     if (self.afterSelect) {
         [self.navigationController popViewControllerAnimated:YES];

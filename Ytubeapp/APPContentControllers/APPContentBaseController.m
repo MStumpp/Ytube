@@ -46,7 +46,6 @@
 
 -(void)doDefaultMode:(void (^)(void))callback;
 {
-    NSLog(@"doDefaultMode");
     [self toState:tPassiveState];
     if (callback)
         callback();
@@ -54,7 +53,6 @@
 
 -(void)undoDefaultMode:(void (^)(void))callback;
 {
-    NSLog(@"undoDefaultMode");
     [self toState:tActiveState];
     if (callback)
         callback();

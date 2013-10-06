@@ -10,48 +10,38 @@
 #import "APPTableCell.h"
 #import "Query.h"
 
-#define tPreload 01
-#define tVisibleload 02
-#define tMode @"mode"
-#define tError @"error"
-#define tFeed @"feed"
-
-@protocol APPTableViewProcessResponse;
 @protocol APPTableViewDelegate;
 
 @class APPTableCell;
 
-@interface APPTableView : UITableView <UITableViewDataSource, UITableViewDelegate, UITableViewAtBottomViewDelegate,
-        SSPullToRefreshViewDelegate, UITableViewSwipeViewDelegate, UITableViewMaskViewDelegate, APPTableViewProcessResponse>
+@interface APPTableView : UITableView <UITableViewDataSource, UITableViewDelegate, UITableViewAtBottomViewDelegate, SSPullToRefreshViewDelegate, UITableViewSwipeViewDelegate, UITableViewMaskViewDelegate>
 @property id<APPTableViewDelegate> _del;
-@property int showMode;
--(BOOL)addShowMode:(int)mode;
--(BOOL)addDefaultShowMode:(int)mode;
--(void)toShowMode:(int)mode;
+@property NSString *showMode;
+-(BOOL)addShowMode:(NSString*)mode;
+-(BOOL)addDefaultShowMode:(NSString*)mode;
+-(void)toShowMode:(NSString*)mode;
 -(void)toDefaultShowMode;
 -(void)clearView;
 -(void)clearViewAndReloadAll;
--(NSMutableArray*)currentCustomFeed;
--(NSMutableArray*)currentCustomFeedForShowMode:(int)mode;
-@end
-
-@protocol APPTableViewProcessResponse
-@required
--(void)reloadDataResponse:(NSDictionary*)args;
--(void)loadMoreDataResponse:(NSDictionary*)args;
+-(void)dataReloadedFinished:(NSString*)mode;
+-(void)dataReloadedError:(NSString*)mode;
+-(void)loadedMoreFinished:(NSString*)mode;
+-(void)loadedMoreError:(NSString*)mode;
 @end
 
 @protocol APPTableViewDelegate
 @required
--(APPTableCell*)tableView:(UITableView*)tableView forMode:(int)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath;
--(NSIndexPath*)tableView:(UITableView*)tableView forMode:(int)mode willSelectRowAtIndexPath:(NSIndexPath*)indexPath;
--(void)tableView:(UITableView*)tableView forMode:(int)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
+-(APPTableCell*)tableView:(UITableView*)tableView forMode:(NSString*)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath;
+-(int)tableView:(UITableView*)tableView forMode:(NSString*)mode numberOfRowsInSection:(NSInteger)section;
+-(NSIndexPath*)tableView:(UITableView*)tableView forMode:(NSString*)mode willSelectRowAtIndexPath:(NSIndexPath*)indexPath;
+-(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 -(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath;
--(void)tableView:(UITableView*)tableView forMode:(int)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+-(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
         forRowAtIndexPath:(NSIndexPath*)indexPath;
--(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p;
--(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode
-        forFeed:(GDataFeedBase*)feed withPrio:(int)p;
+-(BOOL)hasData:(NSString*)mode;
+-(void)reloadData:(NSString*)mode;
+-(void)loadMoreData:(NSString*)mode;
+-(void)clearData:(NSString*)mode;
 -(BOOL)tableViewCanBottom:(UITableView*)view;
 -(BOOL)pullToRefreshViewShouldStartLoading:(SSPullToRefreshView*)view;
 -(void)beforeShowModeChange;

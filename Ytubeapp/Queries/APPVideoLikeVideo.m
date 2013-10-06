@@ -10,9 +10,9 @@
 
 @implementation APPVideoLikeVideo
 
--(void)load:(id)data
+-(void)load:(id)props
 {
-    NSDictionary *dict = (NSDictionary*) data;
+    NSDictionary *dict = (NSDictionary*) props;
     GDataEntryYouTubeVideo *video = [dict objectForKey:@"video"];
     [[video rating] setValue:@"like"];
     [self fetchEntryByInsertingEntry:video andURL:[[video ratingsLink] URL]];

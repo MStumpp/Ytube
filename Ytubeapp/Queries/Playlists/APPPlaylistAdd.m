@@ -10,9 +10,9 @@
 
 @implementation APPPlaylistAdd
 
--(void)load:(id)data
+-(void)load:(id)props
 {
-    NSDictionary *dict = (NSDictionary*) data;
+    NSDictionary *dict = (NSDictionary*) props;
     GDataEntryYouTubePlaylistLink *playlist = [dict objectForKey:@"playlist"];
     NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/users/default/playlists?v=2"]];
     [self fetchEntryByInsertingEntry:playlist andURL:feedURL];

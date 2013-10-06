@@ -18,17 +18,11 @@
 
 // showMode
 
-#define tToday 1
-#define tWeek 2
-#define tMonth 3
-#define tAll 4
-#define tDefault 5
-
-// Content
-
-//#define tVideos 11
-//#define tChannels 12
-//#define tPlaylists 13
+#define tToday @"today"
+#define tWeek @"week"
+#define tMonth @"month"
+#define tAll @"all"
+#define tDefault @"default"
 
 // Buttons
 
@@ -42,9 +36,6 @@
 #define tWatchLater 28
 #define tFavorites 29
 #define tComments 30
-
-//#define tComments 01
-#define tRelatedVideos 02
 
 #define tIn 01
 #define tOut 02

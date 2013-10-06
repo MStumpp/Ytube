@@ -10,9 +10,9 @@
 
 @implementation APPVideoRelatedVideos
 
--(void)load:(id)data
+-(void)load:(id)props
 {
-    NSDictionary *dict = (NSDictionary*) data;
+    NSDictionary *dict = (NSDictionary*) props;
     GDataEntryYouTubeVideo *video = [dict objectForKey:@"video"];
     NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/videos/%@/related", [APPContent videoID:video]]];
     [self fetchFeedWithURL:feedURL];

@@ -10,6 +10,10 @@
 #import "APPVideoAddComment.h"
 #import "APPCommentCell.h"
 #import <QuartzCore/QuartzCore.h>
+#import "APPVideoComments.h"
+#import "APPFetchMoreQuery.h"
+
+#define tComments @"comments"
 
 @interface APPContentCommentListController ()
 @property UITextField *textField;
@@ -34,6 +38,37 @@
                 if (image)
                     [self.userImageView setImage:image];
             }];
+        }];
+        
+        [self.dataCache configureReloadDataForKey:tComments withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            queryHandler(key, [[APPVideoComments instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
+        }];
+        
+        [self.dataCache configureLoadMoreDataForKey:tComments withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            
+            queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
         }];
     }
     return self;
@@ -107,23 +142,13 @@
     }
 }
 
--(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p
-{
-    return [APPQueryHelper videoComments:self.video showMode:mode withPrio:p delegate:tableView];
-}
-
--(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)p
-{
-    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:p delegate:tableView];
-}
-
--(APPTableCell*)tableView:(UITableView*)tableView forMode:(int)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath
+-(APPTableCell*)tableView:(UITableView*)tableView forMode:(NSString*)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
     APPCommentCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPCommentCell"];
     if (cell == nil)
         cell = [[APPCommentCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPCommentCell"];
 
-    [cell setComment:(GDataEntryYouTubeComment*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]]];
+    [cell setComment:(GDataEntryYouTubeComment*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]]];
     return cell;
 }
 
@@ -147,19 +172,19 @@
 #pragma mark -
 #pragma mark Table View Data Source Methods
 // TODO: Remove table cell locally
--(void)tableView:(UITableView*)tableView forMode:(int)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
+-(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
+    GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
     if (editingStyle == UITableViewCellEditingStyleDelete)
         [APPQueryHelper deleteComment:comment FromVideo:self.video];
 }
 
--(void)tableView:(UITableView*)tableView forMode:(int)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
+-(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     if ([self inState:tPassiveState])
         return;
 
-    GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*)[[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
+    GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
 
 //    APPCommentCell *cell = (APPCommentCell *) [tableView cellForRowAtIndexPath:indexPath];
 //

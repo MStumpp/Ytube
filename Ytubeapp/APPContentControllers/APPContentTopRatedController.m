@@ -7,6 +7,13 @@
 
 
 #import "APPContentTopRatedController.h"
+#import "APPVideoTopRated.h"
+#import "APPFetchMoreQuery.h"
+
+#define tTopRatedToday @"top_rated_today"
+#define tTopRatedWeek @"top_rated_week"
+#define tTopRatedMonth @"top_rated_month"
+#define tTopRatedAll @"top_rated_all"
 
 @implementation APPContentTopRatedController
 
@@ -17,21 +24,52 @@
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_top_rated"];
 
         // configure tToday as default state
-        [self setDefaultState:[NSString stringWithFormat:@"%d", tToday]];
+        [self setDefaultState:tTopRatedToday];
 
         // configure tWeek state
-        [[self configureState:[NSString stringWithFormat:@"%d", tWeek]] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            [self.tableView toShowMode:tWeek];
+        [[self configureState:tTopRatedWeek] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toShowMode:tTopRatedWeek];
         }];
 
         // configure tMonth state
-        [[self configureState:[NSString stringWithFormat:@"%d", tMonth]] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            [self.tableView toShowMode:tMonth];
+        [[self configureState:tTopRatedMonth] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toShowMode:tTopRatedMonth];
         }];
 
         // configure tAll state
-        [[self configureState:[NSString stringWithFormat:@"%d", tAll]] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            [self.tableView toShowMode:tAll];
+        [[self configureState:tTopRatedAll] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toShowMode:tTopRatedAll];
+        }];
+        
+        [self.dataCache configureReloadDataForKeys:@[tTopRatedToday, tTopRatedWeek, tTopRatedMonth, tTopRatedAll] withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            queryHandler(key, [[APPVideoTopRated instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:[self getMode:key], @"mode", nil]
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
+        }];
+        
+        [self.dataCache configureLoadMoreDataForKeys:@[tTopRatedToday, tTopRatedWeek, tTopRatedMonth, tTopRatedAll] withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            
+            queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
         }];
     }
     return self;
@@ -49,7 +87,7 @@
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_up_4"] forState:UIControlStateNormal];
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_down_4"] forState:UIControlStateHighlighted];
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_down_4"] forState:UIControlStateSelected];
-    [buttonToday setTag:tToday];
+    [buttonToday setTag:tTopRatedToday];
     [subtopbarContainer addSubview:buttonToday];
 
     UIButton *buttonWeek = [[UIButton alloc] initWithFrame:CGRectMake(90, 6, 66, 30)];
@@ -57,7 +95,7 @@
     [buttonWeek setImage:[UIImage imageNamed:@"sub_top_bar_button_week_up_4"] forState:UIControlStateNormal];
     [buttonWeek setImage:[UIImage imageNamed:@"sub_top_bar_button_week_down_4"] forState:UIControlStateHighlighted];
     [buttonWeek setImage:[UIImage imageNamed:@"sub_top_bar_button_week_down_4"] forState:UIControlStateSelected];
-    [buttonWeek setTag:tWeek];
+    [buttonWeek setTag:tTopRatedWeek];
     [subtopbarContainer addSubview:buttonWeek];
 
     UIButton *buttonMonth = [[UIButton alloc] initWithFrame:CGRectMake(163, 6, 66, 30)];
@@ -65,7 +103,7 @@
     [buttonMonth setImage:[UIImage imageNamed:@"sub_top_bar_button_month_up_4"] forState:UIControlStateNormal];
     [buttonMonth setImage:[UIImage imageNamed:@"sub_top_bar_button_month_down_4"] forState:UIControlStateHighlighted];
     [buttonMonth setImage:[UIImage imageNamed:@"sub_top_bar_button_month_down_4"] forState:UIControlStateSelected];
-    [buttonMonth setTag:tMonth];
+    [buttonMonth setTag:tTopRatedMonth];
     [subtopbarContainer addSubview:buttonMonth];
 
     UIButton *buttonAll = [[UIButton alloc] initWithFrame:CGRectMake(237, 6, 66, 30)];
@@ -73,32 +111,37 @@
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_up_4"] forState:UIControlStateNormal];
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_down_4"] forState:UIControlStateHighlighted];
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_down_4"] forState:UIControlStateSelected];
-    [buttonAll setTag:tAll];
+    [buttonAll setTag:tTopRatedAll];
     [subtopbarContainer addSubview:buttonAll];
 
     [self.tableViewHeaderFormView setHeaderView:subtopbarContainer];
 
     self.buttons = [[NSDictionary alloc] initWithObjectsAndKeys:
-            buttonToday, [NSNumber numberWithInt:tToday],
-            buttonWeek, [NSNumber numberWithInt:tWeek],
-            buttonMonth, [NSNumber numberWithInt:tMonth],
-            buttonAll, [NSNumber numberWithInt:tAll],
+            buttonToday, tTopRatedToday,
+            buttonWeek, tTopRatedWeek,
+            buttonMonth, tTopRatedMonth,
+            buttonAll, tTopRatedAll,
             nil];
 
-    [self.tableView addDefaultShowMode:tToday];
-    [self.tableView addShowMode:tWeek];
-    [self.tableView addShowMode:tMonth];
-    [self.tableView addShowMode:tAll];
+    [self.tableView addDefaultShowMode:tTopRatedToday];
+    [self.tableView addShowMode:tTopRatedWeek];
+    [self.tableView addShowMode:tTopRatedMonth];
+    [self.tableView addShowMode:tTopRatedAll];
 }
 
--(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p
+-(NSString*)getMode:(NSString*)key
 {
-    return [APPQueryHelper topRatedVideosOnShowMode:mode withPrio:p delegate:tableView];
-}
-
--(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)p
-{
-    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:p delegate:tableView];
+    // set up mode based on key
+    NSString *mode = NULL;
+    if ([key isEqualToString:tTopRatedToday])
+        mode = tToday;
+    if ([key isEqualToString:tTopRatedWeek])
+        mode = tWeek;
+    if ([key isEqualToString:tTopRatedMonth])
+        mode = tMonth;
+    if ([key isEqualToString:tTopRatedAll])
+        mode = tAll;
+    return mode;
 }
 
 @end

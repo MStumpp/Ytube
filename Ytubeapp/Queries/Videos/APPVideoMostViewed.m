@@ -10,10 +10,10 @@
 
 @implementation APPVideoMostViewed
 
--(void)load:(id)data
+-(void)load:(id)props
 {
-    NSDictionary *dict = (NSDictionary*) data;
-    int mode = [[dict objectForKey:@"mode"] intValue];
+    NSDictionary *dict = (NSDictionary*) props;
+    NSString *mode = [dict objectForKey:@"mode"];
     NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/standardfeeds/most_popular?time=%@", [APPContent timeString:mode]]];
     [self fetchFeedWithURL:feedURL];
 }

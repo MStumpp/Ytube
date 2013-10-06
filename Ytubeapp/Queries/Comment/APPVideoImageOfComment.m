@@ -10,9 +10,9 @@
 
 @implementation APPVideoImageOfComment
 
--(void)load:(id)data
+-(void)load:(id)props
 {
-    NSDictionary *dict = (NSDictionary*) data;
+    NSDictionary *dict = (NSDictionary*) props;
     GDataEntryYouTubeComment *comment = [dict objectForKey:@"comment"];
     NSURL *entryURL = [NSURL URLWithString:[[[comment authors] objectAtIndex:0] URI]];
 
@@ -23,21 +23,21 @@
                 GDataEntryYouTubeUserProfile *profile = (GDataEntryYouTubeUserProfile*)entry;
                 [APPContent loadImage:[NSURL URLWithString:[[profile thumbnail] URLString]] callback:^(UIImage *image){
                     if (image) {
-                        [this addToDataWithValue:image andKey:@"image"];
+                        [this setResult:image];
                         [this loaded];
                     } else {
-                        [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"unable to load image from url"] code:1 userInfo:nil] andKey:@"error"];
+                        [this setError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"unable to load image from url"] code:1 userInfo:nil]];
                         [this loaded];
                     }
                 }];
             } else {
-                [this addToDataWithValue:error andKey:@"error"];
+                [this setError:error];
                 [this loaded];
             }
         }];
 
     } else {
-        [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil] andKey:@"error"];
+        [this setError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil]];
         [this loaded];
     }
 }

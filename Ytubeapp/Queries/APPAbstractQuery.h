@@ -14,6 +14,5 @@
 @interface APPAbstractQuery : Query
 @property GDataServiceTicket *ticket;
 -(GDataServiceGoogleYouTube*)service;
--(void)addToDataWithValue:(id)object andKey:(NSString*)key;
 -(BOOL)hasError;
 @end

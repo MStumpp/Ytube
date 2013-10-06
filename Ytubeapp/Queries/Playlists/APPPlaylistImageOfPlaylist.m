@@ -10,9 +10,9 @@
 
 @implementation APPPlaylistImageOfPlaylist
 
--(void)load:(id)data
+-(void)load:(id)props
 {
-    NSDictionary *dict = (NSDictionary*) data;
+    NSDictionary *dict = (NSDictionary*) props;
     GDataEntryYouTubePlaylistLink *playlist = [dict objectForKey:@"playlist"];
     NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [[playlist content] sourceURI], @"&max-results=1"]];
 
@@ -26,21 +26,21 @@
                 NSArray *thumbnails = [mediaGroup mediaThumbnails];
                 [APPContent loadImage:[NSURL URLWithString:[[thumbnails objectAtIndex:0] URLString]] callback:^(UIImage *image){
                     if (image) {
-                        [this addToDataWithValue:image andKey:@"image"];
+                        [this setResult:image];
                         [this loaded];
                     } else {
-                        [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"unable to load image from url"] code:1 userInfo:nil] andKey:@"error"];
+                        [this setError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"unable to load image from url"] code:1 userInfo:nil]];
                         [this loaded];
                     }
                 }];
             } else {
-                [this addToDataWithValue:error andKey:@"error"];
+                [this setError:error];
                 [this loaded];
             }
         }];
 
     } else {
-        [this addToDataWithValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil] andKey:@"error"];
+        [this setError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"service not available"] code:1 userInfo:nil]];
         [this loaded];
     }
 }

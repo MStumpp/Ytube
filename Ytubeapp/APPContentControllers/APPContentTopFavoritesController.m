@@ -7,6 +7,13 @@
 
 
 #import "APPContentTopFavoritesController.h"
+#import "APPVideoTopFavorites.h"
+#import "APPFetchMoreQuery.h"
+
+#define tTopFavoritesToday @"top_favorites_today"
+#define tTopFavoritesWeek @"top_favorites_week"
+#define tTopFavoritesMonth @"top_favorites_month"
+#define tTopFavoritesAll @"top_favorites_all"
 
 @implementation APPContentTopFavoritesController
 
@@ -17,21 +24,52 @@
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_top_favorites"];
 
         // configure tToday as default state
-        [self setDefaultState:[NSString stringWithFormat:@"%d", tToday]];
+        [self setDefaultState:tTopFavoritesToday];
 
         // configure tWeek state
-        [[self configureState:[NSString stringWithFormat:@"%d", tWeek]] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            [self.tableView toShowMode:tWeek];
+        [[self configureState:tTopFavoritesWeek] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toShowMode:tTopFavoritesWeek];
         }];
 
         // configure tMonth state
-        [[self configureState:[NSString stringWithFormat:@"%d", tMonth]] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            [self.tableView toShowMode:tMonth];
+        [[self configureState:tTopFavoritesMonth] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toShowMode:tTopFavoritesMonth];
         }];
 
         // configure tAll state
-        [[self configureState:[NSString stringWithFormat:@"%d", tAll]] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            [self.tableView toShowMode:tAll];
+        [[self configureState:tTopFavoritesAll] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toShowMode:tTopFavoritesAll];
+        }];
+        
+        [self.dataCache configureReloadDataForKeys:@[tTopFavoritesToday, tTopFavoritesWeek, tTopFavoritesMonth, tTopFavoritesAll] withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            queryHandler(key, [[APPVideoTopFavorites instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:[self getMode:key], @"mode", nil]
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
+        }];
+        
+        [self.dataCache configureLoadMoreDataForKeys:@[tTopFavoritesToday, tTopFavoritesWeek, tTopFavoritesMonth, tTopFavoritesAll] withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            
+            queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+                               execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
+                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
+                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   if ([state isEqual:tFinished]) {
+                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
+                                                       [(NSDictionary*)context objectForKey:@"context"],
+                                                       data,
+                                                       error);
+                                   }
+                               }]
+                         );
         }];
     }
     return self;
@@ -49,7 +87,7 @@
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_up_4"] forState:UIControlStateNormal];
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_down_4"] forState:UIControlStateHighlighted];
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_down_4"] forState:UIControlStateSelected];
-    [buttonToday setTag:tToday];
+    [buttonToday setTag:tTopFavoritesToday];
     [subtopbarContainer addSubview:buttonToday];
 
     UIButton *buttonWeek = [[UIButton alloc] initWithFrame:CGRectMake(90, 6, 66, 30)];
@@ -57,7 +95,7 @@
     [buttonWeek setImage:[UIImage imageNamed:@"sub_top_bar_button_week_up_4"] forState:UIControlStateNormal];
     [buttonWeek setImage:[UIImage imageNamed:@"sub_top_bar_button_week_down_4"] forState:UIControlStateHighlighted];
     [buttonWeek setImage:[UIImage imageNamed:@"sub_top_bar_button_week_down_4"] forState:UIControlStateSelected];
-    [buttonWeek setTag:tWeek];
+    [buttonWeek setTag:tTopFavoritesWeek];
     [subtopbarContainer addSubview:buttonWeek];
 
     UIButton *buttonMonth = [[UIButton alloc] initWithFrame:CGRectMake(163, 6, 66, 30)];
@@ -65,7 +103,7 @@
     [buttonMonth setImage:[UIImage imageNamed:@"sub_top_bar_button_month_up_4"] forState:UIControlStateNormal];
     [buttonMonth setImage:[UIImage imageNamed:@"sub_top_bar_button_month_down_4"] forState:UIControlStateHighlighted];
     [buttonMonth setImage:[UIImage imageNamed:@"sub_top_bar_button_month_down_4"] forState:UIControlStateSelected];
-    [buttonMonth setTag:tMonth];
+    [buttonMonth setTag:tTopFavoritesMonth];
     [subtopbarContainer addSubview:buttonMonth];
 
     UIButton *buttonAll = [[UIButton alloc] initWithFrame:CGRectMake(237, 6, 66, 30)];
@@ -73,32 +111,22 @@
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_up_4"] forState:UIControlStateNormal];
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_down_4"] forState:UIControlStateHighlighted];
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_down_4"] forState:UIControlStateSelected];
-    [buttonAll setTag:tAll];
+    [buttonAll setTag:tTopFavoritesAll];
     [subtopbarContainer addSubview:buttonAll];
 
     [self.tableViewHeaderFormView setHeaderView:subtopbarContainer];
 
     self.buttons = [[NSDictionary alloc] initWithObjectsAndKeys:
-            buttonToday, [NSNumber numberWithInt:tToday],
-            buttonWeek, [NSNumber numberWithInt:tWeek],
-            buttonMonth, [NSNumber numberWithInt:tMonth],
-            buttonAll, [NSNumber numberWithInt:tAll],
+            buttonToday, tTopFavoritesToday,
+            buttonWeek, tTopFavoritesWeek,
+            buttonMonth, tTopFavoritesMonth,
+            buttonAll, tTopFavoritesAll,
             nil];
 
-    [self.tableView addDefaultShowMode:tToday];
-    [self.tableView addShowMode:tWeek];
-    [self.tableView addShowMode:tMonth];
-    [self.tableView addShowMode:tAll];
-}
-
--(Query*)tableView:(APPTableView*)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p
-{
-    return [APPQueryHelper topFavoriteVideosOnShowMode:mode withPrio:p delegate:tableView];
-}
-
--(Query*)tableView:(APPTableView*)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase*)feed withPrio:(int)p
-{
-    return [APPQueryHelper fetchMore:feed showMode:mode withPrio:p delegate:tableView];
+    [self.tableView addDefaultShowMode:tTopFavoritesToday];
+    [self.tableView addShowMode:tTopFavoritesWeek];
+    [self.tableView addShowMode:tTopFavoritesMonth];
+    [self.tableView addShowMode:tTopFavoritesAll];
 }
 
 @end

@@ -10,7 +10,7 @@
 
 @implementation APPDefaultUserProfileQuery
 
--(void)load:(id)data
+-(void)load:(id)props
 {
     NSURL *entryURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/users/default"]];
     [self fetchEntryWithURL:entryURL];

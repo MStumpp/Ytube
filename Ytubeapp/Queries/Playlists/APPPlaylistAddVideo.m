@@ -10,9 +10,9 @@
 
 @implementation APPPlaylistAddVideo
 
--(void)load:(id)data
+-(void)load:(id)props
 {
-    NSDictionary *dict = (NSDictionary*) data;
+    NSDictionary *dict = (NSDictionary*) props;
     GDataEntryYouTubeVideo *video = [dict objectForKey:@"video"];
     GDataEntryYouTubePlaylistLink *playlist = [dict objectForKey:@"playlist"];
     [self fetchEntryByInsertingEntry:video andURL:[[playlist editLink] URL]];

@@ -14,6 +14,8 @@
 {
     self = [super init];
     if (self) {
+        self.dataCache = [[APPGlobals classInstance] getGlobalForKey:@"dataCache"];
+        
         [[self configureDefaultState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [self.tableView toDefaultShowMode];
         }];
@@ -21,6 +23,11 @@
         [[self configureState:tClearState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [self.tableView clearView];
         }];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataReloadedFinished:) name:eventDataReloadedFinished object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataReloadedError:) name:eventDataReloadedError object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataMoreLoadedFinished:) name:eventDataMoreLoadedFinished object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataMoreLoadedError:) name:eventDataMoreLoadedError object:nil];
     }
     return self;
 }
@@ -35,51 +42,107 @@
 
 // APPTableViewDelegate
 
-- (APPTableCell *)tableView:(UITableView *)tableView forMode:(int)mode cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+-(APPTableCell *)tableView:(UITableView *)tableView forMode:(NSString*)mode cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     return nil;
 }
 
-- (void)tableView:(UITableView *)tableView forMode:(int)mode didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
+-(int)tableView:(UITableView*)tableView forMode:(NSString*)mode numberOfRowsInSection:(NSInteger)section
+{
+    return [[self.dataCache getData:mode] count];
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+-(void)tableView:(UITableView *)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+}
+
+-(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     return NO;
 }
 
-- (void)tableView:(UITableView *)tableView forMode:(int)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-
+-(void)tableView:(UITableView *)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
-- (Query *)tableView:(APPTableView *)tableView reloadDataConcreteForShowMode:(int)mode withPrio:(int)p {
-    return nil;
-}
-
-- (Query *)tableView:(APPTableView *)tableView loadMoreDataConcreteForShowMode:(int)mode forFeed:(GDataFeedBase *)feed withPrio:(int)p {
-    return nil;
-}
-
--(NSIndexPath*)tableView:(UITableView*)tableView forMode:(int)mode willSelectRowAtIndexPath:(NSIndexPath*)indexPath
+-(BOOL)hasData:(NSString*)key
 {
-    if ([self inState:tPassiveState])
-        return nil;
+    return [self.dataCache hasData:key];
+}
 
+-(void)reloadData:(NSString*)key
+{
+    [self.dataCache reloadData:key withContext:self.tableView];
+}
+
+-(void)loadMoreData:(NSString*)key
+{
+    [self.dataCache loadMoreData:key withContext:self.tableView];
+}
+
+-(void)clearData:(NSString*)key
+{
+    [self.dataCache clearData:key];
+}
+
+-(void)dataReloadedFinished:(NSNotification*)notification
+{
+    NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
+    UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
+    if (self.tableView == tableView && [self.dataCache hasData:key]) {
+        [self.tableView dataReloadedFinished:key];
+    }
+}
+
+-(void)dataReloadedError:(NSNotification*)notification
+{
+    NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
+    UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
+    [self.dataCache clearData:key];
+    if (self.tableView == tableView) {
+        [self.tableView dataReloadedError:key];
+        [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                    message:[NSString stringWithFormat:@"Unable to reload data. Please try again later."]
+                                   delegate:nil
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil] show];
+    }
+}
+
+-(void)loadedMoreFinished:(NSNotification*)notification
+{
+    NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
+    UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
+    if (self.tableView == tableView && [self.dataCache hasData:key]) {
+        [self.tableView loadedMoreFinished:key];
+    }
+}
+
+-(void)loadedMoreError:(NSNotification*)notification
+{
+    NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
+    UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
+    if (self.tableView == tableView) {
+        [self.tableView loadedMoreError:key];
+        [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                    message:[NSString stringWithFormat:@"Unable to load more data. Please try again later."]
+                                   delegate:nil
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil] show];
+    }
+}
+
+-(NSIndexPath*)tableView:(UITableView*)tableView forMode:(NSString*)mode willSelectRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    if ([self inState:tPassiveState]) return nil;
     return indexPath;
 }
 
 -(BOOL)tableViewCanBottom:(UITableView*)view
 {
-    if ([self inState:tPassiveState])
-        return FALSE;
-
+    if ([self inState:tPassiveState]) return FALSE;
     return TRUE;
 }
 
 -(BOOL)pullToRefreshViewShouldStartLoading:(SSPullToRefreshView*)view
 {
-    if ([self inState:tPassiveState])
-        return FALSE;
-
+    if ([self inState:tPassiveState]) return FALSE;
     return TRUE;
 }
 
@@ -95,13 +158,12 @@
 
 // SelectDelegate
 
-- (APPSelectDelegateCallback)afterSelect {
+-(APPSelectDelegateCallback)afterSelect {
     return ^(GDataEntryBase *entryBase) {
     };
 }
 
-- (void)setAfterSelect:(APPSelectDelegateCallback)afterSelect {
-
+-(void)setAfterSelect:(APPSelectDelegateCallback)afterSelect {
 }
 
 @end

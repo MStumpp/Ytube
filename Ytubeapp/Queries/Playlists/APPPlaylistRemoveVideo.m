@@ -10,9 +10,9 @@
 
 @implementation APPPlaylistRemoveVideo
 
--(void)load:(id)data
+-(void)load:(id)props
 {
-    NSDictionary *dict = (NSDictionary*) data;
+    NSDictionary *dict = (NSDictionary*) props;
     GDataEntryYouTubePlaylist *video = [dict objectForKey:@"video"];
     [self deleteEntry:video];
 }

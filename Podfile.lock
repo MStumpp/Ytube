@@ -29,7 +29,6 @@ PODS:
     - SBJson
   - MBProgressHUD (0.8)
   - NSDate-TimeAgo (0.0.1)
-  - QueryManager (0.0.14)
   - SBJson (3.2)
   - SmartNavigationController (0.0.2)
   - SSPullToRefresh (1.1.2)
@@ -43,7 +42,6 @@ DEPENDENCIES:
   - GData (~> 1.12.0)
   - MBProgressHUD (~> 0.6)
   - NSDate-TimeAgo (~> 0.0.1)
-  - QueryManager (~> 0.0.14)
   - SmartNavigationController (~> 0.0.2)
   - SSPullToRefresh (~> 1.1.2)
   - UITableViewAtBottomView (~> 0.0.1)
@@ -58,7 +56,6 @@ SPEC CHECKSUMS:
   GTMHTTPFetcher: b0af09f18ec87e7a5edeffcc8cb6449fdbf0e83f
   MBProgressHUD: 2bbc6f470111daf7f3eaa4eb12b8cbf01c4c0622
   NSDate-TimeAgo: c22120e1736dec8ea2e2260fda8f48a0abb83f05
-  QueryManager: d215983fafbb15c26e4c4f9bec3844fc83632b10
   SBJson: e60b4dc22448c2ae1e754b523a4ab53408e85c8d
   SmartNavigationController: 03aa24a8fad83bbb910b7ad6b1a255bdf564c941
   SSPullToRefresh: 8d8360b0ff0dc7b344656b48ddf9732c47e78806

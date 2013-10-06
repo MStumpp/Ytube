@@ -10,9 +10,9 @@
 
 @implementation APPVideoDeleteComment
 
--(void)load:(id)data
+-(void)load:(id)props
 {
-    NSDictionary *dict = (NSDictionary*)data;
+    NSDictionary *dict = (NSDictionary*)props;
     GDataEntryYouTubeComment *comment = [dict objectForKey:@"comment"];
     [self deleteEntry:comment];
 }
