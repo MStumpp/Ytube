@@ -109,10 +109,11 @@
 
     [[APPPlaylistImageOfPlaylist instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:self.playlist, @"playlist", nil]
-      onStateChange:^(NSString *state, id data) {
+            context:NULL
+      onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (![(NSDictionary*)data objectForKey:@"error"]) {
-                  UIImage *image = (UIImage*)[(NSDictionary*)data objectForKey:@"image"];
+              if (!error) {
+                  UIImage *image = (UIImage*)data;
                   if (image)
                       self.textPic = image;
               } else {

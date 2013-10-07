@@ -22,14 +22,14 @@
     return [mediaGroupVideo videoID];
 }
 
-+(NSString*)timeString:(NSString*)key
++(NSString*)timeString:(NSNumber*)key
 {
     NSString *mode = NULL;
-    if ([key isEqualToString:tToday])
+    if ([key isEqual:[NSNumber numberWithInt:tToday]])
         mode = tTodayStr;
-    else if ([key isEqualToString:tWeek])
+    else if ([key isEqual:[NSNumber numberWithInt:tWeek]])
         mode = tWeekStr;
-    else if ([key isEqualToString:tMonth])
+    else if ([key isEqual:[NSNumber numberWithInt:tMonth]])
         mode = tMonthStr;
     else
         mode = tAllStr;

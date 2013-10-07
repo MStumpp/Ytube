@@ -165,7 +165,7 @@
     if (![[APPUserManager classInstance] isUserSignedIn])
         return FALSE;
 
-    GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*) [[self.tableView currentCustomFeed] objectAtIndex:[indexPath row]];
+    GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*) [[self.dataCache getData:tComments] objectAtIndex:[indexPath row]];
     return [APPContent isUser:[[APPUserManager classInstance] getUserProfile] authorOf:comment];
 }
 

@@ -21,17 +21,21 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_most_popular"];
 
+        self.keyConvert = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tToday], tMostViewedToday,
+                           [NSNumber numberWithInt:tAll], tMostViewedAll, nil];
+        
         // configure tToday as default state
         [self setDefaultState:tMostViewedToday];
 
         // configure tAll state
-        [[self configureState:tAll] onViewState:tDidAppearViewState do:^(State *this, State *other){
+        [[self configureState:tMostViewedAll] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [self.tableView toShowMode:tMostViewedAll];
         }];
         
         [self.dataCache configureReloadDataForKeys:@[tMostViewedToday, tMostViewedAll] withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            NSLog(@"APPContentMostViewedVideoController");
             queryHandler(key, [[APPVideoMostViewed instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
-                    execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:[self getMode:key], @"mode", nil]
+                    execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:[self keyToNumber:key], @"mode", nil]
                     context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
                     onStateChange:^(NSString *state, id data, NSError *error, id context) {
                         if ([state isEqual:tFinished]) {
@@ -75,7 +79,7 @@
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_up_2"] forState:UIControlStateNormal];
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_down_2"] forState:UIControlStateHighlighted];
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_down_2"] forState:UIControlStateSelected];
-    [buttonToday setTag:tMostViewedToday];
+    [buttonToday setTag:tToday];
     [subtopbarContainer addSubview:buttonToday];
 
     UIButton *buttonAll = [[UIButton alloc] initWithFrame:CGRectMake(172, 6, 132, 30)];
@@ -83,7 +87,7 @@
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_up_2"] forState:UIControlStateNormal];
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_down_2"] forState:UIControlStateHighlighted];
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_down_2"] forState:UIControlStateSelected];
-    [buttonAll setTag:tMostViewedAll];
+    [buttonAll setTag:tAll];
     [subtopbarContainer addSubview:buttonAll];
 
     [self.tableViewHeaderFormView setHeaderView:subtopbarContainer];
@@ -95,17 +99,6 @@
 
     [self.tableView addDefaultShowMode:tMostViewedToday];
     [self.tableView addShowMode:tMostViewedAll];
-}
-
--(NSString*)getMode:(NSString*)key
-{
-    // set up mode based on key
-    NSString *mode = NULL;
-    if ([key isEqualToString:tMostViewedToday])
-        mode = tToday;
-    if ([key isEqualToString:tMostViewedAll])
-        mode = tAll;
-    return mode;
 }
 
 @end

@@ -43,9 +43,6 @@
         self.tableViewSwipeView = [[UITableViewSwipeView alloc] initWithTableView:self delegate:self];
         self.tableViewAtBottomView = [[UITableViewAtBottomView alloc] initWithTableView:self delegate:self];
         self.tableViewMaskView = [[UITableViewMaskView alloc] initWithRootView:self customMaskView:nil delegate:self];
-        UIView *progressView = [[UIView alloc] init];
-        [MBProgressHUD showHUDAddedTo:progressView animated:YES];
-        [self.tableViewMaskView setCustomMaskView:progressView];
         
         self.showModes = [NSMutableArray new];
 
@@ -223,6 +220,7 @@
 -(BOOL)addShowMode:(NSString*)mode
 {
     if (!mode || [self hasShowMode:mode]) return FALSE;
+    [self.showModes addObject:mode];
     return TRUE;
 }
 

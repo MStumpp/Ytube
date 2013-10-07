@@ -8,7 +8,6 @@
 
 #import "APPUserManager.h"
 #import "APPDefaultUserProfileQuery.h"
-#import "APPUserImageQuery.h"
 #import "APPGlobals.h"
 #import "APPSliderViewController.h"
 
@@ -137,17 +136,17 @@ static APPUserManager *classInstance = nil;
     if ([self canAuthorize]) {
         // here we have to get the queue
         [[APPDefaultUserProfileQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
-                execute:nil
-          onStateChange:^(NSString *state, id data) {
+                execute:NULL
+                context:NULL
+          onStateChange:^(NSString *state, id data, NSError *error, id context) {
               if ([state isEqual:tFinished]) {
-                  if (![(NSDictionary*)data objectForKey:@"error"]) {
-                      self.currentUserProfile = (GDataEntryYouTubeUserProfile*)[(NSDictionary*)data objectForKey:@"entry"];
-                      if (self.currentUserProfile)
+                  if (!error) {
+                      self.currentUserProfile = (GDataEntryYouTubeUserProfile*)data;
                       if (callback)
                           callback(self.currentUserProfile, nil);
                   } else {
                       if (callback)
-                          callback(nil, [(NSDictionary*)data objectForKey:@"error"]);
+                          callback(nil, error);
                   }
               }
           }];

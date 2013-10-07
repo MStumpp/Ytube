@@ -17,18 +17,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.viewController = [APPIndexViewController new];
-    self.window.rootViewController = self.viewController;
-    [self.window makeKeyAndVisible];
-    
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-        [application setStatusBarStyle:UIStatusBarStyleLightContent];
-        self.window.clipsToBounds = YES;
-        self.window.frame = CGRectMake(0, 20, self.window.frame.size.width, self.window.frame.size.height-20);
-        self.window.bounds = CGRectMake(0, 20, self.window.frame.size.width, self.window.frame.size.height);
-    }
-
     NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
     NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
 
@@ -42,7 +30,7 @@
     [service setUserAgent:@"AppWhirl-UserApp-1.0"];
     [service setShouldCacheDatedData:TRUE];
     [service setAuthorizer:auth];
-    //[service setServiceShouldFollowNextLinks:FALSE];
+    [service setServiceShouldFollowNextLinks:TRUE];
     [[APPGlobals classInstance] setGlobalObject:service forKey:@"service"];
 
     // set up QueryManager and Queues
@@ -63,10 +51,23 @@
         dispatch_semaphore_signal(sema);
     }];
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-
+    
     // set up data cache
     DataCache *dataCache = [DataCache instance];
     [[APPGlobals classInstance] setGlobalObject:dataCache forKey:@"dataCache"];
+    
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.viewController = [APPIndexViewController new];
+    self.window.rootViewController = self.viewController;
+    
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
+        [application setStatusBarStyle:UIStatusBarStyleLightContent];
+        self.window.clipsToBounds = YES;
+        self.window.frame = CGRectMake(0, 20, self.window.frame.size.width, self.window.frame.size.height-20);
+        self.window.bounds = CGRectMake(0, 20, self.window.frame.size.width, self.window.frame.size.height);
+    }
+
+    [self.window makeKeyAndVisible];
     
     return YES;
 }

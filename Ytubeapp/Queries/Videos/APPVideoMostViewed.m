@@ -13,8 +13,8 @@
 -(void)load:(id)props
 {
     NSDictionary *dict = (NSDictionary*) props;
-    NSString *mode = [dict objectForKey:@"mode"];
-    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/standardfeeds/most_popular?time=%@", [APPContent timeString:mode]]];
+    NSNumber *mode = [dict objectForKey:@"mode"];
+    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/standardfeeds/most_viewed?time=%@", [APPContent timeString:mode]]];
     [self fetchFeedWithURL:feedURL];
 }
 

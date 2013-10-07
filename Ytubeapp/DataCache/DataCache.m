@@ -37,28 +37,18 @@ static DataCache *classInstance = nil;
     return classInstance;
 }
 
--(BOOL)addKey:(NSString*)key
-{
-    if (!key || [self hasKey:key]) return FALSE;
-    [self.handlerReload setObject:[NSNull new] forKey:key];
-    [self.handlerLoadMore setObject:[NSNull new] forKey:key];
-    [self.queriesReload setObject:[NSNull new] forKey:key];
-    [self.queriesLoadMore setObject:[NSNull new] forKey:key];
-    [self.feeds setObject:[NSNull new] forKey:key];
-    [self.customFeeds setObject:[[NSMutableArray alloc] init] forKey:key];
-    return TRUE;
-}
-
 -(BOOL)configureReloadDataForKey:(NSString*)key withHandler:(ReloadHandlerCallback)callback
 {
-    if (!key || ![self hasKey:key]) return FALSE;
+    if (!key) return FALSE;
+    if (![self hasKey:key]) [self addKey:key];
     [self.handlerReload setObject:callback forKey:key];
     return TRUE;
 }
 
 -(BOOL)configureLoadMoreDataForKey:(NSString*)key withHandler:(LoadMoreHandlerCallback)callback
 {
-    if (!key || ![self hasKey:key]) return FALSE;
+    if (!key) return FALSE;
+    if (![self hasKey:key]) [self addKey:key];
     [self.handlerLoadMore setObject:callback forKey:key];
     return TRUE;
 }
@@ -85,7 +75,20 @@ static DataCache *classInstance = nil;
 {
     if (!key || ![self hasKey:key]) return FALSE;
     Query *query = [self queryForKey:key forType:self.queriesReload];
-    return (query != (id)[NSNull new] && [query isFinished]) ? TRUE : FALSE;
+    if (query != (id)[NSNull new] && [query isFinished]) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
+-(BOOL)canLoadMoreData:(NSString*)key
+{
+    if (!key || ![self hasKey:key]) return FALSE;
+    GDataFeedBase *feed = [self feedForKey:key];
+    if (!feed) return FALSE;
+    if ([feed nextLink]) return TRUE;
+    return FALSE;
 }
 
 -(id)getData:(NSString*)key
@@ -99,7 +102,10 @@ static DataCache *classInstance = nil;
     if ([self hasData:key]) {
         return [self customFeedForKey:key];
     } else {
-        [self reloadData:key withContext:context];
+        Query *query = [self queryForKey:key forType:self.queriesReload];
+        if (query == (id)[NSNull new]) {
+            [self reloadData:key withContext:context];
+        }
         return NULL;
     }
 }
@@ -116,6 +122,12 @@ static DataCache *classInstance = nil;
     // reset mode and eventually cancel other reload/load more queries
     [self resetKey:key];
     
+    // if there is no handler for reload
+    if (![self reloadHandlerForKey:key]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventDataReloadedError object:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil, @"data", [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"no reload handler for key"] code:1 userInfo:nil], @"error", nil]];
+        return FALSE;
+    }
+    
     // reload the data
     [self reloadHandlerForKey:key](key, context,
                                    ^(NSString *key, Query *query) {
@@ -125,7 +137,6 @@ static DataCache *classInstance = nil;
                                        
                                        // no error
                                        if (!error) {
-                                           
                                            // replace current feed for mode
                                            [self feed:data forKey:key];
                                            
@@ -139,7 +150,6 @@ static DataCache *classInstance = nil;
                                            
                                        // error
                                        } else {
-                                           
                                            [[NSNotificationCenter defaultCenter] postNotificationName:eventDataReloadedError object:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", data, @"data", error, @"error", nil]];
                                        }
                                    });
@@ -154,18 +164,30 @@ static DataCache *classInstance = nil;
 -(BOOL)loadMoreData:(NSString*)key withContext:(id)context
 {
     if (!key || ![self hasKey:key]) return FALSE;
-
-    id previous = [self feedForKey:key];
+    
+    GDataFeedBase *previous = [self feedForKey:key];
     
     // if there is no feed, cant load more data
     if (!previous) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:eventDataMoreLoadedFinished object:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil, @"data", [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"no feed for key"] code:1 userInfo:nil], @"error", nil]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventDataMoreLoadedError object:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil, @"data", [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"no feed for key"] code:1 userInfo:nil], @"error", nil]];
+        return FALSE;
+    }
+    
+    // if feed doesn't has more data
+    if (![self canLoadMoreData:key]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventDataMoreLoadedError object:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil, @"data", [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"feed for key doesn't has more data"] code:1 userInfo:nil], @"error", nil]];
         return FALSE;
     }
     
     // eventualy do not process if there is currently another load more query running
     if ([self queryForKey:key forType:self.queriesLoadMore] &&
         [self queryForKey:key forType:self.queriesLoadMore] != (id)[NSNull new]) {
+        return FALSE;
+    }
+    
+    // if there is no handler for load more
+    if (![self loadMoreHandlerForKey:key]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventDataMoreLoadedError object:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil, @"data", [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"no load more handler for key"] code:1 userInfo:nil], @"error", nil]];
         return FALSE;
     }
     
@@ -264,6 +286,18 @@ static DataCache *classInstance = nil;
     
     [self.feeds setObject:[NSNull new] forKey:key];
     [[self customFeedForKey:key] removeAllObjects];
+    return TRUE;
+}
+
+-(BOOL)addKey:(NSString*)key
+{
+    if (!key || [self hasKey:key]) return FALSE;
+    [self.handlerReload setObject:[NSNull new] forKey:key];
+    [self.handlerLoadMore setObject:[NSNull new] forKey:key];
+    [self.queriesReload setObject:[NSNull new] forKey:key];
+    [self.queriesLoadMore setObject:[NSNull new] forKey:key];
+    [self.feeds setObject:[NSNull new] forKey:key];
+    [self.customFeeds setObject:[[NSMutableArray alloc] init] forKey:key];
     return TRUE;
 }
 

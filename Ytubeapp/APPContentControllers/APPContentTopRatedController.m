@@ -23,6 +23,11 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_top_rated"];
 
+        self.keyConvert = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tToday], tTopRatedToday,
+                           [NSNumber numberWithInt:tWeek], tTopRatedWeek,
+                           [NSNumber numberWithInt:tMonth], tTopRatedMonth,
+                           [NSNumber numberWithInt:tAll], tTopRatedAll, nil];
+        
         // configure tToday as default state
         [self setDefaultState:tTopRatedToday];
 
@@ -42,8 +47,9 @@
         }];
         
         [self.dataCache configureReloadDataForKeys:@[tTopRatedToday, tTopRatedWeek, tTopRatedMonth, tTopRatedAll] withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            NSLog(@"APPContentTopRatedController");
             queryHandler(key, [[APPVideoTopRated instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
-                               execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:[self getMode:key], @"mode", nil]
+                               execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:[self keyToNumber:key], @"mode", nil]
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
                                onStateChange:^(NSString *state, id data, NSError *error, id context) {
                                    if ([state isEqual:tFinished]) {
@@ -87,7 +93,7 @@
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_up_4"] forState:UIControlStateNormal];
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_down_4"] forState:UIControlStateHighlighted];
     [buttonToday setImage:[UIImage imageNamed:@"sub_top_bar_button_today_down_4"] forState:UIControlStateSelected];
-    [buttonToday setTag:tTopRatedToday];
+    [buttonToday setTag:tToday];
     [subtopbarContainer addSubview:buttonToday];
 
     UIButton *buttonWeek = [[UIButton alloc] initWithFrame:CGRectMake(90, 6, 66, 30)];
@@ -95,7 +101,7 @@
     [buttonWeek setImage:[UIImage imageNamed:@"sub_top_bar_button_week_up_4"] forState:UIControlStateNormal];
     [buttonWeek setImage:[UIImage imageNamed:@"sub_top_bar_button_week_down_4"] forState:UIControlStateHighlighted];
     [buttonWeek setImage:[UIImage imageNamed:@"sub_top_bar_button_week_down_4"] forState:UIControlStateSelected];
-    [buttonWeek setTag:tTopRatedWeek];
+    [buttonWeek setTag:tWeek];
     [subtopbarContainer addSubview:buttonWeek];
 
     UIButton *buttonMonth = [[UIButton alloc] initWithFrame:CGRectMake(163, 6, 66, 30)];
@@ -103,7 +109,7 @@
     [buttonMonth setImage:[UIImage imageNamed:@"sub_top_bar_button_month_up_4"] forState:UIControlStateNormal];
     [buttonMonth setImage:[UIImage imageNamed:@"sub_top_bar_button_month_down_4"] forState:UIControlStateHighlighted];
     [buttonMonth setImage:[UIImage imageNamed:@"sub_top_bar_button_month_down_4"] forState:UIControlStateSelected];
-    [buttonMonth setTag:tTopRatedMonth];
+    [buttonMonth setTag:tMonth];
     [subtopbarContainer addSubview:buttonMonth];
 
     UIButton *buttonAll = [[UIButton alloc] initWithFrame:CGRectMake(237, 6, 66, 30)];
@@ -111,7 +117,7 @@
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_up_4"] forState:UIControlStateNormal];
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_down_4"] forState:UIControlStateHighlighted];
     [buttonAll setImage:[UIImage imageNamed:@"sub_top_bar_button_all_down_4"] forState:UIControlStateSelected];
-    [buttonAll setTag:tTopRatedAll];
+    [buttonAll setTag:tAll];
     [subtopbarContainer addSubview:buttonAll];
 
     [self.tableViewHeaderFormView setHeaderView:subtopbarContainer];
@@ -127,21 +133,6 @@
     [self.tableView addShowMode:tTopRatedWeek];
     [self.tableView addShowMode:tTopRatedMonth];
     [self.tableView addShowMode:tTopRatedAll];
-}
-
--(NSString*)getMode:(NSString*)key
-{
-    // set up mode based on key
-    NSString *mode = NULL;
-    if ([key isEqualToString:tTopRatedToday])
-        mode = tToday;
-    if ([key isEqualToString:tTopRatedWeek])
-        mode = tWeek;
-    if ([key isEqualToString:tTopRatedMonth])
-        mode = tMonth;
-    if ([key isEqualToString:tTopRatedAll])
-        mode = tAll;
-    return mode;
 }
 
 @end

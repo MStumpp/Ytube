@@ -11,7 +11,7 @@
 
 @interface APPContent : NSObject
 +(NSString*)videoID:(GDataEntryYouTubeVideo *)video;
-+(NSString*)timeString:(NSString*)mode;
++(NSString*)timeString:(NSNumber*)mode;
 +(int)likeStateOfVideo:(GDataEntryYouTubeVideo*)video;
 +(BOOL)isUser:(GDataEntryYouTubeUserProfile*)user authorOf:(GDataEntryBase*)entry;
 +(void)smallImageOfVideo:(GDataEntryYouTubeVideo*)video callback:(void (^)(UIImage *image))callback;

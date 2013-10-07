@@ -7,6 +7,7 @@
 
 
 #import "APPContentListController.h"
+#import "MBProgressHUD.h"
 
 @implementation APPContentListController
 
@@ -21,7 +22,7 @@
         }];
 
         [[self configureState:tClearState] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            [self.tableView clearView];
+            [self.tableView clearViewAndReloadAll];
         }];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataReloadedFinished:) name:eventDataReloadedFinished object:nil];
@@ -48,7 +49,10 @@
 
 -(int)tableView:(UITableView*)tableView forMode:(NSString*)mode numberOfRowsInSection:(NSInteger)section
 {
-    return [[self.dataCache getData:mode] count];
+    if ([self.dataCache hasData:mode])
+        return [[self.dataCache getData:mode] count];
+    else
+        return 0;
 }
 
 -(void)tableView:(UITableView *)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -66,6 +70,11 @@
     return [self.dataCache hasData:key];
 }
 
+-(BOOL)canLoadMoreData:(NSString*)key
+{
+    return [self.dataCache canLoadMoreData:key];
+}
+
 -(void)reloadData:(NSString*)key
 {
     [self.dataCache reloadData:key withContext:self.tableView];
@@ -73,7 +82,8 @@
 
 -(void)loadMoreData:(NSString*)key
 {
-    [self.dataCache loadMoreData:key withContext:self.tableView];
+    if ([self.dataCache canLoadMoreData:key])
+        [self.dataCache loadMoreData:key withContext:self.tableView];
 }
 
 -(void)clearData:(NSString*)key
@@ -154,6 +164,19 @@
 -(void)afterShowModeChange
 {
     return;
+}
+
+-(NSNumber*)keyToNumber:(NSString*)key
+{
+    return [self.keyConvert objectForKey:key];
+}
+
+-(NSString*)keyToString:(NSNumber*)key
+{
+    NSArray *keys = [self.keyConvert allKeysForObject:key];
+    if ([keys count] > 0)
+        return keys[0];
+    return NULL;
 }
 
 // SelectDelegate

@@ -31,6 +31,8 @@
 @property UIImageView *leftShadow;
 @property UIImageView *rightShadow;
 
+@property UITableViewMaskView *maskView;
+
 // controller in center to keep controllers with the actual content
 @property SmartNavigationController<APPSliderViewControllerDelegate> *centerController;
 
@@ -211,12 +213,7 @@
     [self.leftShadow setHidden:YES];
     [self.view addSubview:self.leftShadow];
 
-    // TODO: self.view should not be replaced, instead enhance current view with mask functionality
-    UITableViewMaskView *maskView = [[UITableViewMaskView alloc] initWithRootView:self.view customMaskView:nil delegate:self];
-    UIView *progressView = [[UIView alloc] init];
-    [MBProgressHUD showHUDAddedTo:progressView animated:YES];
-    [maskView setCustomMaskView:progressView];
-    self.view = maskView;
+    self.maskView = [[UITableViewMaskView alloc] initWithRootView:self.view customMaskView:nil delegate:self];
 }
 
 -(void)viewDidLoad
@@ -469,12 +466,12 @@
 -(void)mask:(BOOL)mask onCompletion:(void (^)(void))callback
 {
     if (mask)
-        [(UITableViewMaskView*)self.view maskOnCompletion:^(BOOL isMasked) {
+        [self.maskView maskOnCompletion:^(BOOL isMasked) {
             if (isMasked && callback)
                 callback();
         }];
     else
-        [(UITableViewMaskView*)self.view unmaskOnCompletion:^(BOOL isUnmasked) {
+        [self.maskView unmaskOnCompletion:^(BOOL isUnmasked) {
             if (isUnmasked && callback)
                 callback();
         }];

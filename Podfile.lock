@@ -32,10 +32,6 @@ PODS:
   - SBJson (3.2)
   - SmartNavigationController (0.0.2)
   - SSPullToRefresh (1.1.2)
-  - UITableViewAtBottomView (0.0.1)
-  - UITableViewHeaderMenuView (0.0.1)
-  - UITableViewMaskView (0.0.1)
-  - UITableViewSwipeView (0.0.1)
   - ViewHelpers (0.0.1)
 
 DEPENDENCIES:
@@ -44,10 +40,6 @@ DEPENDENCIES:
   - NSDate-TimeAgo (~> 0.0.1)
   - SmartNavigationController (~> 0.0.2)
   - SSPullToRefresh (~> 1.1.2)
-  - UITableViewAtBottomView (~> 0.0.1)
-  - UITableViewHeaderMenuView (~> 0.0.1)
-  - UITableViewMaskView (~> 0.0.1)
-  - UITableViewSwipeView (~> 0.0.1)
   - ViewHelpers (~> 0.0.1)
 
 SPEC CHECKSUMS:
@@ -59,10 +51,6 @@ SPEC CHECKSUMS:
   SBJson: e60b4dc22448c2ae1e754b523a4ab53408e85c8d
   SmartNavigationController: 03aa24a8fad83bbb910b7ad6b1a255bdf564c941
   SSPullToRefresh: 8d8360b0ff0dc7b344656b48ddf9732c47e78806
-  UITableViewAtBottomView: fb372036a11e91ba83fab1515545e3deea033f70
-  UITableViewHeaderMenuView: a8a2a8458a79f5ae37acf5ccb4469f9441b9c8cc
-  UITableViewMaskView: 0c2f9c83b56d11634c1894f870a32d21ccfeafbb
-  UITableViewSwipeView: 1a85aa008264d1aae343967fb8074748e546d101
   ViewHelpers: 0aa94fd43cd2053318471b517fd48476ecabf925
 
 COCOAPODS: 0.20.2

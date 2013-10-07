@@ -18,11 +18,11 @@
 
 // showMode
 
-#define tToday @"today"
-#define tWeek @"week"
-#define tMonth @"month"
-#define tAll @"all"
-#define tDefault @"default"
+#define tToday 1
+#define tWeek 2
+#define tMonth 3
+#define tAll 4
+#define tDefault 5
 
 // Buttons
 
