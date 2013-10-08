@@ -12,7 +12,6 @@
 
 @interface APPContentListController : APPContentBaseController <APPTableViewDelegate, SelectDelegate>
 @property APPTableView *tableView;
-@property DataCache *dataCache;
 @property NSDictionary *keyConvert;
 @property UITableViewMaskView *tableViewMaskView;
 -(NSNumber*)keyToNumber:(NSString*)key;

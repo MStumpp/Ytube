@@ -52,17 +52,25 @@ static APPUserManager *classInstance = nil;
             
             // inform observers
             [[NSNotificationCenter defaultCenter] postNotificationName:eventAuthTokenValidated object:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.auth, @"auth", nil]];
+            
+            NSLog(@"test1");
 
             [self currentUserProfileWithCallback:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
+                NSLog(@"test2");
+
                 if (user && !error) {
                     
                     // inform observers
                     [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedIn object:[NSMutableDictionary dictionaryWithObjectsAndKeys:user, @"user", nil]];
+                    
+                    NSLog(@"test3");
 
                     if (callback)
                         callback(user, nil);
                     
                 } else {
+                    NSLog(@"test4");
+
                     if (callback)
                         callback(nil, error);
                 }
@@ -80,7 +88,11 @@ static APPUserManager *classInstance = nil;
     self.currentUserProfile = nil;
     self.currentUserImage = nil;
     
+    NSLog(@"signOutOnCompletion1");
+    
     if (self.auth) {
+        NSLog(@"signOutOnCompletion2");
+
         NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
         NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
         

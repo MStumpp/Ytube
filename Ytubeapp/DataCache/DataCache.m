@@ -224,6 +224,15 @@ static DataCache *classInstance = nil;
     return [self resetKey:key];
 }
 
+-(BOOL)clearAllData
+{
+    NSArray *keys = [self.queriesReload allKeys];
+    for (NSString *key in keys) {
+        [self clearData:key];
+    }
+    return TRUE;
+}
+
 // private
 
 -(void)setQuery:(Query*)ticket forKey:(NSString*)key forType:(NSMutableDictionary*)type

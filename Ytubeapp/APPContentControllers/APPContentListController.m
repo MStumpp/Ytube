@@ -14,8 +14,6 @@
 {
     self = [super init];
     if (self) {
-        self.dataCache = [[APPGlobals classInstance] getGlobalForKey:@"dataCache"];
-        
         [[self configureDefaultState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [self.tableView toDefaultShowMode];
         }];

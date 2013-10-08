@@ -15,10 +15,7 @@
 {
     self = [super init];
     if (self) {
-        [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            // save the last active state
-            [[self state:tActiveState] setData:[self prevState]];
-        }];
+        self.dataCache = [[APPGlobals classInstance] getGlobalForKey:@"dataCache"];
         
         [[self configureState:tActiveState] forwardToState:^(State *this, State *from, ForwardResponseCallback callback){
             if (from && [[from name] isEqualToString:tPassiveState])
@@ -27,8 +24,19 @@
                 callback([self defaultState], FALSE);
         }];
         
-        if ([[APPUserManager classInstance] isUserSignedIn])
-            [self toDefaultStateForce];
+        [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            // save the last active state
+            [[self state:tActiveState] setData:[self prevState]];
+        }];
+        
+        [[self configureState:tClearState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            // save the last active state
+            [[self state:tActiveState] setData:[self prevState]];
+        }];
+        
+        [[self configureState:tClearState] forwardToState:^(State *this, State *from, ForwardResponseCallback callback){
+            callback([self state:tActiveState], FALSE);
+        }];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
@@ -46,11 +54,11 @@
 
 -(void)userSignedIn:(NSNotification*)notification
 {
-    [self toDefaultStateForce];
 }
 
 -(void)userSignedOut:(NSNotification*)notification
 {
+    [self.dataCache clearAllData];
     [self toStateForce:tClearState];
 }
 

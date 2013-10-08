@@ -25,6 +25,7 @@
 @property UIButton *rightButton;
 @property UIActivityIndicatorView *spinner;
 @property BOOL *buttonsEnabled;
+@property BOOL *leftButtonWasSelected;
 @end
 
 @implementation APPIndexViewController
@@ -107,10 +108,14 @@
 
 -(void)topbarButtonPress:(UIButton*)sender
 {
-    if (!self.buttonsEnabled)
-        return;
+    if (!self.buttonsEnabled) return;
     
     if ([sender tag] == tRightButton && ![sender isSelected] && ![[APPUserManager classInstance] isUserSignedIn]) {
+        if ([self.leftButton isSelected]) {
+            self.leftButtonWasSelected = TRUE;
+        } else {
+            self.leftButtonWasSelected = FALSE;
+        }
         [self.leftButton setSelected:NO];
         [self.rightButton setSelected:YES];
 
@@ -129,12 +134,18 @@
     } else {
         if ([sender isSelected]) {
             [sender setSelected:NO];
-            [self.sliderViewController moveToCenter:nil];
+            if ([self.mainController topViewController] == self.loginController) {
+                if (self.leftButtonWasSelected) [self.leftButton setSelected:YES];
+                [self.mainController popViewControllerAnimated:YES];
+            } else {
+                [self.sliderViewController moveToCenter:nil];
+            }
 
         } else {
             if ([sender tag] == tLeftButton) {                
                 [sender setSelected:YES];
                 [self.rightButton setSelected:NO];
+                if ([self.mainController topViewController] == self.loginController) [self.mainController popViewControllerAnimated:YES];
                 [self.sliderViewController moveToLeft:nil];
 
             } else {
@@ -153,11 +164,13 @@
         [[APPUserManager classInstance] signIn:auth onCompletion:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
             // received user profile, successfully signed in
             if (user) {
+                NSLog(@"move to the right");
                 [self.sliderViewController moveToRight:nil];
 
             // not received user profile, not successfully logged in
             } else {
                 [self.rightButton setSelected:NO];
+                if (self.leftButtonWasSelected) [self.leftButton setSelected:YES];
                 [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
                                             message:[NSString stringWithFormat:@"Unable to sign you in. Please try again later."]
                                            delegate:nil
@@ -168,6 +181,7 @@
 
     } else if ([error code] != kGTMOAuth2ErrorWindowClosed) {
         [self.rightButton setSelected:NO];
+        if (self.leftButtonWasSelected) [self.leftButton setSelected:YES];
         [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
                                     message:[NSString stringWithFormat:@"Unable to sign you in. Please try again later."]
                                    delegate:nil

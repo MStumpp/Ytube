@@ -25,4 +25,5 @@
 @interface APPContentBaseController : FSMUIViewController
 @property UIImage *topbarImage;
 @property NSString *topbarTitle;
+@property DataCache *dataCache;
 @end

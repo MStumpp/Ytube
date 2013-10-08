@@ -36,4 +36,5 @@ typedef void(^LoadMoreHandlerCallback)(NSString *key, id previous, id context, Q
 -(BOOL)loadMoreData:(NSString*)key;
 -(BOOL)loadMoreData:(NSString*)key withContext:(id)context;
 -(BOOL)clearData:(NSString*)key;
+-(BOOL)clearAllData;
 @end
