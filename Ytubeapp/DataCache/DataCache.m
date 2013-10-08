@@ -86,7 +86,7 @@ static DataCache *classInstance = nil;
 {
     if (!key || ![self hasKey:key]) return FALSE;
     GDataFeedBase *feed = [self feedForKey:key];
-    if (!feed) return FALSE;
+    if (!feed || [feed isEqual:[NSNull new]]) return FALSE;
     if ([feed nextLink]) return TRUE;
     return FALSE;
 }

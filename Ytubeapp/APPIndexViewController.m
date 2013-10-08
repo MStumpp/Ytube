@@ -192,9 +192,10 @@
 
 -(void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
+    NSLog(@"test1");
     // login controller shows up
     if (viewController != self.sliderViewController) {
-
+        NSLog(@"test2");
         // when signing in, replace the current toolbar background image with the sign in image
         // change the image back once the user is signed in
         self.tmpTopBarBackImage = [ViewHelpers getBackgroundImageForToolbar:self.toolbar];
@@ -209,6 +210,7 @@
 
     // slider controller shows up after login controller was on top
     } else {
+        NSLog(@"test3");
         // reset background image
         if (self.tmpTopBarBackImage) {
             [self.toolbar setBackgroundImage:self.tmpTopBarBackImage forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];

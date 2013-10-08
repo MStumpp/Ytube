@@ -35,7 +35,7 @@
               if (error) {
                   [self showErrorMessage];
               }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventVideoLiked object:data];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventVideoLiked object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
           }
       }];
 }
@@ -50,7 +50,7 @@
               if (error) {
                   [self showErrorMessage];
               }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventVideoUnliked object:data];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventVideoUnliked object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
           }
       }];
 }
@@ -67,7 +67,7 @@
               if (error) {
                   [self showErrorMessage];
               }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedVideoToPlaylist object:data];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedVideoToPlaylist object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
           }
       }];
 }
@@ -82,7 +82,7 @@
               if (error) {
                   [self showErrorMessage];
               }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventRemovedVideoFromPlaylist object:data];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventRemovedVideoFromPlaylist object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
           }
       }];
 }
@@ -97,7 +97,7 @@
               if (error) {
                   [self showErrorMessage];
               }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedVideoToFavorites object:data];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedVideoToFavorites object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
           }
       }];
 }
@@ -112,7 +112,7 @@
               if (error) {
                   [self showErrorMessage];
               }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventRemovedVideoFromFavorites object:data];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventRemovedVideoFromFavorites object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
           }
       }];
 }
@@ -127,7 +127,7 @@
               if (error) {
                   [self showErrorMessage];
               }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedVideoToWatchLater object:data];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedVideoToWatchLater object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
           }
       }];
 }
@@ -142,7 +142,7 @@
               if (error) {
                   [self showErrorMessage];
               }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventRemovedVideoFromWatchLater object:data];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventRemovedVideoFromWatchLater object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
           }
       }];
 }
@@ -157,7 +157,7 @@
               if (error) {
                   [self showErrorMessage];
               }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventDeletedMyVideo object:data];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventDeletedMyVideo object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
           }
       }];
 }
@@ -174,7 +174,7 @@
               if (error) {
                   [self showErrorMessage];
               }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedPlaylist object:data];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedPlaylist object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
           }
       }];
 }
@@ -189,7 +189,7 @@
               if (error) {
                   [self showErrorMessage];
               }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventDeletedPlaylist object:data];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventDeletedPlaylist object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
           }
       }];
 }
@@ -206,7 +206,7 @@
               if (error) {
                   [self showErrorMessage];
               }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedCommentToVideo object:data];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedCommentToVideo object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
           }
       }];
 }
@@ -221,7 +221,7 @@
               if (error) {
                   [self showErrorMessage];
               }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventDeletedCommentFromVideo object:data];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventDeletedCommentFromVideo object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
           }
       }];
 }
