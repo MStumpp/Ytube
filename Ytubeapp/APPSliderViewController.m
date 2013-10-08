@@ -34,7 +34,7 @@
 @property UITableViewMaskView *maskView;
 
 // controller in center to keep controllers with the actual content
-@property SmartNavigationController<APPSliderViewControllerDelegate> *centerController;
+@property SmartNavigationController *centerController;
 
 // keep some references to button and controller instances
 @property NSDictionary *buttons;
@@ -226,7 +226,7 @@
 }
 
 // moves the slider to the left
-// if the slider is at the center, it calls willSplitScreenMode of
+// if the slider is at the center, it calls doDefaultMode of
 // current top controller
 -(void)moveToLeft:(void (^)(void))callback
 {
@@ -251,7 +251,7 @@
 }
 
 // moves the slider to the center
-// as soon as the slider is at the center, it calls didFullScreenModeAfterSplitScreen of
+// as soon as the slider is at the center, it calls undoDefaultMode of
 // current top controller
 -(void)moveToCenter:(void (^)(void))callback
 {
@@ -276,7 +276,7 @@
 }
 
 // moves the slider to the right
-// if the slider is at the center, it calls willSplitScreenMode of
+// if the slider is at the center, it calls doDefaultMode of
 // current top controller
 -(void)moveToRight:(void (^)(void))callback
 {
@@ -304,12 +304,68 @@
 // private helpers
 //////
 
+// handles a button press on the left or right menu
+-(void)navbarButtonPress:(UIButton*)sender
+{
+    if (!sender || ![sender tag]) return;
+    
+    // unselect and disable topbar buttons
+    [self.controller unselectButtons];
+    [self.controller enableButtons:FALSE];
+    
+    int newContext = [sender tag];
+
+    [self animateMoveToCenter:^{
+        
+        // sign out or change context
+        switch (newContext)
+        {
+            case tSignOut:
+            {
+                [self mask:YES onCompletion:^{
+                    [[APPUserManager classInstance] signOutOnCompletion:^(BOOL isSignedOut) {
+                        [self mask:NO onCompletion:^{
+                            // unable topbar buttons
+                            [self.controller enableButtons:TRUE];
+                            if (isSignedOut) {
+                                if ([[APPUserManager classInstance] allowedToVisit:self.currentContext])
+                                    [self toggleContext:self.currentContext];
+                                else
+                                    [self toggleContext:self.defaultContext];
+                                
+                            } else {
+                                [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                                            message:[NSString stringWithFormat:@"Unable to sign you out. Please try again later."]
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil] show];
+                                [self toggleContext:self.currentContext];
+                            }
+                        }];
+                    }];
+                }];
+                break;
+            }
+                
+            default:
+            {
+                // unable topbar buttons
+                [self.controller enableButtons:TRUE];
+                [self toggleContext:newContext];
+                break;
+            }
+        }
+    }];
+}
+
 -(void)toggleContext:(int)context
 {
     if (!context)
         return;
 
     // toggle button
+    ////////////////////
+    
     // kein selectedbutton
     // -> wähle button entsprechend dem input context aus
     if (self.selectedButton == tNone) {
@@ -324,90 +380,45 @@
     self.selectedButton = context;
 
     // toggle controller
-    [self animateMoveToCenter:^{
-        // selected controller nicht vorhanden
-        // -> setze root controller auf controller für diesen context
-        // -> undo default auf topcontroller
-        if (self.selectedController == tNone) {
+    ///////////////////////
+    
+    // selected controller nicht vorhanden
+    // -> setze root controller auf controller für diesen context
+    // -> undo default auf topcontroller (siehe am ende)
+    if (self.selectedController == tNone) {
+        [self.centerController setRootViewController:[self.controllers objectForKey:[NSNumber numberWithInt:context]]];
+
+    } else {
+        // selected controller vorhanden und selected controller != input context
+        if (self.selectedController != context) {
+            // -> dodefault auf top view controller
+            // -> setze root controller auf controller für diesen context
+            // -> undo default auf topcontroller (siehe am ende)
+            /*if ([self topViewController]) {
+                dispatch_semaphore_t sema = dispatch_semaphore_create(1);
+                [[self topViewController] doDefaultMode:^{
+                    dispatch_semaphore_signal(sema);
+                }];
+                dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+            }*/
             [self.centerController setRootViewController:[self.controllers objectForKey:[NSNumber numberWithInt:context]]];
 
         } else {
-            // selected controller vorhanden und selected controller != input context
-            if (self.selectedController != context) {
-                // -> dodefault auf top view controller
-                // -> setze root controller auf controller für diesen context
-                // -> undo default auf topcontroller
-                if ([self topViewController]) {
-                    dispatch_semaphore_t sema = dispatch_semaphore_create(1);
-                    [[self topViewController] doDefaultMode:^{
-                        dispatch_semaphore_signal(sema);
-                    }];
-                    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-                }
-                [self.centerController setRootViewController:[self.controllers objectForKey:[NSNumber numberWithInt:context]]];
+            // selected controller vorhanden und selected controller == input context und top view controller != controller für diesen context
+            // -> center controller to root view
+            // -> undo default auf topcontroller (siehe am ende)
+            if ([self topViewController] && [self topViewController] != [self.controllers objectForKey:[NSNumber numberWithInt:context]])
+                [self.centerController popToRootViewControllerAnimated:YES];
 
-            } else {
-                // selected controller vorhanden und selected controller == input context und top view controller != controller für diesen context
-                // -> center controller to root view
-                // -> undo default auf topcontroller
-                if ([self topViewController] && [self topViewController] != [self.controllers objectForKey:[NSNumber numberWithInt:context]])
-                    [self.centerController popToRootViewControllerAnimated:YES];
-
-                // selected controller vorhanden und selected controller == input context und top view controller == controller für diesen context
-                // -> undo default auf topcontroller
-            }
-        }
-        [[self topViewController] undoDefaultMode:nil];
-        self.selectedController = context;
-    }];
-
-    self.currentContext = context;
-}
-
-// handles a button press on the left or right menu
--(void)navbarButtonPress:(UIButton*)sender
-{
-    if (!sender || ![sender tag])
-        return;
-
-    int newContext = [sender tag];
-    [self.controller unselectButtons];
-
-    switch (newContext)
-    {
-        case tSignOut:
-        {
-            [self animateMoveToCenter:^{
-                [self mask:YES onCompletion:^{
-                    [[APPUserManager classInstance] signOutOnCompletion:^(BOOL isSignedOut) {
-                        [self mask:NO onCompletion:^{
-                            if (isSignedOut) {
-                                if ([[APPUserManager classInstance] allowedToVisit:self.currentContext])
-                                    [self toggleContext:self.currentContext];
-                                else
-                                    [self toggleContext:self.defaultContext];
-
-                            } else {
-                                [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                                            message:[NSString stringWithFormat:@"Unable to sign you out. Please try again later."]
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil] show];
-                                [self toggleContext:self.currentContext];
-                            }
-                        }];
-                    }];
-                }];
-            }];
-            break;
-        }
-
-        default:
-        {
-            [self toggleContext:newContext];
-            break;
+            // selected controller vorhanden und selected controller == input context und top view controller == controller für diesen context
+            // -> undo default auf topcontroller (siehe am ende)
         }
     }
+    
+    [[self topViewController] undoDefaultMode:nil];
+    self.selectedController = context;
+  
+    self.currentContext = context;
 }
 
 // called when another center controller went visible,
@@ -417,16 +428,15 @@
 {
     // to change the toolbar image/title of the index controller
     // prefer topbarImage over topbarTitle, so check if topbarImage is provided first
-    if ([(APPContentBaseController *)viewController topbarImage]) {
-        [self.controller setToolbarBackgroundImage:[(APPContentBaseController *)viewController topbarImage]];
-    } else if ([(APPContentBaseController *)viewController topbarTitle]) {
-        [self.controller setToolbarTitle:[(APPContentBaseController *)viewController topbarTitle]];
+    if ([(APPContentBaseController*)viewController topbarImage]) {
+        [self.controller setToolbarBackgroundImage:[(APPContentBaseController*)viewController topbarImage]];
+    } else if ([(APPContentBaseController*)viewController topbarTitle]) {
+        [self.controller setToolbarTitle:[(APPContentBaseController*)viewController topbarTitle]];
     } else {
         NSLog(@"neither toolbar image nor title defined");
     }
 }
 
-// TVNavigationControllerDelegate
 // called when login screen pushed on
 // top of current slider view controller
 -(void)navigationController:(UINavigationController *)navController willBePushed:(UIViewController *)viewController context:(id)context onCompletion:(void (^)(void))callback
@@ -485,9 +495,9 @@
 
 // returns the current top view controller of the navigation
 // controller stack, nil otherwise
--(UIViewController<Base>*)topViewController
+-(UIViewController<APPSliderViewControllerDelegate>*)topViewController
 {
-    return [self.centerController topViewController];
+    return (UIViewController<APPSliderViewControllerDelegate>*)[self.centerController topViewController];
 }
 
 // animates to the left, manages the shadow

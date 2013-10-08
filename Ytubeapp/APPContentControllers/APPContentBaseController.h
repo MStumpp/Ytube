@@ -25,5 +25,4 @@
 @interface APPContentBaseController : FSMUIViewController
 @property UIImage *topbarImage;
 @property NSString *topbarTitle;
--(void)processEvent:(NSNotification*)notification;
 @end

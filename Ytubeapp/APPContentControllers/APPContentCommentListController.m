@@ -13,7 +13,7 @@
 #import "APPVideoComments.h"
 #import "APPFetchMoreQuery.h"
 
-#define tComments @"comments"
+#define tCommentsAll @"comments_all"
 
 @interface APPContentCommentListController ()
 @property UITextField *textField;
@@ -29,9 +29,6 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_comments"];
 
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedCommentToVideo object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventDeletedCommentFromVideo object:nil];
-
         [[self configureDefaultState] onViewState:tDidLoadViewState do:^(State *this, State *other){
             [self.userImageView setImage:nil];
             [[APPUserManager classInstance] imageForCurrentUserWithCallback:^(UIImage *image) {
@@ -40,7 +37,7 @@
             }];
         }];
         
-        [self.dataCache configureReloadDataForKey:tComments withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureReloadDataForKey:tCommentsAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPVideoComments instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
@@ -55,7 +52,7 @@
                          );
         }];
         
-        [self.dataCache configureLoadMoreDataForKey:tComments withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureLoadMoreDataForKey:tCommentsAll withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             
             queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
@@ -70,6 +67,9 @@
                                }]
                          );
         }];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedCommentToVideo object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventDeletedCommentFromVideo object:nil];
     }
     return self;
 }
@@ -165,7 +165,7 @@
     if (![[APPUserManager classInstance] isUserSignedIn])
         return FALSE;
 
-    GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*) [[self.dataCache getData:tComments] objectAtIndex:[indexPath row]];
+    GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*) [[self.dataCache getData:tCommentsAll] objectAtIndex:[indexPath row]];
     return [APPContent isUser:[[APPUserManager classInstance] getUserProfile] authorOf:comment];
 }
 
@@ -181,8 +181,7 @@
 
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    if ([self inState:tPassiveState])
-        return;
+    if ([self inState:tPassiveState]) return;
 
     GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
 

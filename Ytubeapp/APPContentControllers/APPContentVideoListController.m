@@ -9,7 +9,6 @@
 #import "APPContentVideoListController.h"
 #import "APPContentVideoDetailViewController.h"
 #import "APPVideoCell.h"
-#import "DataCache.h"
 
 @implementation APPContentVideoListController
 

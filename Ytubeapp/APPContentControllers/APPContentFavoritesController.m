@@ -10,7 +10,7 @@
 #import "APPFavorites.h"
 #import "APPFetchMoreQuery.h"
 
-#define tFavorites @"favorites"
+#define tFavoritesAll @"favorites_all"
 
 @implementation APPContentFavoritesController
 
@@ -19,11 +19,8 @@
     self = [super init];
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_favorites"];
-
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToFavorites object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromFavorites object:nil];
         
-        [self.dataCache configureReloadDataForKey:tFavorites withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureReloadDataForKey:tFavoritesAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPFavorites instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:NULL
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
@@ -38,7 +35,7 @@
                          );
         }];
         
-        [self.dataCache configureLoadMoreDataForKey:tFavorites withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureLoadMoreDataForKey:tFavoritesAll withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             
             queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
@@ -53,8 +50,17 @@
                                }]
                          );
         }];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToFavorites object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromFavorites object:nil];
     }
     return self;
+}
+
+- (void)loadView
+{
+    [super loadView];
+    [self.tableView addDefaultShowMode:tFavoritesAll];
 }
 
 #pragma mark -

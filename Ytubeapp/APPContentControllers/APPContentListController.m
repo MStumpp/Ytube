@@ -7,7 +7,6 @@
 
 
 #import "APPContentListController.h"
-#import "MBProgressHUD.h"
 
 @implementation APPContentListController
 
@@ -24,7 +23,7 @@
         [[self configureState:tClearState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [self.tableView clearViewAndReloadAll];
         }];
-        
+                
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataReloadedFinished:) name:eventDataReloadedFinished object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataReloadedError:) name:eventDataReloadedError object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataMoreLoadedFinished:) name:eventDataMoreLoadedFinished object:nil];
@@ -115,7 +114,7 @@
     }
 }
 
--(void)loadedMoreFinished:(NSNotification*)notification
+-(void)dataMoreLoadedFinished:(NSNotification*)notification
 {
     NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
     UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
@@ -124,7 +123,7 @@
     }
 }
 
--(void)loadedMoreError:(NSNotification*)notification
+-(void)dataMoreLoadedError:(NSNotification*)notification
 {
     NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
     UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
@@ -174,8 +173,7 @@
 -(NSString*)keyToString:(NSNumber*)key
 {
     NSArray *keys = [self.keyConvert allKeysForObject:key];
-    if ([keys count] > 0)
-        return keys[0];
+    if ([keys count] > 0) return keys[0];
     return NULL;
 }
 

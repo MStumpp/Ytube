@@ -10,7 +10,7 @@
 #import "APPVideoQuery.h"
 #import "APPFetchMoreQuery.h"
 
-#define tVideoQuery @"video_query"
+#define tVideoQueryAll @"video_query_all"
 
 @interface APPContentTopSearchBarController()
 @property NSString *query;
@@ -24,7 +24,7 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_search"];
         
-        [self.dataCache configureReloadDataForKey:tVideoQuery withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureReloadDataForKey:tVideoQueryAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPVideoQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.query, @"query", nil]
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
@@ -39,7 +39,7 @@
                          );
         }];
         
-        [self.dataCache configureLoadMoreDataForKey:tVideoQuery withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureLoadMoreDataForKey:tVideoQueryAll withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             
             queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
@@ -83,20 +83,23 @@
     [subtopbarContainer addSubview:self.cancelButton];
 
     [self.tableViewHeaderFormView setHeaderView:subtopbarContainer];
+    
+    [self.tableView addDefaultShowMode:tVideoQueryAll];
 }
 
 -(void)cancelSearch
 {
-    if ([self.search isFirstResponder]) {
-        self.search.text = @"";
+    self.search.text = @"";
+    if ([self.search isFirstResponder])
         [self.search resignFirstResponder];
-    }
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField*)textField
 {
     [self.search resignFirstResponder];
     self.query = textField.text;
+    // clear cache in order to process new query
+    [self.dataCache clearData:tVideoQueryAll];
     [self.tableView clearViewAndReloadAll];
     return YES;
 }

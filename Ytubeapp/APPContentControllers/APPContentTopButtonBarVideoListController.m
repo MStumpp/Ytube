@@ -15,7 +15,7 @@
     [self toState:[self keyToString:[NSNumber numberWithInt:[sender tag]]]];
 }
 
-// "APPTableView" Protocol
+// "APPTableViewDelegate" Protocol
 
 -(void)beforeShowModeChange
 {

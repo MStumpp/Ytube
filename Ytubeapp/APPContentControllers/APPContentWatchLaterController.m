@@ -10,7 +10,7 @@
 #import "APPWatchLater.h"
 #import "APPFetchMoreQuery.h"
 
-#define tWatchLater @"watch_later"
+#define tWatchLaterAll @"watch_later_all"
 
 @implementation APPContentWatchLaterController
 
@@ -19,11 +19,8 @@
     self = [super init];
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_watch_later"];
-
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToWatchLater object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromWatchLater object:nil];
         
-        [self.dataCache configureReloadDataForKey:tWatchLater withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureReloadDataForKey:tWatchLaterAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:NULL
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
@@ -38,7 +35,7 @@
                          );
         }];
         
-        [self.dataCache configureLoadMoreDataForKey:tWatchLater withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureLoadMoreDataForKey:tWatchLaterAll withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             
             queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
@@ -53,8 +50,17 @@
                                }]
                          );
         }];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToWatchLater object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromWatchLater object:nil];
     }
     return self;
+}
+
+- (void)loadView
+{
+    [super loadView];
+    [self.tableView addDefaultShowMode:tWatchLaterAll];
 }
 
 #pragma mark -

@@ -11,7 +11,7 @@
 #import "APPAbstractQuery.h"
 #import "APPGlobals.h"
 
-#define tDefaultShowMode @"-1"
+#define tDefaultShowMode @"defaultShowMode"
 
 @interface APPTableView()
 @property SSPullToRefreshView *pullToRefreshView;

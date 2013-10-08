@@ -63,6 +63,12 @@
 
 +(void)smallImageOfVideo:(GDataEntryYouTubeVideo*)video callback:(void (^)(UIImage *image))callback
 {
+    if (![video respondsToSelector:@selector(mediaGroup)]) {
+        if (callback)
+            callback(nil);
+        return;
+    }
+    
     GDataYouTubeMediaGroup *mediaGroup = [video mediaGroup];
     NSArray *thumbnails = [mediaGroup mediaThumbnails];
     [self loadImage:[NSURL URLWithString:[[thumbnails objectAtIndex:0] URLString]] callback:^(UIImage *image) {
@@ -74,6 +80,12 @@
 
 +(void)largeImageOfVideo:(GDataEntryYouTubeVideo*)video callback:(void (^)(UIImage *image))callback
 {
+    if (![video respondsToSelector:@selector(mediaGroup)]) {
+        if (callback)
+            callback(nil);
+        return;
+    }
+    
     GDataYouTubeMediaGroup *mediaGroup = [video mediaGroup];
     NSArray *thumbnails = [mediaGroup mediaThumbnails];
     [self loadImage:[NSURL URLWithString:[[thumbnails objectAtIndex:3] URLString]] callback:^(UIImage *image) {
@@ -85,6 +97,12 @@
 
 +(void)smallImageOfUser:(GDataEntryYouTubeUserProfile*)user callback:(void (^)(UIImage *image))callback
 {
+    if (![user respondsToSelector:@selector(thumbnail)]) {
+        if (callback)
+            callback(nil);
+        return;
+    }
+    
     GDataMediaThumbnail *thumb = [user thumbnail];
     [self loadImage:[NSURL URLWithString:[thumb URLString]] callback:^(UIImage *image) {
         if (callback)

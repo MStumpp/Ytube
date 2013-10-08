@@ -47,7 +47,6 @@
         }];
         
         [self.dataCache configureReloadDataForKeys:@[tTopRatedToday, tTopRatedWeek, tTopRatedMonth, tTopRatedAll] withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
-            NSLog(@"APPContentTopRatedController");
             queryHandler(key, [[APPVideoTopRated instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:[self keyToNumber:key], @"mode", nil]
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]

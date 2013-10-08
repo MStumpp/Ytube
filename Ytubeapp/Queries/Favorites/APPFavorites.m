@@ -12,7 +12,7 @@
 
 -(void)load:(id)prop
 {
-    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/users/default/favorites?v=2"]];
+    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/users/default/favorites"]];
     [self fetchFeedWithURL:feedURL];
 }
 

@@ -24,6 +24,7 @@
 @property UIButton *leftButton;
 @property UIButton *rightButton;
 @property UIActivityIndicatorView *spinner;
+@property BOOL *buttonsEnabled;
 @end
 
 @implementation APPIndexViewController
@@ -42,6 +43,8 @@
     // Set up UI
     [self.view addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main_back"]]];
 
+    self.buttonsEnabled = TRUE;
+    
     // toolbar
     self.toolbar = [[UIToolbar alloc] init];
     self.toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
@@ -103,7 +106,10 @@
 }
 
 -(void)topbarButtonPress:(UIButton*)sender
-{    
+{
+    if (!self.buttonsEnabled)
+        return;
+    
     if ([sender tag] == tRightButton && ![sender isSelected] && ![[APPUserManager classInstance] isUserSignedIn]) {
         [self.leftButton setSelected:NO];
         [self.rightButton setSelected:YES];
@@ -178,7 +184,7 @@
         // when signing in, replace the current toolbar background image with the sign in image
         // change the image back once the user is signed in
         self.tmpTopBarBackImage = [ViewHelpers getBackgroundImageForToolbar:self.toolbar];
-        [ViewHelpers setToolbar:self.toolbar withBackgroundImage:[UIImage imageNamed:@"top_bar_back_sign_in"]];
+        [self.toolbar setBackgroundImage:[UIImage imageNamed:@"top_bar_back_sign_in"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
 
         // call willBePushed on slider controller
         dispatch_semaphore_t sema = dispatch_semaphore_create(1);
@@ -187,11 +193,11 @@
         }];
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
 
-    // slider controller shows up
+    // slider controller shows up after login controller was on top
     } else {
         // reset background image
         if (self.tmpTopBarBackImage) {
-            [ViewHelpers setToolbar:self.toolbar withBackgroundImage:self.tmpTopBarBackImage];
+            [self.toolbar setBackgroundImage:self.tmpTopBarBackImage forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
             self.tmpTopBarBackImage = nil;
         }
 
@@ -227,6 +233,12 @@
 {
     [self.leftButton setSelected:NO];
     [self.rightButton setSelected:NO];
+}
+
+// makes inreactive both buttons in the header toolbar
+-(void)enableButtons:(BOOL)enable
+{
+    self.buttonsEnabled = enable;
 }
 
 // show spinner in header toolbar

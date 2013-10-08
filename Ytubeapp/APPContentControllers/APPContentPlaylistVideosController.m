@@ -10,7 +10,7 @@
 #import "APPPlaylistVideos.h"
 #import "APPFetchMoreQuery.h"
 
-#define tPlaylistVideos @"playlist_videos"
+#define tPlaylistVideosAll @"playlist_videos_all"
 
 @implementation APPContentPlaylistVideosController
 @synthesize playlist;
@@ -20,11 +20,8 @@
     self = [super init];
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_playlists"];
-
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToPlaylist object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromPlaylist object:nil];
         
-        [self.dataCache configureReloadDataForKey:tPlaylistVideos withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureReloadDataForKey:tPlaylistVideosAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPPlaylistVideos instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.playlist, @"playlist", nil]
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
@@ -39,7 +36,7 @@
                          );
         }];
         
-        [self.dataCache configureLoadMoreDataForKey:tPlaylistVideos withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureLoadMoreDataForKey:tPlaylistVideosAll withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             
             queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
@@ -54,6 +51,9 @@
                                }]
                          );
         }];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToPlaylist object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromPlaylist object:nil];
     }
     return self;
 }

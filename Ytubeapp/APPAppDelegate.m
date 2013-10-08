@@ -30,7 +30,6 @@
     [service setUserAgent:@"AppWhirl-UserApp-1.0"];
     [service setShouldCacheDatedData:TRUE];
     [service setAuthorizer:auth];
-    [service setServiceShouldFollowNextLinks:TRUE];
     [[APPGlobals classInstance] setGlobalObject:service forKey:@"service"];
 
     // set up QueryManager and Queues

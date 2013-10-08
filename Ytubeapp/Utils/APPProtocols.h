@@ -14,18 +14,14 @@
 #import "UITableViewMaskView.h"
 #import "SmartNavigationController.h"
 #import "APPTableCell.h"
-#import "APPTableView.h";
 
-// showMode
+// button tags
 
 #define tToday 1
 #define tWeek 2
 #define tMonth 3
 #define tAll 4
 #define tDefault 5
-
-// Buttons
-
 #define tBack 21
 #define tEdit 22
 #define tAdd 23
@@ -41,14 +37,6 @@
 #define tOut 02
 #define tInOut 03
 
-@class GTMOAuth2Authentication;
-@class UITableViewHeaderFormView;
-
-@protocol SelectDelegate;
-@class GDataEntryYouTubeVideo;
-@class GDataEntryYouTubePlaylistLink;
-@class GDataEntryBase;
-
 @interface APPProtocols
 @end
 
@@ -58,24 +46,21 @@
 -(void)doDefaultMode:(void (^)(void))callback;
 @end
 
-@protocol Base <APPSliderViewControllerDelegate>
-@end
-
 @protocol VideoDependenceDelegate
 @required
-@property (nonatomic, retain) GDataEntryYouTubeVideo *video;
+@property GDataEntryYouTubeVideo *video;
 -(id)initWithVideo:(GDataEntryYouTubeVideo*)video;
 @end
 
 @protocol PlaylistDependenceDelegate
 @required
-@property (nonatomic, retain) GDataEntryYouTubePlaylistLink *playlist;
+@property GDataEntryYouTubePlaylistLink *playlist;
 -(id)initWithPlaylist:(GDataEntryYouTubePlaylistLink*)playlist;
 @end
 
 typedef void(^APPSelectDelegateCallback)(GDataEntryBase *entryBase);
 @protocol SelectDelegate
 @required
-@property (nonatomic, copy) APPSelectDelegateCallback afterSelect;
+@property (copy) APPSelectDelegateCallback afterSelect;
 @end
 

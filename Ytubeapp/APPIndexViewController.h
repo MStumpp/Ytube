@@ -18,6 +18,8 @@
 -(void)setToolbarTitle:(NSString*)title;
 // unselect both buttons in the header toolbar
 -(void)unselectButtons;
+// makes inreactive both buttons in the header toolbar
+-(void)enableButtons:(BOOL)enable;
 // show spinner in header toolbar
 -(void)showSpinner:(BOOL)show;
 @end

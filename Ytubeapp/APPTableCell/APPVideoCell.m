@@ -15,14 +15,14 @@
 #import "APPContentPlaylistListController.h"
 
 @interface APPVideoCell ()
-@property GDataEntryYouTubeVideo *video;
-@property NSString *title;
-@property NSString *subtitle;
-@property UIImage *thumbnail;
-@property int numberlikes;
-@property int numberdislikes;
-@property int views;
-@property int durationinseconds;
+@property (nonatomic) GDataEntryYouTubeVideo *video;
+@property (nonatomic) NSString *title;
+@property (nonatomic) NSString *subtitle;
+@property (nonatomic) UIImage *thumbnail;
+@property (nonatomic) int numberlikes;
+@property (nonatomic) int numberdislikes;
+@property (nonatomic) int views;
+@property (nonatomic) int durationinseconds;
 
 @property UIButton *addToPlaylistButton;
 @property UIButton *watchLaterButton;
@@ -226,15 +226,20 @@
 {
     video = v;
 
-    self.title = [[self.video title] stringValue];
-    self.subtitle = [[self.video title] stringValue];
-
-    self.numberlikes = [[[self.video rating] numberOfLikes] intValue];
-    self.numberdislikes = [[[self.video rating] numberOfDislikes] intValue];
-    self.views = [[[self.video statistics] viewCount] intValue];
-
-    GDataYouTubeMediaGroup *mediaGroup = [self.video mediaGroup];
-    self.durationinseconds = [[mediaGroup duration] intValue];
+    if ([self.video respondsToSelector:@selector(title)] && [[self.video title] stringValue])
+        self.title = [[self.video title] stringValue];
+    if ([self.video respondsToSelector:@selector(title)] && [[self.video title] stringValue])
+        self.subtitle = [[self.video title] stringValue];
+    if ([self.video respondsToSelector:@selector(rating)] && [[self.video rating] numberOfLikes])
+        self.numberlikes = [[[self.video rating] numberOfLikes] intValue];
+    if ([self.video respondsToSelector:@selector(rating)] && [[self.video rating] numberOfDislikes])
+        self.numberdislikes = [[[self.video rating] numberOfDislikes] intValue];
+    if ([self.video respondsToSelector:@selector(statistics)] && [[self.video statistics] viewCount])
+        self.views = [[[self.video statistics] viewCount] intValue];
+    if ([self.video respondsToSelector:@selector(mediaGroup)]) {
+        GDataYouTubeMediaGroup *mediaGroup = [self.video mediaGroup];
+        self.durationinseconds = [[mediaGroup duration] intValue];
+    }
 
     [APPContent smallImageOfVideo:self.video callback:^(UIImage *image) {
         if (image) {

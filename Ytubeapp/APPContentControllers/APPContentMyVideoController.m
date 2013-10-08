@@ -10,7 +10,7 @@
 #import "APPVideoMyVideos.h"
 #import "APPFetchMoreQuery.h"
 
-#define tMyVideo @"my_video"
+#define tMyVideoAll @"my_video_all"
 
 @implementation APPContentMyVideoController
 
@@ -20,7 +20,7 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_my_videos"];
         
-        [self.dataCache configureReloadDataForKey:tMyVideo withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureReloadDataForKey:tMyVideoAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPVideoMyVideos instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:NULL
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
@@ -35,7 +35,7 @@
                          );
         }];
         
-        [self.dataCache configureLoadMoreDataForKey:tMyVideo withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureLoadMoreDataForKey:tMyVideoAll withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             
             queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
@@ -52,6 +52,12 @@
         }];
     }
     return self;
+}
+
+- (void)loadView
+{
+    [super loadView];
+    [self.tableView addDefaultShowMode:tMyVideoAll];
 }
 
 #pragma mark -

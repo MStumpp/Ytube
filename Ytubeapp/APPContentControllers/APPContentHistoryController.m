@@ -10,7 +10,7 @@
 #import "APPVideoWatchHistory.h"
 #import "APPFetchMoreQuery.h"
 
-#define tWatchHistory @"watch_history"
+#define tWatchHistoryAll @"watch_history_all"
 
 @implementation APPContentHistoryController
 
@@ -19,10 +19,8 @@
     self = [super init];
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_history"];
-
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventVideoWatched object:nil];
         
-        [self.dataCache configureReloadDataForKey:tWatchHistory withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureReloadDataForKey:tWatchHistoryAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPVideoWatchHistory instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:NULL
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
@@ -37,7 +35,7 @@
                          );
         }];
         
-        [self.dataCache configureLoadMoreDataForKey:tWatchHistory withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureLoadMoreDataForKey:tWatchHistoryAll withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             
             queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
@@ -52,8 +50,16 @@
                                }]
                          );
         }];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventVideoWatched object:nil];
     }
     return self;
+}
+
+- (void)loadView
+{
+    [super loadView];
+    [self.tableView addDefaultShowMode:tWatchHistoryAll];
 }
 
 -(void)processEvent:(NSNotification*)notification

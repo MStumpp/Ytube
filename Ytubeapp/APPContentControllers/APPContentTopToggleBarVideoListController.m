@@ -24,7 +24,7 @@
 
         [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             // save the last active state
-            [[self state:tActiveState] setData:[self prevState]];
+            //[[self state:tActiveState] setData:[self prevState]];
 
             // save state of header form
             if ([self.tableViewHeaderFormView1 isHeaderShown]) {
@@ -49,13 +49,6 @@
             } else if (self.subtopbarWasVisible2) {
                 [self.tableViewHeaderFormView2 showOnCompletion:^(BOOL isShown) {}  animated:YES];
             }
-        }];
-
-        [[self configureState:tActiveState] forwardToState:^(State *this, State *from, ForwardResponseCallback callback){
-            if ([[from name] isEqualToString:tPassiveState])
-                callback(this.data, FALSE);
-            else
-                callback(nil, FALSE);
         }];
     }
     return self;

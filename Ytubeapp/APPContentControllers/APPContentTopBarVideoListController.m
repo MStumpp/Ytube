@@ -21,9 +21,6 @@
         self.subtopbarWasVisible = TRUE;
 
         [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            // save the last active state
-            [[self state:tActiveState] setData:other];
-
             // save state of header form
             if ([self.tableViewHeaderFormView isHeaderShown]) {
                 [self setSubtopbarWasVisible:TRUE];
@@ -33,17 +30,10 @@
             [self.tableViewHeaderFormView hideOnCompletion:nil animated:YES];
         }];
 
-        [[self configureState:tActiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+        [[self configureState:tActiveState] onViewState:tDidLoadViewState do:^(State *this, State *other){
             // show header form if was visible
             if (self.subtopbarWasVisible)
                 [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
-        }];
-
-        [[self configureState:tActiveState] forwardToState:^(State *this, State *from, ForwardResponseCallback callback){
-            if (from && [[from name] isEqualToString:tPassiveState])
-                callback(this.data, FALSE);
-            else
-                callback([self defaultState], FALSE);
         }];
     }
     return self;
@@ -58,8 +48,7 @@
 
 -(BOOL)tableViewHeaderFormViewShouldShow:(UITableViewHeaderFormView*)view
 {
-    if ([self inState:tPassiveState])
-        return FALSE;
+    if ([self inState:tPassiveState]) return FALSE;
     return TRUE;
 }
 

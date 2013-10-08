@@ -55,6 +55,7 @@ static APPUserManager *classInstance = nil;
 
             [self currentUserProfileWithCallback:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
                 if (user && !error) {
+                    
                     // inform observers
                     [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedIn object:[NSMutableDictionary dictionaryWithObjectsAndKeys:user, @"user", nil]];
 
@@ -78,14 +79,14 @@ static APPUserManager *classInstance = nil;
 {
     self.currentUserProfile = nil;
     self.currentUserImage = nil;
-
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
-    NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
-
-    // remove the stored Google authentication from the keychain, if any
-    [GTMOAuth2ViewControllerTouch removeAuthFromKeychainForName:[settings objectForKey:@"kKeychainItemName"]];
     
     if (self.auth) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
+        NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
+        
+        // remove the stored Google authentication from the keychain, if any
+        [GTMOAuth2ViewControllerTouch removeAuthFromKeychainForName:[settings objectForKey:@"kKeychainItemName"]];
+        
         // remove the token from Google's servers
         [GTMOAuth2ViewControllerTouch revokeTokenForGoogleAuthentication:self.auth];
 
@@ -93,10 +94,10 @@ static APPUserManager *classInstance = nil;
         [[NSNotificationCenter defaultCenter] postNotificationName:eventAuthTokenInvalidated object:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.auth, @"auth", nil]];
         
         self.auth = nil;
-    }
 
-    // inform observers
-    [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedOut object:nil];
+        // inform observers
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedOut object:nil];
+    }
     
     if (callback)
         callback(TRUE);

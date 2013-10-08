@@ -15,11 +15,23 @@
 {
     self = [super init];
     if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
-
+        [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            // save the last active state
+            [[self state:tActiveState] setData:[self prevState]];
+        }];
+        
+        [[self configureState:tActiveState] forwardToState:^(State *this, State *from, ForwardResponseCallback callback){
+            if (from && [[from name] isEqualToString:tPassiveState])
+                callback(this.data, FALSE);
+            else
+                callback([self defaultState], FALSE);
+        }];
+        
         if ([[APPUserManager classInstance] isUserSignedIn])
             [self toDefaultStateForce];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
     }
     return self;
 }
@@ -39,7 +51,7 @@
 
 -(void)userSignedOut:(NSNotification*)notification
 {
-    [self toState:tClearState];
+    [self toStateForce:tClearState];
 }
 
 // "APPSliderViewControllerDelegate" Protocol

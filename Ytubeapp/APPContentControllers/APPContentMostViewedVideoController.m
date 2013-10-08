@@ -33,7 +33,6 @@
         }];
         
         [self.dataCache configureReloadDataForKeys:@[tMostViewedToday, tMostViewedAll] withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
-            NSLog(@"APPContentMostViewedVideoController");
             queryHandler(key, [[APPVideoMostViewed instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                     execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:[self keyToNumber:key], @"mode", nil]
                     context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]

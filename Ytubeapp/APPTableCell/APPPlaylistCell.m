@@ -12,12 +12,12 @@
 #import <QuartzCore/QuartzCore.h>
 
 @interface APPPlaylistCell ()
-@property GDataEntryYouTubePlaylistLink *playlist;
-@property NSString *text;
-@property NSString *description;
-@property UIImage *textPic;
-@property int numberItems;
-@property UILabel *textLabel;
+@property (nonatomic) GDataEntryYouTubePlaylistLink *playlist;
+@property (nonatomic) NSString *text;
+@property (nonatomic) NSString *description;
+@property (nonatomic) UIImage *textPic;
+@property (nonatomic) int numberItems;
+//@property UILabel *textLabel;
 @property UILabel *descriptionLabel;
 @property UIImageView *textPicImage;
 @end
@@ -27,6 +27,7 @@
 @synthesize description;
 @synthesize textPic;
 @synthesize numberItems;
+@synthesize playlist;
 
 -(id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier
 {
@@ -41,11 +42,11 @@
 
 -(void)initUI
 {    
-    self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(140.0, 20.0, 170.0, 18.0)];
+    /*self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(140.0, 20.0, 170.0, 18.0)];
     [self.textLabel setFont:[UIFont fontWithName:@"Nexa Bold" size:13]];
     [self.textLabel setTextColor:[UIColor whiteColor]];
     [self.textLabel setBackgroundColor:[UIColor clearColor]];
-    [self.tableCellMain addSubview:self.textLabel];
+    [self.tableCellMain addSubview:self.textLabel];*/
     
     self.descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(140.0, 30.0, 170.0, 40.0)];
     [self.descriptionLabel setFont:[UIFont fontWithName:@"Nexa Light" size:10]];
@@ -68,7 +69,7 @@
 {
     if (![n isEqualToString:text]) {
         text = [n copy];
-        [self updateTextLabel];
+        //self.textLabel.text = text;
     }
 }
 
@@ -76,7 +77,6 @@
 {
     if (!(n == numberItems)) {
         numberItems = n;
-        [self updateTextLabel];
     }
 }
 
@@ -88,10 +88,10 @@
     }
 }
 
--(void)updateTextLabel
+/*-(void)updateTextLabel
 {
     self.textLabel.text = text;
-}
+}*/
 
 -(void)setTextPic:(UIImage*)n
 {
@@ -100,9 +100,9 @@
     [self setNeedsLayout];
 }
 
--(void)setPlaylist:(GDataEntryYouTubePlaylistLink*)playlist
+-(void)setPlaylist:(GDataEntryYouTubePlaylistLink*)p
 {
-    self.playlist = playlist;
+    playlist = p;
 
     self.text = [[self.playlist title] stringValue];
     self.description = [[self.playlist summary] stringValue];

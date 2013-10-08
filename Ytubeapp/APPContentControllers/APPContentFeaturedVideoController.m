@@ -10,7 +10,7 @@
 #import "APPVideoRecentlyFeatured.h"
 #import "APPFetchMoreQuery.h"
 
-#define tFeatured @"featured"
+#define tFeaturedAll @"featured_all"
 
 @implementation APPContentFeaturedVideoController
 
@@ -20,7 +20,7 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_featured"];
         
-        [self.dataCache configureReloadDataForKey:tFeatured withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureReloadDataForKey:tFeaturedAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPVideoRecentlyFeatured instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:NULL
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
@@ -35,7 +35,7 @@
                          );
         }];
         
-        [self.dataCache configureLoadMoreDataForKey:tFeatured withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureLoadMoreDataForKey:tFeaturedAll withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             
             queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
@@ -52,6 +52,12 @@
         }];
     }
     return self;
+}
+
+- (void)loadView
+{
+    [super loadView];
+    [self.tableView addDefaultShowMode:tFeaturedAll];
 }
 
 @end

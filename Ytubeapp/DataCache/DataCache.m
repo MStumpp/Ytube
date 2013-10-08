@@ -221,8 +221,7 @@ static DataCache *classInstance = nil;
 -(BOOL)clearData:(NSString*)key
 {
     if (!key || ![self hasKey:key]) return FALSE;
-    [self resetKey:key];
-    return TRUE;
+    return [self resetKey:key];
 }
 
 // private

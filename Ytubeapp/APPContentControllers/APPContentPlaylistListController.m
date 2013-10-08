@@ -12,7 +12,7 @@
 #import "APPPlaylists.h"
 #import "APPFetchMoreQuery.h"
 
-#define tPlaylists @"playlists"
+#define tPlaylistsAll @"playlists_all"
 
 @interface APPContentPlaylistListController ()
 @property UITextField *textField;
@@ -25,11 +25,8 @@
     self = [super init];
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_playlists"];
-
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedPlaylist object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventDeletedPlaylist object:nil];
         
-        [self.dataCache configureReloadDataForKey:tPlaylists withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureReloadDataForKey:tPlaylistsAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPPlaylists instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:NULL
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
@@ -44,7 +41,7 @@
                          );
         }];
         
-        [self.dataCache configureLoadMoreDataForKey:tPlaylists withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureLoadMoreDataForKey:tPlaylistsAll withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             
             queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
@@ -59,6 +56,9 @@
                                }]
                          );
         }];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedPlaylist object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventDeletedPlaylist object:nil];
     }
     return self;
 }
@@ -87,6 +87,8 @@
     [subtopbarContainer addSubview:cancelButton];
 
     [self.tableViewHeaderFormView2 setHeaderView:subtopbarContainer];
+    
+    [self.tableView addDefaultShowMode:tPlaylistsAll];
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField

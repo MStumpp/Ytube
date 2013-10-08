@@ -12,7 +12,7 @@
 
 -(void)load:(id)props
 {
-    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/users/default/watch_history?v=2"]];
+    NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/users/default/watch_history"]];
     [self fetchFeedWithURL:feedURL];
 }
 
