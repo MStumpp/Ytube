@@ -61,6 +61,6 @@
 typedef void(^APPSelectDelegateCallback)(GDataEntryBase *entryBase);
 @protocol SelectDelegate
 @required
-@property (copy) APPSelectDelegateCallback afterSelect;
+@property APPSelectDelegateCallback afterSelect;
 @end
 

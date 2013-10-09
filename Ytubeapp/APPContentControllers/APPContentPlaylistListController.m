@@ -151,14 +151,16 @@
 
     NSLog(@"didSelectRowAtIndexPath 3");
     
-    if (self.afterSelect) {
+    /*if (self.afterSelect) {
         NSLog(@"didSelectRowAtIndexPath 4");
         [self.navigationController popViewControllerAnimated:YES];
         self.afterSelect(playlist);
-    } else {
+    } else {*/
         NSLog(@"didSelectRowAtIndexPath 5");
-        [self.navigationController pushViewController:[[APPContentPlaylistVideosController alloc] initWithPlaylist:playlist] animated:YES];
-    }
+        APPContentPlaylistVideosController *controller = [[APPContentPlaylistVideosController alloc] initWithPlaylist:playlist];
+        [controller toDefaultState];
+        [self.navigationController pushViewController:controller animated:YES];
+    //}
 }
 
 -(void)processEvent:(NSNotification*)notification

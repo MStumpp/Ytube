@@ -10,7 +10,7 @@
 
 @protocol UITableViewSwipeViewDelegate;
 
-@interface UITableViewSwipeView : UIView
+@interface UITableViewSwipeView : NSObject
 
 - (id)initWithTableView:(UITableView *)tableView delegate:(id<UITableViewSwipeViewDelegate>)delegate;
 

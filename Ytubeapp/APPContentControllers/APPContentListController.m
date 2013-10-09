@@ -40,7 +40,7 @@
 
 // APPTableViewDelegate
 
--(APPTableCell *)tableView:(UITableView *)tableView forMode:(NSString*)mode cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+-(APPTableCell*)tableView:(UITableView*)tableView forMode:(NSString*)mode cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     return nil;
 }
 
@@ -52,15 +52,22 @@
         return 0;
 }
 
--(void)tableView:(UITableView *)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+-(NSIndexPath*)tableView:(UITableView*)tableView forMode:(NSString*)mode willSelectRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    if ([self inState:tPassiveState]) return nil;
+    return indexPath;
 }
 
--(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+-(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+}
+
+-(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
     if ([self inState:tPassiveState]) return FALSE;
-    return NO;
+    return TRUE;
 }
 
--(void)tableView:(UITableView *)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+-(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(BOOL)hasData:(NSString*)key
@@ -134,12 +141,6 @@
                           cancelButtonTitle:@"OK"
                           otherButtonTitles:nil] show];
     }
-}
-
--(NSIndexPath*)tableView:(UITableView*)tableView forMode:(NSString*)mode willSelectRowAtIndexPath:(NSIndexPath*)indexPath
-{
-    if ([self inState:tPassiveState]) return nil;
-    return indexPath;
 }
 
 -(BOOL)tableViewCanBottom:(UITableView*)view

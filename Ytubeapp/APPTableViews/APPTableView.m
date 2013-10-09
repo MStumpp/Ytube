@@ -161,6 +161,7 @@
 
 -(void)tableViewSwipeViewDidSwipeLeft:(UITableView*)view rowAtIndexPath:(NSIndexPath*)indexPath
 {
+    NSLog(@"tableViewSwipeViewDidSwipeLeft");
     APPTableCell *cell = (APPTableCell*) [self cellForRowAtIndexPath:indexPath];
     if (self.openCell) {
         if ([self.openCell row] == [indexPath row])
@@ -195,6 +196,7 @@
 
 -(void)tableViewSwipeViewDidSwipeRight:(UITableView*)view rowAtIndexPath:(NSIndexPath*)indexPath
 {
+    NSLog(@"tableViewSwipeViewDidSwipeRight");
     APPTableCell *cell = (APPTableCell*) [self cellForRowAtIndexPath:indexPath];
     [cell closeOnCompletion:^(BOOL isClosed) {
         if (isClosed) {
