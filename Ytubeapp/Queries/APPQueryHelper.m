@@ -29,13 +29,14 @@
 {
     return [[APPVideoLikeVideo instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
-            context:NULL
+            context:[NSMutableDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
       onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (error) {
-                  [self showErrorMessage];
-              }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventVideoLiked object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
+              NSMutableDictionary *info = [NSMutableDictionary new];
+              [info setValue:data forKey:@"data"];
+              [info setValue:error forKey:@"error"];
+              [info setValue:context forKey:@"context"];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventVideoLiked object:self userInfo:info];
           }
       }];
 }
@@ -44,13 +45,14 @@
 {
     return [[APPVideoUnlikeVideo instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
-            context:NULL
+            context:[NSMutableDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
       onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (error) {
-                  [self showErrorMessage];
-              }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventVideoUnliked object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
+              NSMutableDictionary *info = [NSMutableDictionary new];
+              [info setValue:data forKey:@"data"];
+              [info setValue:error forKey:@"error"];
+              [info setValue:context forKey:@"context"];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventVideoUnliked object:self userInfo:info];
           }
       }];
 }
@@ -61,13 +63,14 @@
 {
     return [[APPPlaylistAddVideo instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", playlist, @"playlist", nil]
-            context:NULL
+            context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", playlist, @"playlist", nil]
       onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (error) {
-                  [self showErrorMessage];
-              }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedVideoToPlaylist object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
+              NSMutableDictionary *info = [NSMutableDictionary new];
+              [info setValue:data forKey:@"data"];
+              [info setValue:error forKey:@"error"];
+              [info setValue:context forKey:@"context"];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedVideoToPlaylist object:self userInfo:info];
           }
       }];
 }
@@ -76,13 +79,14 @@
 {
     return [[APPPlaylistRemoveVideo instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", playlist, @"playlist", nil]
-            context:NULL
+            context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", playlist, @"playlist", nil]
       onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (error) {
-                  [self showErrorMessage];
-              }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventRemovedVideoFromPlaylist object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
+              NSMutableDictionary *info = [NSMutableDictionary new];
+              [info setValue:data forKey:@"data"];
+              [info setValue:error forKey:@"error"];
+              [info setValue:context forKey:@"context"];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventRemovedVideoFromPlaylist object:self userInfo:info];
           }
       }];
 }
@@ -91,13 +95,14 @@
 {
     return [[APPVideoAddToFavorites instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
-            context:NULL
+            context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
       onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (error) {
-                  [self showErrorMessage];
-              }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedVideoToFavorites object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
+              NSMutableDictionary *info = [NSMutableDictionary new];
+              [info setValue:data forKey:@"data"];
+              [info setValue:error forKey:@"error"];
+              [info setValue:context forKey:@"context"];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedVideoToFavorites object:self userInfo:info];
           }
       }];
 }
@@ -106,13 +111,14 @@
 {
     return [[APPVideoRemoveFromFavorites instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
-            context:NULL
+            context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
       onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (error) {
-                  [self showErrorMessage];
-              }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventRemovedVideoFromFavorites object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
+              NSMutableDictionary *info = [NSMutableDictionary new];
+              [info setValue:data forKey:@"data"];
+              [info setValue:error forKey:@"error"];
+              [info setValue:context forKey:@"context"];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventRemovedVideoFromFavorites object:self userInfo:info];
           }
       }];
 }
@@ -121,13 +127,14 @@
 {
     return [[APPVideoAddToWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
-            context:NULL
+            context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
       onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (error) {
-                  [self showErrorMessage];
-              }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedVideoToWatchLater object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
+              NSMutableDictionary *info = [NSMutableDictionary new];
+              [info setValue:data forKey:@"data"];
+              [info setValue:error forKey:@"error"];
+              [info setValue:context forKey:@"context"];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedVideoToWatchLater object:self userInfo:info];
           }
       }];
 }
@@ -136,13 +143,14 @@
 {
     return [[APPVideoRemoveFromWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
-            context:NULL
+            context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
       onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (error) {
-                  [self showErrorMessage];
-              }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventRemovedVideoFromWatchLater object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
+              NSMutableDictionary *info = [NSMutableDictionary new];
+              [info setValue:data forKey:@"data"];
+              [info setValue:error forKey:@"error"];
+              [info setValue:context forKey:@"context"];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventRemovedVideoFromWatchLater object:self userInfo:info];
           }
       }];
 }
@@ -151,13 +159,14 @@
 {
     return [[APPVideoMyVideoDelete instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
-            context:NULL
+            context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
       onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (error) {
-                  [self showErrorMessage];
-              }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventDeletedMyVideo object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
+              NSMutableDictionary *info = [NSMutableDictionary new];
+              [info setValue:data forKey:@"data"];
+              [info setValue:error forKey:@"error"];
+              [info setValue:context forKey:@"context"];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventDeletedMyVideo object:self userInfo:info];
           }
       }];
 }
@@ -168,13 +177,14 @@
 {
     return [[APPPlaylistAdd instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:playlist, @"playlist", nil]
-            context:NULL
+            context:[NSDictionary dictionaryWithObjectsAndKeys:playlist, @"playlist", nil]
       onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (error) {
-                  [self showErrorMessage];
-              }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedPlaylist object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
+              NSMutableDictionary *info = [NSMutableDictionary new];
+              [info setValue:data forKey:@"data"];
+              [info setValue:error forKey:@"error"];
+              [info setValue:context forKey:@"context"];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedPlaylist object:self userInfo:info];
           }
       }];
 }
@@ -183,13 +193,14 @@
 {
     return [[APPPlaylistDelete instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:playlist, @"playlist", nil]
-            context:NULL
+            context:[NSDictionary dictionaryWithObjectsAndKeys:playlist, @"playlist", nil]
       onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (error) {
-                  [self showErrorMessage];
-              }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventDeletedPlaylist object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
+              NSMutableDictionary *info = [NSMutableDictionary new];
+              [info setValue:data forKey:@"data"];
+              [info setValue:error forKey:@"error"];
+              [info setValue:context forKey:@"context"];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventDeletedPlaylist object:self userInfo:info];
           }
       }];
 }
@@ -200,13 +211,14 @@
 {
     return [[APPVideoAddComment instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", comment, @"comment", nil]
-            context:NULL
+            context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", comment, @"comment", nil]
       onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (error) {
-                  [self showErrorMessage];
-              }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedCommentToVideo object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
+              NSMutableDictionary *info = [NSMutableDictionary new];
+              [info setValue:data forKey:@"data"];
+              [info setValue:error forKey:@"error"];
+              [info setValue:context forKey:@"context"];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventAddedCommentToVideo object:self userInfo:info];
           }
       }];
 }
@@ -215,27 +227,16 @@
 {
     return [[APPVideoDeleteComment instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", comment, @"comment", nil]
-            context:NULL
+            context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", comment, @"comment", nil]
       onStateChange:^(NSString *state, id data, NSError *error, id context) {
           if ([state isEqual:tFinished]) {
-              if (error) {
-                  [self showErrorMessage];
-              }
-              [[NSNotificationCenter defaultCenter] postNotificationName:eventDeletedCommentFromVideo object:[NSMutableDictionary dictionaryWithObjectsAndKeys:data, @"data", error, @"error", context, @"context", nil]];
+              NSMutableDictionary *info = [NSMutableDictionary new];
+              [info setValue:data forKey:@"data"];
+              [info setValue:error forKey:@"error"];
+              [info setValue:context forKey:@"context"];
+              [[NSNotificationCenter defaultCenter] postNotificationName:eventDeletedCommentFromVideo object:self userInfo:info];
           }
       }];
-}
-
-// show error message
-
-+(void)showErrorMessage
-{
-    NSLog(@"error");
-//    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-//    message:[NSString stringWithFormat:@"Unable to reload data. Please try again later."]
-//    delegate:nil
-//    cancelButtonTitle:@"OK"
-//    otherButtonTitles:nil] show];
 }
 
 @end

@@ -395,6 +395,8 @@
         [self.centerController setRootViewController:[self.controllers objectForKey:[NSNumber numberWithInt:context]]];
 
     } else {
+        [self.centerController popToRootViewControllerAnimated:YES];
+        
         // selected controller vorhanden und selected controller != input context
         if (self.selectedController != context) {
             // -> dodefault auf top view controller
@@ -413,8 +415,8 @@
             // selected controller vorhanden und selected controller == input context und top view controller != controller für diesen context
             // -> center controller to root view
             // -> undo default auf topcontroller (siehe am ende)
-            if ([self topViewController] && [self topViewController] != [self.controllers objectForKey:[NSNumber numberWithInt:context]])
-                [self.centerController popToRootViewControllerAnimated:YES];
+            //if ([self topViewController] && [self topViewController] != [self.controllers objectForKey:[NSNumber numberWithInt:context]])
+            //    [self.centerController popToRootViewControllerAnimated:YES];
 
             // selected controller vorhanden und selected controller == input context und top view controller == controller für diesen context
             // -> undo default auf topcontroller (siehe am ende)

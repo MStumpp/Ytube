@@ -156,13 +156,13 @@
     [self reloadDataForShowMode:self.showMode];
 }
 
-// TODO: Possibly move that to UITableCell
 // "UITableViewSwipeViewDelegate" Protocol
 
 -(void)tableViewSwipeViewDidSwipeLeft:(UITableView*)view rowAtIndexPath:(NSIndexPath*)indexPath
 {
     NSLog(@"tableViewSwipeViewDidSwipeLeft");
     APPTableCell *cell = (APPTableCell*) [self cellForRowAtIndexPath:indexPath];
+    // if there is an open cell, close this first, then open the requested cell
     if (self.openCell) {
         if ([self.openCell row] == [indexPath row])
             return;
@@ -177,6 +177,7 @@
             }
         } animated:YES];
 
+    // open the requested cell
     } else {
         [cell openOnCompletion:^(BOOL isOpened) {
             if (isOpened)

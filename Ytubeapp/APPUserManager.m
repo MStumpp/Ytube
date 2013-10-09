@@ -85,14 +85,14 @@ static APPUserManager *classInstance = nil;
 
 -(void)signOutOnCompletion:(void (^)(BOOL isSignedOut))callback
 {
-    self.currentUserProfile = nil;
-    self.currentUserImage = nil;
-    
     NSLog(@"signOutOnCompletion1");
     
     if (self.auth) {
         NSLog(@"signOutOnCompletion2");
 
+        self.currentUserProfile = nil;
+        self.currentUserImage = nil;
+        
         NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
         NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
         
@@ -133,8 +133,7 @@ static APPUserManager *classInstance = nil;
 
 -(GDataEntryYouTubeUserProfile*)getUserProfile
 {
-    if ([self isUserSignedIn])
-        return self.currentUserProfile;
+    if ([self isUserSignedIn]) return self.currentUserProfile;
     return nil;
 }
 

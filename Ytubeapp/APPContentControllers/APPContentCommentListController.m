@@ -215,8 +215,9 @@
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if ([[(NSDictionary*)[notification object] objectForKey:@"data"] isEqual:self.video])
-        if (![(NSDictionary*)[notification object] objectForKey:@"error"])
+    NSDictionary *context = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
+    if ([context objectForKey:@"video"] == self.video)
+        if (![(NSDictionary*)[notification userInfo] objectForKey:@"error"])
             [self.tableView clearViewAndReloadAll];
 }
 

@@ -64,7 +64,7 @@
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if (![(NSDictionary*)[notification object] objectForKey:@"error"])
+    if (![(NSDictionary*)[notification userInfo] objectForKey:@"error"])
         [self.tableView clearViewAndReloadAll];
 }
 

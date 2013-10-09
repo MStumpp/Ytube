@@ -112,12 +112,7 @@
 {
     GDataServiceGoogleYouTube *service = [[APPGlobals classInstance] getGlobalForKey:@"service"];
     if (service) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
-        NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
-        GTMOAuth2Authentication *auth = [GTMOAuth2ViewControllerTouch authForGoogleFromKeychainForName:[settings objectForKey:@"kKeychainItemName"]
-                                                                                              clientID:[settings objectForKey:@"kMyClientID"]
-                                                                                          clientSecret:[settings objectForKey:@"kMyClientSecret"]];
-        [service setAuthorizer:auth];
+        [service setAuthorizer:nil];
         NSLog(@"authTokenInvalidated");
     }
 }

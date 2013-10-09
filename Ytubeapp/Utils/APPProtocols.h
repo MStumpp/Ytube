@@ -37,6 +37,8 @@
 #define tOut 02
 #define tInOut 03
 
+typedef void(^APPSelectDelegateCallback)(GDataEntryBase *entryBase);
+
 @interface APPProtocols
 @end
 
@@ -58,9 +60,8 @@
 -(id)initWithPlaylist:(GDataEntryYouTubePlaylistLink*)playlist;
 @end
 
-typedef void(^APPSelectDelegateCallback)(GDataEntryBase *entryBase);
 @protocol SelectDelegate
 @required
-@property APPSelectDelegateCallback afterSelect;
+@property (nonatomic, strong) APPSelectDelegateCallback afterSelect;
 @end
 

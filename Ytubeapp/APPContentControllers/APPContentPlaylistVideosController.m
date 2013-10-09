@@ -80,14 +80,18 @@
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     GDataEntryYouTubePlaylist *pl = (GDataEntryYouTubePlaylist*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
-    if (editingStyle == UITableViewCellEditingStyleDelete)
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        [[self.dataCache getData:mode] removeObjectAtIndex:[indexPath row]];
+        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
         [APPQueryHelper removeVideo:pl fromPlaylist:self.playlist];
+    }
 }
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if ([[(NSDictionary*)[notification object] objectForKey:@"data"] isEqual:self.playlist])
-        if (![(NSDictionary*)[notification object] objectForKey:@"error"])
+    NSDictionary *context = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
+    if ([context objectForKey:@"playlist"] == self.playlist)
+        if (![(NSDictionary*)[notification userInfo] objectForKey:@"error"])
             [self.tableView clearViewAndReloadAll];
 }
 

@@ -19,6 +19,7 @@
 @end
 
 @implementation APPContentPlaylistListController
+@synthesize afterSelect;
 
 -(id)init
 {
@@ -141,31 +142,23 @@
 
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    NSLog(@"didSelectRowAtIndexPath 1");
-    
     if ([self inState:tPassiveState]) return;
     
-    NSLog(@"didSelectRowAtIndexPath 2");
-
     GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
 
-    NSLog(@"didSelectRowAtIndexPath 3");
-    
-    /*if (self.afterSelect) {
-        NSLog(@"didSelectRowAtIndexPath 4");
+    if (self.afterSelect) {
         [self.navigationController popViewControllerAnimated:YES];
         self.afterSelect(playlist);
-    } else {*/
-        NSLog(@"didSelectRowAtIndexPath 5");
+    } else {
         APPContentPlaylistVideosController *controller = [[APPContentPlaylistVideosController alloc] initWithPlaylist:playlist];
         [controller toDefaultState];
         [self.navigationController pushViewController:controller animated:YES];
-    //}
+    }
 }
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if (![(NSDictionary*)[notification object] objectForKey:@"error"])
+    if (![(NSDictionary*)[notification userInfo] objectForKey:@"error"])
         [self.tableView clearViewAndReloadAll];
 }
 
