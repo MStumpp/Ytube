@@ -10,7 +10,7 @@
 #import "APPContentBaseController.h"
 #import "DataCache.h"
 
-@interface APPContentListController : APPContentBaseController <APPTableViewDelegate, SelectDelegate>
+@interface APPContentListController : APPContentBaseController <APPTableViewDelegate>
 @property APPTableView *tableView;
 @property NSDictionary *keyConvert;
 @property UITableViewMaskView *tableViewMaskView;

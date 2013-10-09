@@ -23,9 +23,6 @@
         self.subtopbarWasVisible2 = FALSE;
 
         [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            // save the last active state
-            //[[self state:tActiveState] setData:[self prevState]];
-
             // save state of header form
             if ([self.tableViewHeaderFormView1 isHeaderShown]) {
                 self.subtopbarWasVisible1 = TRUE;

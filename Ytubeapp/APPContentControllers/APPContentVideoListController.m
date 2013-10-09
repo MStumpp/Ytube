@@ -27,13 +27,7 @@
     if ([self inState:tPassiveState]) return;
 
     GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
-
-    if (self.afterSelect) {
-        [self.navigationController popViewControllerAnimated:YES];
-        self.afterSelect(video);
-    } else {
-        [self.navigationController pushViewController:[[APPContentVideoDetailViewController alloc] initWithVideo:video] animated:YES];
-    }
+    [self.navigationController pushViewController:[[APPContentVideoDetailViewController alloc] initWithVideo:video] animated:YES];
 }
 
 @end

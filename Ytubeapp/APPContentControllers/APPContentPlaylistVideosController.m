@@ -15,6 +15,16 @@
 @implementation APPContentPlaylistVideosController
 @synthesize playlist;
 
+-(id)initWithPlaylist:(GDataEntryYouTubePlaylistLink*)pl
+{
+    self = [self init];
+    if (self) {
+        self.playlist = pl;
+        [self.dataCache clearData:tPlaylistVideosAll];
+    }
+    return self;
+}
+
 -(id)init
 {
     self = [super init];
@@ -58,13 +68,10 @@
     return self;
 }
 
--(id)initWithPlaylist:(GDataEntryYouTubePlaylistLink*)pl
+-(void)loadView
 {
-    self = [self init];
-    if (self) {
-        self.playlist = pl;
-    }
-    return self;
+    [super loadView];
+    [self.tableView addDefaultShowMode:tPlaylistVideosAll];
 }
 
 #pragma mark -
@@ -79,7 +86,7 @@
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if ([[(NSDictionary*)[notification object] objectForKey:@"playlist"] isEqual:self.playlist])
+    if ([[(NSDictionary*)[notification object] objectForKey:@"data"] isEqual:self.playlist])
         if (![(NSDictionary*)[notification object] objectForKey:@"error"])
             [self.tableView clearViewAndReloadAll];
 }

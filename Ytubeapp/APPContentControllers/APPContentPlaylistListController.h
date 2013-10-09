@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 #import "APPContentTopToggleBarVideoListController.h"
 
-@interface APPContentPlaylistListController : APPContentTopToggleBarVideoListController <UITextFieldDelegate>
+@interface APPContentPlaylistListController : APPContentTopToggleBarVideoListController <UITextFieldDelegate, SelectDelegate>
 @end

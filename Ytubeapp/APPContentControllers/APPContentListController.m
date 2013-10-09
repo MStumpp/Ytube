@@ -56,6 +56,7 @@
 }
 
 -(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([self inState:tPassiveState]) return FALSE;
     return NO;
 }
 
@@ -173,16 +174,6 @@
     NSArray *keys = [self.keyConvert allKeysForObject:key];
     if ([keys count] > 0) return keys[0];
     return NULL;
-}
-
-// SelectDelegate
-
--(APPSelectDelegateCallback)afterSelect {
-    return ^(GDataEntryBase *entryBase) {
-    };
-}
-
--(void)setAfterSelect:(APPSelectDelegateCallback)afterSelect {
 }
 
 @end

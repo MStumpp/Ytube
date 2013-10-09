@@ -125,7 +125,7 @@
     if (cell == nil)
         cell = [[APPPlaylistCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPPlaylistCell"];
 
-    [cell setPlaylist:(GDataEntryYouTubePlaylistLink *)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]]];
+    [cell setPlaylist:(GDataEntryYouTubePlaylistLink*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]]];
     return cell;
 }
 
@@ -141,15 +141,22 @@
 
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    if ([self inState:tPassiveState])
-        return;
+    NSLog(@"didSelectRowAtIndexPath 1");
+    
+    if ([self inState:tPassiveState]) return;
+    
+    NSLog(@"didSelectRowAtIndexPath 2");
 
     GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
 
+    NSLog(@"didSelectRowAtIndexPath 3");
+    
     if (self.afterSelect) {
+        NSLog(@"didSelectRowAtIndexPath 4");
         [self.navigationController popViewControllerAnimated:YES];
         self.afterSelect(playlist);
     } else {
+        NSLog(@"didSelectRowAtIndexPath 5");
         [self.navigationController pushViewController:[[APPContentPlaylistVideosController alloc] initWithPlaylist:playlist] animated:YES];
     }
 }

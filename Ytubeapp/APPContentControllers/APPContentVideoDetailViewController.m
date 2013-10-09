@@ -458,24 +458,19 @@
 
         [cell setComment:(GDataEntryYouTubeComment*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]]];
         return cell;
+    } else {
+        return NULL;
     }
 }
 
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    if ([self inState:tPassiveState])
-        return;
+    if ([self inState:tPassiveState]) return;
 
     if ([mode isEqualToString:tRelatedVideos]) {
 
         GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
-
-        if (self.afterSelect) {
-            [self.navigationController popViewControllerAnimated:YES];
-            self.afterSelect(video);
-        } else {
-            [self.navigationController pushViewController:[[APPContentVideoDetailViewController alloc] initWithVideo:video] animated:YES];
-        }
+        [self.navigationController pushViewController:[[APPContentVideoDetailViewController alloc] initWithVideo:video] animated:YES];
 
     } else if ([mode isEqualToString:tCommentsVideos]) {
         NSLog(@"not yet implemented");
@@ -484,7 +479,7 @@
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if (![[(NSDictionary*)[notification object] objectForKey:@"video"] isEqual:self.video])
+    if (![[(NSDictionary*)[notification object] objectForKey:@"data"] isEqual:self.video])
         return;
 
     if ([[notification name] isEqualToString:eventAddedVideoToFavorites]) {

@@ -22,6 +22,17 @@
 @end
 
 @implementation APPContentCommentListController
+@synthesize video;
+
+-(id)initWithVideo:(GDataEntryYouTubeVideo*)v
+{
+    self = [self init];
+    if (self) {
+        self.video = v;
+        [self.dataCache clearData:tCommentsAll];
+    }
+    return self;
+}
 
 -(id)init
 {
@@ -74,15 +85,6 @@
     return self;
 }
 
--(id)initWithVideo:(GDataEntryYouTubeVideo*)video
-{
-    self = [self init];
-    if (self) {
-        self.video = video;
-    }
-    return self;
-}
-
 -(void)loadView
 {
     [super loadView];
@@ -111,6 +113,8 @@
     [subtopbarContainer addSubview:cancelButton];
 
     [self.tableViewHeaderFormView2 setHeaderView:subtopbarContainer];
+    
+    [self.tableView addDefaultShowMode:tCommentsAll];
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField*)textField
@@ -211,7 +215,7 @@
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if ([[(NSDictionary*)[notification object] objectForKey:@"video"] isEqual:self.video])
+    if ([[(NSDictionary*)[notification object] objectForKey:@"data"] isEqual:self.video])
         if (![(NSDictionary*)[notification object] objectForKey:@"error"])
             [self.tableView clearViewAndReloadAll];
 }

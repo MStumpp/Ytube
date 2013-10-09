@@ -48,13 +48,13 @@
 
 @protocol VideoDependenceDelegate
 @required
-@property GDataEntryYouTubeVideo *video;
+@property (nonatomic) GDataEntryYouTubeVideo *video;
 -(id)initWithVideo:(GDataEntryYouTubeVideo*)video;
 @end
 
 @protocol PlaylistDependenceDelegate
 @required
-@property GDataEntryYouTubePlaylistLink *playlist;
+@property (nonatomic) GDataEntryYouTubePlaylistLink *playlist;
 -(id)initWithPlaylist:(GDataEntryYouTubePlaylistLink*)playlist;
 @end
 
