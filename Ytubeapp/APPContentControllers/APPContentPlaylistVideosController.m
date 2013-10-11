@@ -75,7 +75,7 @@
 }
 
 #pragma mark -
-#pragma mark Table View Data Source Methods
+#pragma mark Table View Data Source Method
 // TODO: Remove table cell locally
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
 {
