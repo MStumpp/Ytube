@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "APPContentListController.h"
 
-@interface APPContentTopToggleBarVideoListController : APPContentListController <UITableViewHeaderFormViewDelegate>
+@interface APPContentTopToggleBarListController : APPContentListController <UITableViewHeaderFormViewDelegate>
 @property UITableViewHeaderFormView *tableViewHeaderFormView1;
 @property UITableViewHeaderFormView *tableViewHeaderFormView2;
 @property UIButton *backButton;

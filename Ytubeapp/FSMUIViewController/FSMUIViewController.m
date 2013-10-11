@@ -140,8 +140,6 @@
     State *tmp = [self getOrNewState:state];
     
     if (self.currState && [self.currState.name isEqualToString:tmp.name]) {
-        NSLog(@"curr state: %@", self.currState.name);
-        NSLog(@"tmp state: %@", tmp.name);
         NSLog(@"already in requested state");
         return FALSE;
     }

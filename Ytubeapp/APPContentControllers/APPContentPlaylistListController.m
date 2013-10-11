@@ -120,7 +120,9 @@
     }
 }
 
--(APPTableCell*)tableView:(UITableView*)tableView forMode:(NSString*)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath;
+#pragma mark -
+#pragma mark Table View Data Source Methods
+-(APPTableCell*)tableView:(UITableView*)tableView forMode:(NSString*)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
     APPPlaylistCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPPlaylistCell"];
     if (cell == nil)
@@ -130,17 +132,7 @@
     return cell;
 }
 
-#pragma mark -
-#pragma mark Table View Data Source Methods
-// TODO: Remove table cell locally
--(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
-{
-    GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink *)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
-    if (editingStyle == UITableViewCellEditingStyleDelete)
-        [APPQueryHelper deletePlaylist:playlist];
-}
-
--(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
+-(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
     if ([self inState:tPassiveState]) return;
     
@@ -153,6 +145,16 @@
         APPContentPlaylistVideosController *controller = [[APPContentPlaylistVideosController alloc] initWithPlaylist:playlist];
         [controller toDefaultState];
         [self.navigationController pushViewController:controller animated:YES];
+    }
+}
+
+-(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink *)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        [[self.dataCache getData:mode] removeObjectAtIndex:[indexPath row]];
+        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
+        [APPQueryHelper deletePlaylist:playlist];
     }
 }
 

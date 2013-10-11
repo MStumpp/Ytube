@@ -62,12 +62,14 @@
 
 #pragma mark -
 #pragma mark Table View Data Source Methods
-// TODO: Remove table cell locally
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
-    if (editingStyle == UITableViewCellEditingStyleDelete)
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        [[self.dataCache getData:mode] removeObjectAtIndex:[indexPath row]];
+        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
         [APPQueryHelper deleteMyVideo:video];
+    }
 }
 
 @end

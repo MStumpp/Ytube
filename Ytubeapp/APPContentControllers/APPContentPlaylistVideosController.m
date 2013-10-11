@@ -76,7 +76,6 @@
 
 #pragma mark -
 #pragma mark Table View Data Source Method
-// TODO: Remove table cell locally
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     GDataEntryYouTubePlaylist *pl = (GDataEntryYouTubePlaylist*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];

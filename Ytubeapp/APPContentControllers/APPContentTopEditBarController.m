@@ -48,7 +48,6 @@
     [self.tableViewHeaderFormView setHeaderView:subtopbarContainer];
 }
 
-// TODO: Brauchen wir das hier?
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];

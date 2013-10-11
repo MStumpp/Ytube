@@ -6,14 +6,14 @@
 //
 
 
-#import "APPContentTopToggleBarVideoListController.h"
+#import "APPContentTopToggleBarListController.h"
 
-@interface APPContentTopToggleBarVideoListController ()
+@interface APPContentTopToggleBarListController ()
 @property BOOL subtopbarWasVisible1;
 @property BOOL subtopbarWasVisible2;
 @end
 
-@implementation APPContentTopToggleBarVideoListController
+@implementation APPContentTopToggleBarListController
 
 -(id)init
 {
@@ -41,10 +41,10 @@
         [[self configureState:tActiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             // show header form if was visible
             if (self.subtopbarWasVisible1) {
-                [self.tableViewHeaderFormView1 showOnCompletion:^(BOOL isShown) {}  animated:YES];
+                [self.tableViewHeaderFormView1 showOnCompletion:nil animated:YES];
 
             } else if (self.subtopbarWasVisible2) {
-                [self.tableViewHeaderFormView2 showOnCompletion:^(BOOL isShown) {}  animated:YES];
+                [self.tableViewHeaderFormView2 showOnCompletion:nil animated:YES];
             }
         }];
     }
@@ -89,7 +89,6 @@
     self.tableViewHeaderFormView1 = [[UITableViewHeaderFormView alloc] initWithRootView:self.tableViewHeaderFormView2 headerView:subtopbarContainer delegate:self];
 }
 
-// TODO: Brauchen wir das hier?
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
