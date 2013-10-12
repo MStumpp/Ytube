@@ -92,7 +92,7 @@
     [self.tableView addDefaultShowMode:tPlaylistsAll];
 }
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField
+-(BOOL)textFieldShouldReturn:(UITextField*)textField
 {
     if ([self.tableViewHeaderFormView2 isHeaderShown]) {
         [self.textField resignFirstResponder];
@@ -102,8 +102,8 @@
         self.textField.text = @"";
         [self.tableViewHeaderFormView2 hideOnCompletion:^(BOOL isHidden) {
             if (isHidden)
-                [self.tableViewHeaderFormView1 showOnCompletion:nil animated:YES];
-        } animated:YES];
+                [self.tableViewHeaderFormView1 showOnCompletion:nil animated:NO];
+        } animated:NO];
     }
     return YES;
 }
@@ -114,9 +114,9 @@
         self.textField.text = @"";
         [self.tableViewHeaderFormView2 hideOnCompletion:^(BOOL isHidden) {
             if (isHidden) {
-                [self.tableViewHeaderFormView1 showOnCompletion:nil animated:YES];
+                [self.tableViewHeaderFormView1 showOnCompletion:nil animated:NO];
             }
-        } animated:YES];
+        } animated:NO];
     }
 }
 
@@ -160,8 +160,26 @@
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if (![(NSDictionary*)[notification userInfo] objectForKey:@"error"])
+    if ([[notification name] isEqualToString:eventAddedPlaylist]) {
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to add you playlist."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+        }
         [self.tableView clearViewAndReloadAll];
+        
+    } else if ([[notification name] isEqualToString:eventDeletedPlaylist]) {
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to delete your playlist."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+            [self.tableView clearViewAndReloadAll];
+        }
+    }
 }
 
 @end

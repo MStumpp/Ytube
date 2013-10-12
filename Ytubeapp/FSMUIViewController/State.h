@@ -33,7 +33,7 @@
 #define tInOut 03
 
 typedef void(^ViewCallback)(State *this, State *other);
-typedef void(^ForwardResponseCallback)(State *to, BOOL skip);
+typedef void(^ForwardResponseCallback)(State *to, BOOL block, BOOL skip);
 typedef void(^ForwardCallback)(State *this, State *from, ForwardResponseCallback callback);
 
 @interface State : NSObject
@@ -59,6 +59,10 @@ typedef void(^ForwardCallback)(State *this, State *from, ForwardResponseCallback
 
 -(BOOL)processStateIn:(int)viewState fromState:(State*)from;
 -(BOOL)processStateOut:(int)viewState toState:(State*)to;
+
+// has view state after view state
+
+-(BOOL)hasViewStateAfterViewState:(int)viewState;
 
 // merging
 -(void)mergeState:(State*)state;

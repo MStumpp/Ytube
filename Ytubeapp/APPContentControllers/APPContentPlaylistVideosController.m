@@ -89,9 +89,29 @@
 -(void)processEvent:(NSNotification*)notification
 {
     NSDictionary *context = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
-    if ([context objectForKey:@"playlist"] == self.playlist)
-        if (![(NSDictionary*)[notification userInfo] objectForKey:@"error"])
+    if ([context objectForKey:@"playlist"] != self.playlist)
+        return;
+        
+    if ([[notification name] isEqualToString:eventAddedVideoToPlaylist]) {
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to add video to playlist."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+        }
+        [self.tableView clearViewAndReloadAll];
+        
+    } else if ([[notification name] isEqualToString:eventRemovedVideoFromPlaylist]) {
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to remove video from playlist."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
             [self.tableView clearViewAndReloadAll];
+        }
+    }
 }
 
 @end

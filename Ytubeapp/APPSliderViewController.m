@@ -410,7 +410,7 @@
                 dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
             }*/
             [self.centerController setRootViewController:[self.controllers objectForKey:[NSNumber numberWithInt:context]]];
-
+            
         } else {
             // selected controller vorhanden und selected controller == input context und top view controller != controller für diesen context
             // -> center controller to root view

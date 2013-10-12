@@ -20,15 +20,6 @@
 
 @implementation UITableViewHeaderFormView
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
-}
-
 - (id)initWithRootView:(UIView *)rootView headerView:(UIView*)headerView delegate:(id<UITableViewHeaderFormViewDelegate>)delegate
 {
     if (!rootView)
@@ -283,34 +274,9 @@
     }
 }
 
-/*- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
-{
-    if (flag) {
-        if (theAnimation == self.downAnimation1) {
-            if ([self._delegate respondsToSelector:@selector(tableViewHeaderFormViewDidShow:)])
-                [self._delegate tableViewHeaderFormViewDidShow:self];
-        } else {
-            if ([self._delegate respondsToSelector:@selector(tableViewHeaderFormViewDidHide:)])
-                [self._delegate tableViewHeaderFormViewDidHide:self];
-        }
-        
-        if (self.callback) {
-            self.callback(TRUE);
-            self.callback = nil;
-        }
-        
-    } else {
-        if (self.callback) {
-            self.callback(FALSE);
-            self.callback = nil;
-        }
-    }
-}*/
-
 - (BOOL)isHeaderShown
 {
-    if (self._headerView && self._headerView.frame.origin.y == 0.0)
-        return TRUE;
+    if (self._headerView && self._headerView.frame.origin.y == 0.0) return TRUE;
     return FALSE;
 }
 

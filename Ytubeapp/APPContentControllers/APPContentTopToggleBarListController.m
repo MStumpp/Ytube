@@ -26,11 +26,11 @@
             // save state of header form
             if ([self.tableViewHeaderFormView1 isHeaderShown]) {
                 self.subtopbarWasVisible1 = TRUE;
-                [self.tableViewHeaderFormView1 hideOnCompletion:^(BOOL isHidden) {} animated:YES];
+                [self.tableViewHeaderFormView1 hideOnCompletion:nil animated:NO];
 
             } else if ([self.tableViewHeaderFormView2 isHeaderShown]) {
                 self.subtopbarWasVisible2 = TRUE;
-                [self.tableViewHeaderFormView2 hideOnCompletion:^(BOOL isHidden) {} animated:YES];
+                [self.tableViewHeaderFormView2 hideOnCompletion:nil animated:NO];
 
             } else {
                 self.subtopbarWasVisible1 = FALSE;
@@ -41,10 +41,10 @@
         [[self configureState:tActiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             // show header form if was visible
             if (self.subtopbarWasVisible1) {
-                [self.tableViewHeaderFormView1 showOnCompletion:nil animated:YES];
+                [self.tableViewHeaderFormView1 showOnCompletion:nil animated:NO];
 
             } else if (self.subtopbarWasVisible2) {
-                [self.tableViewHeaderFormView2 showOnCompletion:nil animated:YES];
+                [self.tableViewHeaderFormView2 showOnCompletion:nil animated:NO];
             }
         }];
     }
@@ -128,8 +128,8 @@
     if ([self.tableViewHeaderFormView1 isHeaderShown]) {
         [self.tableViewHeaderFormView1 hideOnCompletion:^(BOOL isHidden) {
             if (isHidden)
-                [self.tableViewHeaderFormView2 showOnCompletion:nil animated:YES];
-        } animated:YES];
+                [self.tableViewHeaderFormView2 showOnCompletion:nil animated:NO];
+        } animated:NO];
     }
 }
 

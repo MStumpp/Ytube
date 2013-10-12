@@ -236,6 +236,8 @@
 
 -(void)toShowMode:(NSString*)mode
 {
+    NSLog(@"toShowMode %@", mode);
+    
     if (!mode || ![self hasShowMode:mode])
         [NSException raise:@"show mode is nil or doesn't exists" format:@"show mode is nil or doesn't exists"];
 

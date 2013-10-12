@@ -77,8 +77,26 @@
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if (![(NSDictionary*)[notification userInfo] objectForKey:@"error"])
+    if ([[notification name] isEqualToString:eventAddedVideoToFavorites]) {
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to add video to favorites."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+        }
         [self.tableView clearViewAndReloadAll];
+        
+    } else if ([[notification name] isEqualToString:eventRemovedVideoFromFavorites]) {
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to remove video from favorites."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+            [self.tableView clearViewAndReloadAll];
+        }
+    }
 }
 
 @end

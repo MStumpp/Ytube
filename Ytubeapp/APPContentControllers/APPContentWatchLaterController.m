@@ -77,8 +77,26 @@
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if (![(NSDictionary*)[notification userInfo] objectForKey:@"error"])
+    if ([[notification name] isEqualToString:eventAddedVideoToWatchLater]) {
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to add video to watch later."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+        }
         [self.tableView clearViewAndReloadAll];
+        
+    } else if ([[notification name] isEqualToString:eventRemovedVideoFromWatchLater]) {
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to remove video from watch later."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+            [self.tableView clearViewAndReloadAll];
+        }
+    }
 }
 
 @end

@@ -45,13 +45,18 @@ static APPUserManager *classInstance = nil;
             callback(nil, [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"auth is nil or cannot authorize"] code:1 userInfo:nil]);
         return;
     }
-
-    [self signOutOnCompletion:^(BOOL isSignedOut) {
-        if (isSignedOut) {
+    
+    //[self signOutOnCompletion:^(BOOL isSignedOut) {
+    //    if (isSignedOut) {
             self.auth = auth;
             
+            GDataServiceGoogleYouTube *service = [[APPGlobals classInstance] getGlobalForKey:@"service"];
+            [service setAuthorizer:self.auth];
+            
             // inform observers
-            [[NSNotificationCenter defaultCenter] postNotificationName:eventAuthTokenValidated object:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.auth, @"auth", nil]];
+            NSMutableDictionary *info = [NSMutableDictionary new];
+            [info setValue:self.auth forKey:@"auth"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:eventAuthTokenValidated object:self userInfo:info];
             
             NSLog(@"test1");
 
@@ -61,7 +66,9 @@ static APPUserManager *classInstance = nil;
                 if (user && !error) {
                     
                     // inform observers
-                    [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedIn object:[NSMutableDictionary dictionaryWithObjectsAndKeys:user, @"user", nil]];
+                    NSMutableDictionary *info = [NSMutableDictionary new];
+                    [info setValue:user forKey:@"user"];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedIn object:self userInfo:info];
                     
                     NSLog(@"test3");
 
@@ -76,11 +83,11 @@ static APPUserManager *classInstance = nil;
                 }
             }];
 
-        } else {
+        /*} else {
             if (callback)
                 callback(nil, [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"error when authenticating"] code:1 userInfo:nil]);
-        }
-    }];
+        }*/
+    //}];
 }
 
 -(void)signOutOnCompletion:(void (^)(BOOL isSignedOut))callback
@@ -89,9 +96,6 @@ static APPUserManager *classInstance = nil;
     
     if (self.auth) {
         NSLog(@"signOutOnCompletion2");
-
-        self.currentUserProfile = nil;
-        self.currentUserImage = nil;
         
         NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
         NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
@@ -103,12 +107,22 @@ static APPUserManager *classInstance = nil;
         [GTMOAuth2ViewControllerTouch revokeTokenForGoogleAuthentication:self.auth];
 
         // inform observers
-        [[NSNotificationCenter defaultCenter] postNotificationName:eventAuthTokenInvalidated object:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.auth, @"auth", nil]];
+        NSMutableDictionary *info = [NSMutableDictionary new];
+        [info setValue:self.auth forKey:@"auth"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventAuthTokenInvalidated object:self userInfo:info];
+        
+        GDataServiceGoogleYouTube *service = [[APPGlobals classInstance] getGlobalForKey:@"service"];
+        [service setAuthorizer:nil];
         
         self.auth = nil;
 
         // inform observers
-        [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedOut object:nil];
+        info = [NSMutableDictionary new];
+        [info setValue:self.currentUserProfile forKey:@"user"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedOut object:self userInfo:info];
+        
+        self.currentUserProfile = nil;
+        self.currentUserImage = nil;
     }
     
     if (callback)
@@ -139,6 +153,7 @@ static APPUserManager *classInstance = nil;
 
 -(void)currentUserProfileWithCallback:(void (^)(GDataEntryYouTubeUserProfile *user, NSError *error))callback
 {
+    NSLog(@"currentUserProfileWithCallback1");
     if (self.currentUserProfile) {
         if (callback)
             callback(self.currentUserProfile, nil);

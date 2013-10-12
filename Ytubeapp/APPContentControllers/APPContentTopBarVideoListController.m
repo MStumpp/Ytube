@@ -9,7 +9,7 @@
 #import "APPContentTopBarVideoListController.h"
 
 @interface APPContentTopBarVideoListController ()
-@property bool subtopbarWasVisible;
+@property BOOL subtopbarWasVisible;
 @end
 
 @implementation APPContentTopBarVideoListController
@@ -21,19 +21,26 @@
         self.subtopbarWasVisible = TRUE;
 
         [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            NSLog(@"testest 5a");
             // save state of header form
             if ([self.tableViewHeaderFormView isHeaderShown]) {
                 [self setSubtopbarWasVisible:TRUE];
             } else {
                 [self setSubtopbarWasVisible:FALSE];
             }
-            [self.tableViewHeaderFormView hideOnCompletion:nil animated:YES];
+            [self.tableViewHeaderFormView hideOnCompletion:nil animated:NO];
+            NSLog(@"testest 5b");
         }];
 
-        [[self configureState:tActiveState] onViewState:tDidLoadViewState do:^(State *this, State *other){
+        [[self configureState:tActiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             // show header form if was visible
-            if (self.subtopbarWasVisible)
-                [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
+            NSLog(@"testest 3a");
+            NSLog(@"%@", [NSThread currentThread]);
+            if (self.subtopbarWasVisible) {
+                NSLog(@"%@", [NSThread currentThread]);
+                [self.tableViewHeaderFormView showOnCompletion:nil animated:NO];
+            }
+            NSLog(@"testest 3b");
         }];
     }
     return self;

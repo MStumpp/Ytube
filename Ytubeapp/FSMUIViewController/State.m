@@ -16,7 +16,7 @@
 
 -(id)initWithName:(NSString*)name
 {
-    self = [super init];
+    self = [self init];
     if (self) {
         self.name = name;
         self.transitionIn = [NSMutableDictionary dictionary];
@@ -60,7 +60,7 @@
     if (self.forwardCallback) {
         ((ForwardCallback)self.forwardCallback)(self, from, callback);
     } else {
-        callback(nil, FALSE);
+        callback(nil, TRUE, FALSE);
     }
 }
 
@@ -104,11 +104,36 @@
     return TRUE;
 }
 
+// has view state after view state
+
+-(BOOL)hasViewStateAfterViewState:(int)viewState
+{
+    __block BOOL found = FALSE;
+    
+    [self.transitionIn enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        if ([(NSNumber*)key intValue] > viewState) {
+            found = TRUE;
+            stop = TRUE;
+        }
+    }];
+    
+    if (found) return TRUE;
+    
+    [self.transitionOut enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        if ([(NSNumber*)key intValue] > viewState) {
+            found = TRUE;
+            stop = TRUE;
+        }
+    }];
+    
+    return found;
+}
+
 // merging
 
 -(void)mergeState:(State*)state
 {
-    [[state transitionIn] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    [self.transitionIn enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if (obj && [obj isKindOfClass:[NSArray class]]) {
             [obj enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
                 [self onViewState:[(NSNumber*)key intValue] mode:tIn do:object];

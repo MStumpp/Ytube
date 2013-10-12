@@ -263,6 +263,7 @@
 		39EC442D15F6B8D800CE4C0A /* video_cell_menu_icon_heart_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39EC442815F6B8D700CE4C0A /* video_cell_menu_icon_heart_up@2x.png */; };
 		39EC442E15F6B8D800CE4C0A /* video_cell_menu_icon_info_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 39EC442915F6B8D700CE4C0A /* video_cell_menu_icon_info_up@2x.png */; };
 		39F7398218078BAF00E77B15 /* APPContentTopToggleBarListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 39F7398118078BAF00E77B15 /* APPContentTopToggleBarListController.m */; };
+		39F739851808643100E77B15 /* StateQueueWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 39F739841808643100E77B15 /* StateQueueWrapper.m */; };
 		9D7ED0C29CC04BFAAF341D65 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D3343BFEBAF4CA0B449026D /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -617,6 +618,8 @@
 		39EC442915F6B8D700CE4C0A /* video_cell_menu_icon_info_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "video_cell_menu_icon_info_up@2x.png"; sourceTree = "<group>"; };
 		39F7398018078BAF00E77B15 /* APPContentTopToggleBarListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPContentTopToggleBarListController.h; path = APPContentControllers/APPContentTopToggleBarListController.h; sourceTree = "<group>"; };
 		39F7398118078BAF00E77B15 /* APPContentTopToggleBarListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPContentTopToggleBarListController.m; path = APPContentControllers/APPContentTopToggleBarListController.m; sourceTree = "<group>"; };
+		39F739831808643100E77B15 /* StateQueueWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StateQueueWrapper.h; sourceTree = "<group>"; };
+		39F739841808643100E77B15 /* StateQueueWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StateQueueWrapper.m; sourceTree = "<group>"; };
 		8D3343BFEBAF4CA0B449026D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		916ADCFB97E841D48CB69C0C /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -818,6 +821,8 @@
 				393D032217CE0179006C5C15 /* State.m */,
 				393D032317CE0179006C5C15 /* StateSet.h */,
 				393D032417CE0179006C5C15 /* StateSet.m */,
+				39F739831808643100E77B15 /* StateQueueWrapper.h */,
+				39F739841808643100E77B15 /* StateQueueWrapper.m */,
 			);
 			path = FSMUIViewController;
 			sourceTree = "<group>";
@@ -1009,8 +1014,8 @@
 				395A878815E18710004F39E2 /* APPIndexViewController.m */,
 				397641A716010B60007C6996 /* APPSliderViewController.h */,
 				394B928F15F01E4100AE10E4 /* APPSliderViewController.m */,
-				167C99F8FFDD15C40F270BCA /* APPUserManager.m */,
 				167C9CD6A3BC31E1EE469E4B /* APPUserManager.h */,
+				167C99F8FFDD15C40F270BCA /* APPUserManager.m */,
 				167C98C43060A0F7286C824C /* Queries */,
 				167C98E5290FCFEA6866F253 /* Utils */,
 				167C91924CEA3A8CE99299D9 /* APPTableViews */,
@@ -1599,6 +1604,7 @@
 				167C92B23A20FAE8DB6E3A72 /* APPVideoRecentlyFeatured.m in Sources */,
 				167C9B1505C2DB00227CF9AA /* APPVideoRelatedVideos.m in Sources */,
 				39C779EC1801A1C9006404AE /* QueryManager.m in Sources */,
+				39F739851808643100E77B15 /* StateQueueWrapper.m in Sources */,
 				167C9EB0DD67E62FB2C3C252 /* APPVideoTopFavorites.m in Sources */,
 				167C9E2AF7715F80F60B2C16 /* APPVideoTopRated.m in Sources */,
 				167C9729B4D3D4B033834F20 /* APPVideoWatchHistory.m in Sources */,

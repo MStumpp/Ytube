@@ -41,8 +41,8 @@
     [[APPGlobals classInstance] setGlobalObject:[UIImage imageNamed:@"silhouette"] forKey:@"silhouetteImage"];
     [[APPGlobals classInstance] setGlobalObject:[UIImage imageNamed:@"no_preview"] forKey:@"noPreviewImage"];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authTokenValidated:) name:eventAuthTokenValidated object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authTokenInvalidated:) name:eventAuthTokenInvalidated object:nil];
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authTokenValidated:) name:eventAuthTokenValidated object:nil];
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authTokenInvalidated:) name:eventAuthTokenInvalidated object:nil];
     
     // init APPUserManager with retrieved auth object, no matter if it can or cannot authorize
     dispatch_semaphore_t sema = dispatch_semaphore_create(1);
@@ -100,21 +100,19 @@
 
 -(void)authTokenValidated:(NSNotification*)notification
 {
-    GDataServiceGoogleYouTube *service = [[APPGlobals classInstance] getGlobalForKey:@"service"];
-    GTMOAuth2Authentication *auth = [(NSDictionary*)[notification object] objectForKey:@"auth"];
-    if (service && auth) {
+    //GDataServiceGoogleYouTube *service = [[APPGlobals classInstance] getGlobalForKey:@"service"];
+    //GTMOAuth2Authentication *auth = [(NSDictionary*)[notification userInfo] objectForKey:@"auth"];
+    /*if (service && auth) {
         [service setAuthorizer:auth];
-        NSLog(@"authTokenValidated");
-    }
+    }*/
 }
 
 -(void)authTokenInvalidated:(NSNotification*)notification
 {
-    GDataServiceGoogleYouTube *service = [[APPGlobals classInstance] getGlobalForKey:@"service"];
+    /*GDataServiceGoogleYouTube *service = [[APPGlobals classInstance] getGlobalForKey:@"service"];
     if (service) {
         [service setAuthorizer:nil];
-        NSLog(@"authTokenInvalidated");
-    }
+    }*/
 }
 
 @end

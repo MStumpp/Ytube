@@ -50,6 +50,8 @@
                                }]
                          );
         }];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventDeletedMyVideo object:nil];
     }
     return self;
 }
@@ -69,6 +71,20 @@
         [[self.dataCache getData:mode] removeObjectAtIndex:[indexPath row]];
         [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
         [APPQueryHelper deleteMyVideo:video];
+    }
+}
+
+-(void)processEvent:(NSNotification*)notification
+{
+    if ([[notification name] isEqualToString:eventDeletedMyVideo]) {
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to delete your video."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+            [self.tableView clearViewAndReloadAll];
+        }
     }
 }
 
