@@ -316,7 +316,7 @@
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if (![[(NSDictionary*)[notification object] objectForKey:@"video"] isEqual:self.video])
+    /*if (![[(NSDictionary*)[notification object] objectForKey:@"video"] isEqual:self.video])
         return;
 
     if ([[notification name] isEqualToString:eventAddedVideoToFavorites]) {
@@ -334,7 +334,7 @@
     } else if ([[notification name] isEqualToString:eventRemovedVideoFromWatchLater]) {
         if ([(NSDictionary*)[notification object] objectForKey:@"error"])
             [self.watchLaterButton setSelected:YES];
-    }
+    }*/
 }
 
 @end

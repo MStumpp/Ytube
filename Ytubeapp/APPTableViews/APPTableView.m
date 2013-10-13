@@ -236,14 +236,14 @@
 
 -(void)toShowMode:(NSString*)mode
 {
-    NSLog(@"toShowMode %@", mode);
+    //NSLog(@"toShowMode %@", mode);
     
     if (!mode || ![self hasShowMode:mode])
         [NSException raise:@"show mode is nil or doesn't exists" format:@"show mode is nil or doesn't exists"];
 
     // if current show mode equal to requested show mode, then just scroll to top
     if (self.showMode == mode) {
-        [self scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+        //[self scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
         return;
     }
 

@@ -8,26 +8,27 @@
 
 #import "APPPlaylistCell.h"
 #import "APPGlobals.h"
-#import "APPPlaylistImageOfPlaylist.h"
+#import "APPContent.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface APPPlaylistCell ()
 @property (nonatomic) GDataEntryYouTubePlaylistLink *playlist;
-@property (nonatomic) NSString *text;
+@property (nonatomic) NSString *title;
+@property (nonatomic) NSString *numberVideos;
 @property (nonatomic) NSString *description;
 @property (nonatomic) UIImage *textPic;
-@property (nonatomic) int numberItems;
-//@property UILabel *textLabel;
+@property UILabel *titleLabel;
+@property UILabel *numberVideoLabel;
 @property UILabel *descriptionLabel;
 @property UIImageView *textPicImage;
 @end
 
 @implementation APPPlaylistCell
-@synthesize text;
+@synthesize playlist;
+@synthesize title;
+@synthesize numberVideos;
 @synthesize description;
 @synthesize textPic;
-@synthesize numberItems;
-@synthesize playlist;
 
 -(id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier
 {
@@ -42,13 +43,19 @@
 
 -(void)initUI
 {    
-    /*self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(140.0, 20.0, 170.0, 18.0)];
-    [self.textLabel setFont:[UIFont fontWithName:@"Nexa Bold" size:13]];
-    [self.textLabel setTextColor:[UIColor whiteColor]];
-    [self.textLabel setBackgroundColor:[UIColor clearColor]];
-    [self.tableCellMain addSubview:self.textLabel];*/
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(140.0, 20.0, 170.0, 18.0)];
+    [self.titleLabel setFont:[UIFont fontWithName:@"Nexa Bold" size:13]];
+    [self.titleLabel setTextColor:[UIColor whiteColor]];
+    [self.titleLabel setBackgroundColor:[UIColor clearColor]];
+    [self.tableCellMain addSubview:self.titleLabel];
     
-    self.descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(140.0, 30.0, 170.0, 40.0)];
+    self.numberVideoLabel = [[UILabel alloc] initWithFrame:CGRectMake(140.0, 40.0, 170.0, 18.0)];
+    [self.numberVideoLabel setFont:[UIFont fontWithName:@"Nexa Light" size:10]];
+    [self.numberVideoLabel setTextColor:[UIColor whiteColor]];
+    [self.numberVideoLabel setBackgroundColor:[UIColor clearColor]];
+    [self.tableCellMain addSubview:self.numberVideoLabel];
+    
+    self.descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(140.0, 45.0, 170.0, 40.0)];
     [self.descriptionLabel setFont:[UIFont fontWithName:@"Nexa Light" size:10]];
     [self.descriptionLabel setTextColor:[UIColor whiteColor]];
     [self.descriptionLabel setBackgroundColor:[UIColor clearColor]];
@@ -65,18 +72,19 @@
     [self setTextPic:[[APPGlobals classInstance] getGlobalForKey:@"noPreviewImage"]];
 }
 
--(void)setText:(NSString*)n
+-(void)setTitle:(NSString*)n
 {
-    if (![n isEqualToString:text]) {
-        text = [n copy];
-        //self.textLabel.text = text;
+    if (![n isEqualToString:title]) {
+        title = [n copy];
+        self.titleLabel.text = title;
     }
 }
 
--(void)setNumberItems:(int)n
+-(void)setNumberVideos:(NSString*)n
 {
-    if (!(n == numberItems)) {
-        numberItems = n;
+    if (!(n == numberVideos)) {
+        numberVideos = n;
+        self.numberVideoLabel.text = [NSString stringWithFormat:@"%@ Videos", numberVideos];
     }
 }
 
@@ -87,11 +95,6 @@
         self.descriptionLabel.text = description;
     }
 }
-
-/*-(void)updateTextLabel
-{
-    self.textLabel.text = text;
-}*/
 
 -(void)setTextPic:(UIImage*)n
 {
@@ -104,23 +107,19 @@
 {
     playlist = p;
 
-    self.text = [[self.playlist title] stringValue];
-    self.description = [[self.playlist summary] stringValue];
-
-    [[APPPlaylistImageOfPlaylist instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
-            execute:[NSDictionary dictionaryWithObjectsAndKeys:self.playlist, @"playlist", nil]
-            context:NULL
-      onStateChange:^(NSString *state, id data, NSError *error, id context) {
-          if ([state isEqual:tFinished]) {
-              if (!error) {
-                  UIImage *image = (UIImage*)data;
-                  if (image)
-                      self.textPic = image;
-              } else {
-                  NSLog(@"APPPlaylistImageOfPlaylist: error");
-              }
-          }
-      }];
+    if ([self.playlist title])
+        self.title = [[self.playlist title] stringValue];
+    if ([self.playlist countHint])
+        self.numberVideos = [self.playlist countHint];
+    if ([self.playlist summary])
+        self.description = [[self.playlist summary] stringValue];
+    
+    [APPContent smallImageOfPlaylist:self.playlist callback:^(UIImage *image) {
+        if (image) {
+            self.textPic = image;
+            [self setNeedsLayout];
+        }
+    }];
 }
 
 @end

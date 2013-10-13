@@ -24,7 +24,6 @@
 
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
-    NSLog(@"APPContentVideoListController: didSelectRowAtIndexPath");
     if ([self inState:tPassiveState]) return;
 
     GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];

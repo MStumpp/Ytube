@@ -102,19 +102,26 @@
         CGRect toValue3 = CGRectMake(self._rootView.layer.bounds.origin.x, self._rootView.layer.bounds.origin.y, self._rootView.layer.bounds.size.width, self._rootView.layer.bounds.size.height-self._headerView.layer.bounds.size.height);
 
         if (animated) {
+            
+            //NSLog(@"log 1");
+            
             __block BOOL done = NO;
-            [CATransaction begin]; {
+            [CATransaction begin];
                 [CATransaction setCompletionBlock:^{
+                    //NSLog(@"log 2");
+
                     if ([self._delegate respondsToSelector:@selector(tableViewHeaderFormViewDidShow:)])
                         [self._delegate tableViewHeaderFormViewDidShow:self];
                     
-                    if (callback) {
-                        callback(TRUE);
-                        return;
+                    //NSLog(@"log 3");
 
-                    } else {
-                        done = YES;
-                    }
+                    if (callback)
+                        callback(TRUE);
+                    
+                    //NSLog(@"log 4");
+                    
+                    done = YES;
+                    return;
                 }];
 
                 CABasicAnimation *animation1 = [CABasicAnimation animationWithKeyPath:@"position"];
@@ -153,15 +160,21 @@
                 if ([self._delegate respondsToSelector:@selector(tableViewHeaderFormViewWillShow:)])
                     [self._delegate tableViewHeaderFormViewWillShow:self];
 
+                //NSLog(@"log 5");
+                
                 [self._headerView.layer addAnimation:animation1 forKey:@"animatePosition"];
                 [self._rootView.layer addAnimation:animation2 forKey:@"animatePosition2"];
                 [self._rootView.layer addAnimation:animation3 forKey:@"animateBounds"];
                 
-            } [CATransaction commit];
+                //NSLog(@"log 6");
+                
+            [CATransaction commit];
 
-            while (done == NO)
-                [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-            return;
+            if (!callback) {
+                while (done == NO)
+                    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+                return;
+            }
 
         } else {
             [self._headerView.layer setPosition:toValue1];
@@ -198,18 +211,24 @@
         
         if (animated) {
             __block BOOL done = NO;
-            [CATransaction begin]; {
+            [CATransaction begin];
                 [CATransaction setCompletionBlock:^{
                     if ([self._delegate respondsToSelector:@selector(tableViewHeaderFormViewDidHide:)])
                         [self._delegate tableViewHeaderFormViewDidHide:self];
                     
-                    if (callback) {
+                    /*if (callback) {
                         callback(TRUE);
                         return;
 
                     } else {
                         done = YES;
-                    }
+                    }*/
+                    
+                    if (callback)
+                        callback(TRUE);
+                    
+                    done = YES;
+                    return;
                 }];
                 
                 CABasicAnimation *animation1 = [CABasicAnimation animationWithKeyPath:@"position"];
@@ -251,11 +270,17 @@
                 [self._rootView.layer addAnimation:animation2 forKey:@"animatePosition2"];
                 [self._rootView.layer addAnimation:animation3 forKey:@"animateBounds"];
         
-            } [CATransaction commit];
+            [CATransaction commit];
 
-            while (done == NO)
+            /*while (done == NO)
                 [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-            return;
+            return;*/
+            
+            if (!callback) {
+                while (done == NO)
+                    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+                return;
+            }
             
         } else {
             [self._headerView.layer setPosition:toValue1];

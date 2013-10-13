@@ -134,4 +134,23 @@
     [self.tableView addShowMode:tTopRatedAll];
 }
 
+-(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+{
+    if ([keyPath isEqual:@"contentOffset"]) {
+        CGPoint newContentOffset = [[change objectForKey:NSKeyValueChangeNewKey] CGPointValue];
+        CGPoint oldContentOffset = [[change objectForKey:NSKeyValueChangeOldKey] CGPointValue];
+        if (oldContentOffset.y < newContentOffset.y && [self.tableViewHeaderFormView isHeaderShown] && newContentOffset.y > downAtTopDistance) {
+            [self.tableViewHeaderFormView hideOnCompletion:nil animated:NO];
+        } else if (oldContentOffset.y > newContentOffset.y && ![self.tableViewHeaderFormView isHeaderShown] && (downAtTopOnly ? (newContentOffset.y < downAtTopDistance) : (newContentOffset.y + self.tableView.bounds.size.height - self.tableView.contentInset.bottom < (self.tableView.contentSize.height - downAtTopDistance)))) {
+            [self.tableViewHeaderFormView showOnCompletion:nil animated:NO];
+        }
+        
+        //if((newVal.y >= 0.0) && (newVal.y <= self.tableView.contentSize.height)) {
+        //}
+        
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
 @end

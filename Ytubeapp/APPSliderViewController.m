@@ -280,20 +280,15 @@
 // current top controller
 -(void)moveToRight:(void (^)(void))callback
 {
-    NSLog(@"moveToTRight 1");
     dispatch_semaphore_t sema = dispatch_semaphore_create(1);
     [self mask:NO onCompletion:^{
-        NSLog(@"moveToTRight 2");
         if ([self isCentered] && [self topViewController]) {
-            NSLog(@"moveToTRight 3");
             [[self topViewController] doDefaultMode:^{
-                NSLog(@"moveToTRight 4");
                 [self animateMoveToRight:^{
                     dispatch_semaphore_signal(sema);
                 }];
             }];
         } else {
-            NSLog(@"moveToTRight 5");
             [self animateMoveToRight:^{
                 dispatch_semaphore_signal(sema);
             }];
@@ -325,24 +320,19 @@
         {
             case tSignOut:
             {
-                NSLog(@"isSignedOut 1");
                 [self.controller enableButtons:FALSE];
                 [self mask:YES onCompletion:^{
-                    NSLog(@"isSignedOut 2");
                     [[APPUserManager classInstance] signOutOnCompletion:^(BOOL isSignedOut) {
-                        NSLog(@"isSignedOut 3");
                         [self mask:NO onCompletion:^{
                             // unable topbar buttons
                             [self.controller enableButtons:TRUE];
                             if (isSignedOut) {
-                                NSLog(@"isSignedOut if");
                                 if ([[APPUserManager classInstance] allowedToVisit:self.currentContext])
                                     [self toggleContext:self.currentContext];
                                 else
                                     [self toggleContext:self.defaultContext];
                                 
                             } else {
-                                NSLog(@"isSignedOuf else");
                                 [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
                                                             message:[NSString stringWithFormat:@"Unable to sign you out. Please try again later."]
                                                            delegate:nil

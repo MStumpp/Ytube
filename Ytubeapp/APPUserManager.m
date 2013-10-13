@@ -58,10 +58,10 @@ static APPUserManager *classInstance = nil;
             [info setValue:self.auth forKey:@"auth"];
             [[NSNotificationCenter defaultCenter] postNotificationName:eventAuthTokenValidated object:self userInfo:info];
             
-            NSLog(@"test1");
+            //NSLog(@"test1");
 
             [self currentUserProfileWithCallback:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
-                NSLog(@"test2");
+                //NSLog(@"test2");
 
                 if (user && !error) {
                     
@@ -70,13 +70,13 @@ static APPUserManager *classInstance = nil;
                     [info setValue:user forKey:@"user"];
                     [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedIn object:self userInfo:info];
                     
-                    NSLog(@"test3");
+                    //NSLog(@"test3");
 
                     if (callback)
                         callback(user, nil);
                     
                 } else {
-                    NSLog(@"test4");
+                    //NSLog(@"test4");
 
                     if (callback)
                         callback(nil, error);
@@ -92,10 +92,10 @@ static APPUserManager *classInstance = nil;
 
 -(void)signOutOnCompletion:(void (^)(BOOL isSignedOut))callback
 {
-    NSLog(@"signOutOnCompletion1");
+    //NSLog(@"signOutOnCompletion1");
     
     if (self.auth) {
-        NSLog(@"signOutOnCompletion2");
+        //NSLog(@"signOutOnCompletion2");
         
         NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
         NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
@@ -111,8 +111,8 @@ static APPUserManager *classInstance = nil;
         [info setValue:self.auth forKey:@"auth"];
         [[NSNotificationCenter defaultCenter] postNotificationName:eventAuthTokenInvalidated object:self userInfo:info];
         
-        GDataServiceGoogleYouTube *service = [[APPGlobals classInstance] getGlobalForKey:@"service"];
-        [service setAuthorizer:nil];
+        //GDataServiceGoogleYouTube *service = [[APPGlobals classInstance] getGlobalForKey:@"service"];
+        //[service setAuthorizer:nil];
         
         self.auth = nil;
 
@@ -153,7 +153,7 @@ static APPUserManager *classInstance = nil;
 
 -(void)currentUserProfileWithCallback:(void (^)(GDataEntryYouTubeUserProfile *user, NSError *error))callback
 {
-    NSLog(@"currentUserProfileWithCallback1");
+    //NSLog(@"currentUserProfileWithCallback1");
     if (self.currentUserProfile) {
         if (callback)
             callback(self.currentUserProfile, nil);

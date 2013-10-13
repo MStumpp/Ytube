@@ -117,7 +117,7 @@ static DataCache *classInstance = nil;
 
 -(BOOL)reloadData:(NSString*)key withContext:(id)context
 {
-    NSLog(@"reloadData: request %@", key);
+    //NSLog(@"reloadData: request %@", key);
     if (!key || ![self hasKey:key]) return FALSE;
     
     // reset mode and eventually cancel other reload/load more queries

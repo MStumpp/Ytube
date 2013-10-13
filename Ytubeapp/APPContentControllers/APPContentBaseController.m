@@ -26,10 +26,10 @@
         }];
         
         [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            NSLog(@"testest 4a");
+            //NSLog(@"testest 4a");
             // save the last active state
             [[self state:tActiveState] setData:[self prevState]];
-            NSLog(@"testest 4b");
+            //NSLog(@"testest 4b");
         }];
         
         [[self configureState:tClearState] onViewState:tDidAppearViewState do:^(State *this, State *other){
@@ -69,9 +69,9 @@
 
 -(void)doDefaultMode:(void (^)(void))callback;
 {
-    NSLog(@"doDefaultMode 1");
+    NSLog(@"doDefaultMode");
     [self toState:tPassiveState];
-    NSLog(@"doDefaultMode 2");
+    //NSLog(@"doDefaultMode 2");
     if (callback)
         callback();
 }
