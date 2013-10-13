@@ -63,7 +63,6 @@
 
 +(void)smallImageOfVideo:(GDataEntryYouTubeVideo*)video callback:(void (^)(UIImage *image))callback
 {
-    NSLog(@"smallImageOfVideo");
     NSString *url;
     
     if ([video respondsToSelector:@selector(mediaGroup)]) {

@@ -22,7 +22,7 @@
 #define tActiveState @"activeState"
 #define tPassiveState @"passiveState"
 
-@interface APPContentBaseController : FSMUIViewController
+@interface APPContentBaseController : FSMUIViewController <APPSliderViewControllerDelegate>
 @property UIImage *topbarImage;
 @property NSString *topbarTitle;
 @property DataCache *dataCache;

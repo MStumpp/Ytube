@@ -143,7 +143,7 @@
         self.afterSelect(playlist);
     } else {
         APPContentPlaylistVideosController *controller = [[APPContentPlaylistVideosController alloc] initWithPlaylist:playlist];
-        [controller toDefaultState];
+        [controller undoDefaultMode:nil];
         [self.navigationController pushViewController:controller animated:YES];
     }
 }
