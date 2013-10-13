@@ -96,7 +96,7 @@
 
 -(NSIndexPath*)tableView:(UITableView*)tableView willSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    APPTableCell *selectedCell = (APPTableCell*) [self cellForRowAtIndexPath:indexPath];
+    APPTableCell *selectedCell = (APPTableCell*)[self cellForRowAtIndexPath:indexPath];
     if (![selectedCell isOpened])
         return [self._del tableView:tableView forMode:self.showMode willSelectRowAtIndexPath:indexPath];
     else
@@ -110,25 +110,16 @@
 
 -(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return TRUE;
-
-    //return [self._del tableView:tableView canEditRowAtIndexPath:indexPath];
-
-    //    if (self.tmpEditingCell) {
-    //        if ([self.tmpEditingCell row] == [indexPath row])
-    //            return TRUE;
-    //        else
-    //            return FALSE;
-    //    } else {
-    //        return TRUE;
-    //    }
+    APPTableCell *selectedCell = (APPTableCell*)[self cellForRowAtIndexPath:indexPath];
+    if (![selectedCell isOpened])
+        return [self._del tableView:tableView canEditRowAtIndexPath:indexPath];
+    else
+        return FALSE;
 }
 
--(void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
-        forRowAtIndexPath:(NSIndexPath*)indexPath
+-(void)tableView:(UITableView*)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    [self._del tableView:tableView forMode:self.showMode
-           commitEditingStyle:editingStyle forRowAtIndexPath:indexPath];
+    [self._del tableView:tableView forMode:self.showMode commitEditingStyle:editingStyle forRowAtIndexPath:indexPath];
 }
 
 // "UITableViewAtBottomViewDelegate" Protocol
@@ -160,13 +151,21 @@
 
 -(void)tableViewSwipeViewDidSwipeLeft:(UITableView*)view rowAtIndexPath:(NSIndexPath*)indexPath
 {
-    NSLog(@"tableViewSwipeViewDidSwipeLeft");
-    APPTableCell *cell = (APPTableCell*) [self cellForRowAtIndexPath:indexPath];
+    // do not allow to open cell when table is in editing mode
+    if ([self isEditing])
+        return;
+    
+    // do not allow to open cell when controller is in passive state and/or user not signed in
+    if (![self._del tableView:view canOpenCellforMode:self.showMode forRowAtIndexPath:indexPath])
+        return;
+
+    APPTableCell *cell = (APPTableCell*)[self cellForRowAtIndexPath:indexPath];
     // if there is an open cell, close this first, then open the requested cell
     if (self.openCell) {
         if ([self.openCell row] == [indexPath row])
             return;
 
+        // close open cell
         APPTableCell *currentOpenCell = (APPTableCell*) [self cellForRowAtIndexPath:self.openCell];
         [currentOpenCell closeOnCompletion:^(BOOL isClosed) {
             if (isClosed) {
@@ -197,7 +196,6 @@
 
 -(void)tableViewSwipeViewDidSwipeRight:(UITableView*)view rowAtIndexPath:(NSIndexPath*)indexPath
 {
-    NSLog(@"tableViewSwipeViewDidSwipeRight");
     APPTableCell *cell = (APPTableCell*) [self cellForRowAtIndexPath:indexPath];
     [cell closeOnCompletion:^(BOOL isClosed) {
         if (isClosed) {

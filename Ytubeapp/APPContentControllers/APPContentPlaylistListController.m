@@ -150,7 +150,7 @@
 
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink *)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
+    GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         [[self.dataCache getData:mode] removeObjectAtIndex:[indexPath row]];
         [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];

@@ -139,7 +139,7 @@
 
 -(BOOL)toState:(NSString*)state
 {
-    NSLog(@"toState %@", state);
+    //NSLog(@"toState %@", state);
     
     if (!state) {
         NSLog(@"state must not be nil");
@@ -167,7 +167,7 @@
 
 -(BOOL)toStateForce:(NSString*)state
 {
-    NSLog(@"toStateForce %@", state);
+    //NSLog(@"toStateForce %@", state);
     
     if (!state) {
         NSLog(@"state must not be nil");

@@ -44,7 +44,6 @@
 {
     [super loadView];
     self.tableViewHeaderFormView = [[UITableViewHeaderFormView alloc] initWithRootView:self.tableView headerView:nil delegate:self];
-    [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
 }
 
 -(BOOL)tableViewHeaderFormViewShouldShow:(UITableViewHeaderFormView*)view

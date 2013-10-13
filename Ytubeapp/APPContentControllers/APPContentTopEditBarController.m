@@ -82,4 +82,10 @@
     }
 }
 
+-(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    if ([self inState:tPassiveState]) return FALSE;
+    return [self.tableView isEditing];
+}
+
 @end

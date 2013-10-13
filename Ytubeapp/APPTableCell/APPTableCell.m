@@ -35,7 +35,6 @@
         
         // table cell
         self.tableCellMain = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320.0, 88.0)];
-        //self.tableCellMain = [[UIImageView alloc] init];
         [self.tableCellMain setBackgroundColor:[UIColor clearColor]];
         [self.contentView addSubview:self.tableCellMain];
 
@@ -52,9 +51,6 @@
         [self.shadowImage setImage:[UIImage imageNamed:@"video_cell_front_hide"]];
         [self.tableCellMain addSubview:self.shadowImage];
         [self mask:FALSE];
-        
-        // customize accessory icon
-        //self.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"video_cell_icon_right.png"]];
         
         self.selectionStyle = style;
         
@@ -185,63 +181,9 @@
     }
 }
 
-/*- (void)open:(BOOL)arg callback:(void (^)(void))callback
-{
-    if (arg && self.allowToOpen) {
-        if (self.tableCellMain.frame.origin.x == 0)
-        {
-            CAAnimationGroup *theGroup = [CAAnimationGroup animation];
-            
-            CABasicAnimation *animation1 = [CABasicAnimation animationWithKeyPath:@"position"];
-            animation1.fromValue = [self.menuSubMenuMask valueForKey:@"position"];
-            animation1.toValue = [NSValue valueWithCGPoint:CGPointMake(160.0, 44.0)];
-            [self.menuSubMenuMask setPosition:CGPointMake(160.0, 44.0)];
-                        
-            CABasicAnimation *animation2 = [CABasicAnimation animationWithKeyPath:@"frame"];
-            animation2.fromValue = [self.tableCellMain.layer valueForKey:@"frame"];
-            CGRect point2 = CGRectMake(-320.0, self.tableCellMain.frame.origin.y, self.tableCellMain.frame.size.width, self.tableCellMain.frame.size.height);
-            animation2.toValue = [NSValue valueWithCGRect:point2];
-            [self.tableCellMain.layer setFrame:point2];
-                
-            theGroup.duration = .5;
-            theGroup.timingFunction = [CAMediaTimingFunction functionWithName: kCAMediaTimingFunctionEaseInEaseOut];
-            theGroup.animations = [NSArray arrayWithObjects:animation1, animation2, nil];
-            
-            [self.menuSubMenuMask addAnimation:theGroup forKey:@"animatePosition"];
-        }
-    
-    } else {
-        if (self.tableCellMain.frame.origin.x != 0.0)
-        {
-            CAAnimationGroup *theGroup = [CAAnimationGroup animation];
-            
-            CABasicAnimation *animation1 = [CABasicAnimation animationWithKeyPath:@"position"];
-            animation1.fromValue = [self.menuSubMenuMask valueForKey:@"position"];
-            CGPoint point1 = CGPointMake(480.0, 44.0);
-            animation1.toValue = [NSValue valueWithCGPoint:point1];
-            [self.menuSubMenuMask setPosition:point1];
-            
-            CABasicAnimation *animation2 = [CABasicAnimation animationWithKeyPath:@"frame"];
-            animation2.fromValue = [self.tableCellMain.layer valueForKey:@"frame"];
-            CGRect point2 = CGRectMake(0.0, self.tableCellMain.frame.origin.y, self.tableCellMain.frame.size.width, self.tableCellMain.frame.size.height);
-            animation2.toValue = [NSValue valueWithCGRect:point2];
-            [self.tableCellMain.layer setFrame:point2];
-            
-            theGroup.duration = .5;
-            theGroup.timingFunction = [CAMediaTimingFunction functionWithName: kCAMediaTimingFunctionEaseInEaseOut];
-            theGroup.animations = [NSArray arrayWithObjects:animation1, animation2, nil];
-            
-            [self.menuSubMenuMask addAnimation:theGroup forKey:@"animatePosition"];
-        }
-    }
-    if (callback)
-        callback();
-}*/
-
 -(BOOL)isOpened
 {
-    if (self.tableCellMain.frame.origin.x == 0)
-        return FALSE;
+    if (self.tableCellMain.frame.origin.x == 0) return FALSE;
     return TRUE;
 }
 
@@ -262,48 +204,5 @@
     else
         [self.shadowImage setHidden:YES];
 }
-
-// customize delete icon
-
-/*- (void)willTransitionToState:(UITableViewCellStateMask)state {
-    [super willTransitionToState:state];
-    if ((state & UITableViewCellStateShowingEditControlMask) == UITableViewCellStateShowingEditControlMask) {
-        for (UIView *subview in self.subviews) {
-            if ([NSStringFromClass([subview class]) isEqualToString:@"UITableViewCellEditControl"]) {
-                subview.hidden = YES;
-                subview.alpha = 0.0;
-            }
-        }
-    }
-}*/
-
-/*- (void)didTransitionToState:(UITableViewCellStateMask)state
-{
-    [super didTransitionToState:state];
-    if (state == UITableViewCellStateShowingEditControlMask || state == UITableViewCellStateShowingEditControlMask) {
-        for (UIView *subview in self.subviews) {
-            if ([NSStringFromClass([subview class]) isEqualToString:@"UITableViewCellEditControl"]) {
-                UIView *deleteButtonView = (UIView *)[subview.subviews objectAtIndex:0];
-                CGRect f = deleteButtonView.frame;
-                f.origin.x -= 20;
-                deleteButtonView.frame = f;
-                
-                subview.hidden = NO;
-                
-                //[UIView beginAnimations:@"anim" context:nil];
-                subview.alpha = 1.0;
-                //[UIView commitAnimations];
-                
-                //NSLog(@"test");
-                
-                deleteButtonView 
-                                
-                UIImageView *editButton = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 48, 88)];
-                [editButton setImage:[UIImage imageNamed:@"video_cell_cross"]];
-                [[subview.subviews objectAtIndex:0] addSubview:editButton];
-            }
-        }
-    }
-}*/
 
 @end

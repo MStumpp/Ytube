@@ -638,8 +638,8 @@
 		167C91924CEA3A8CE99299D9 /* APPTableViews */ = {
 			isa = PBXGroup;
 			children = (
-				167C99579AEE3BB97835D7E3 /* APPTableView.m */,
 				167C9C4F9A040554D0A63143 /* APPTableView.h */,
+				167C99579AEE3BB97835D7E3 /* APPTableView.m */,
 			);
 			path = APPTableViews;
 			sourceTree = "<group>";
@@ -1282,13 +1282,13 @@
 			isa = PBXGroup;
 			children = (
 				167C9906E79B1ED2EA176EC9 /* APPPlaylistCell.h */,
-				167C95FD93A069029FB5FEC9 /* APPCommentCell.h */,
-				167C97F2BF45205E4728714B /* APPVideoCell.h */,
+				167C9C96F457231A27A21AD4 /* APPPlaylistCell.m */,
 				167C98BFF05EBACB019E4035 /* APPTableCell.h */,
 				167C94B5B01610D1AB88CFCC /* APPTableCell.m */,
+				167C97F2BF45205E4728714B /* APPVideoCell.h */,
 				167C95DB747FCA72CAE7AED3 /* APPVideoCell.m */,
+				167C95FD93A069029FB5FEC9 /* APPCommentCell.h */,
 				167C939829F6EEA9DA3B34B0 /* APPCommentCell.m */,
-				167C9C96F457231A27A21AD4 /* APPPlaylistCell.m */,
 			);
 			name = TableCell;
 			sourceTree = "<group>";

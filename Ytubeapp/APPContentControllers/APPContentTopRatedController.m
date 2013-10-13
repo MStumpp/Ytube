@@ -132,6 +132,8 @@
     [self.tableView addShowMode:tTopRatedWeek];
     [self.tableView addShowMode:tTopRatedMonth];
     [self.tableView addShowMode:tTopRatedAll];
+    
+    [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
 }
 
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
@@ -144,9 +146,6 @@
         } else if (oldContentOffset.y > newContentOffset.y && ![self.tableViewHeaderFormView isHeaderShown] && (downAtTopOnly ? (newContentOffset.y < downAtTopDistance) : (newContentOffset.y + self.tableView.bounds.size.height - self.tableView.contentInset.bottom < (self.tableView.contentSize.height - downAtTopDistance)))) {
             [self.tableViewHeaderFormView showOnCompletion:nil animated:NO];
         }
-        
-        //if((newVal.y >= 0.0) && (newVal.y <= self.tableView.contentSize.height)) {
-        //}
         
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

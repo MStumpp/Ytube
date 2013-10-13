@@ -22,9 +22,7 @@
     if ((self = [self init])) {
         self.tableView = tableView;
         self.delegate = delegate;
-        
-        // https://github.com/boctor/idev-recipes/blob/master/SideSwipeTableView/ClasseSideSwipeTableViewController.m
-        
+                
         // Setup a right swipe gesture recognizer
         UISwipeGestureRecognizer* rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipe:)];
         rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;

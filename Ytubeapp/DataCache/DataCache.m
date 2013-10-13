@@ -135,7 +135,6 @@ static DataCache *classInstance = nil;
                                        [self setQuery:query forKey:key forType:self.queriesReload];
                                    },
                                    ^(NSString *key, id context, id data, NSError *error) {
-                                       NSLog(@"reloadData: response %@", key);
                                        
                                        // no error
                                        if (!error) {
