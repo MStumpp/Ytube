@@ -106,15 +106,41 @@
 
 +(void)largeImageOfVideo:(GDataEntryYouTubeVideo*)video callback:(void (^)(UIImage *image))callback
 {
-    if (![video respondsToSelector:@selector(mediaGroup)]) {
+    NSString *url;
+    
+    if ([video respondsToSelector:@selector(mediaGroup)]) {
+        GDataYouTubeMediaGroup *mediaGroup = [video mediaGroup];
+        NSArray *thumbnails = [mediaGroup mediaThumbnails];
+        if (!thumbnails || [thumbnails count] == 0) {
+            if (callback)
+                callback(nil);
+            return;
+        }
+        
+        url = [[thumbnails objectAtIndex:3] URLString];
+        
+    } else {
+        
+        GDataXMLElement *thumb = [video XMLElement];
+        NSDictionary *myNS = [NSDictionary dictionaryWithObjectsAndKeys:@"http://search.yahoo.com/mrss/", @"m", nil];
+        NSArray *elems = [thumb nodesForXPath:@"//entry/m:group/m:thumbnail" namespaces:myNS error:nil];
+        
+        if (!elems || [elems count] == 0) {
+            if (callback)
+                callback(nil);
+            return;
+        }
+        
+        url = [[[elems objectAtIndex:3] attributeForName:@"url"] stringValue];
+    }
+    
+    if (!url) {
         if (callback)
             callback(nil);
         return;
     }
     
-    GDataYouTubeMediaGroup *mediaGroup = [video mediaGroup];
-    NSArray *thumbnails = [mediaGroup mediaThumbnails];
-    [self loadImage:[NSURL URLWithString:[[thumbnails objectAtIndex:3] URLString]] callback:^(UIImage *image) {
+    [self loadImage:[NSURL URLWithString:url] callback:^(UIImage *image) {
         if (callback)
             callback(image);
         return;
