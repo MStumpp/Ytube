@@ -15,7 +15,8 @@
     NSDictionary *dict = (NSDictionary*) props;
     GDataEntryYouTubeVideo *video = [dict objectForKey:@"video"];
     GDataEntryYouTubePlaylistLink *playlist = [dict objectForKey:@"playlist"];
-    [self fetchEntryByInsertingEntry:video andURL:[[playlist editLink] URL]];
+    NSString *url = [NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/playlists/%@?v=2", [playlist playlistID]];
+    [self fetchEntryByInsertingEntry:video andURL:[NSURL URLWithString:url]];
 }
 
 @end

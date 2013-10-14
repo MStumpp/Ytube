@@ -25,11 +25,14 @@
                     favorite = (GDataEntryYouTubeFavorite*)entryBase;
                     GDataYouTubeMediaGroup *mediaGroupEntry = [favorite mediaGroup];
                     if ([[mediaGroupVideo videoID] isEqualToString:[mediaGroupEntry videoID]]) {
+                        // video is favorite
                         [this setResult:favorite];
                         [this loaded];
                         return;
                     }
                 }
+                // video is not favorite
+                [this setResult:nil];
                 [this loaded];
 
             } else {

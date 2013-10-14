@@ -16,6 +16,7 @@
 
 @interface APPVideoCell ()
 @property (nonatomic) GDataEntryYouTubeVideo *video;
+@property UITableViewMaskView *tableViewMaskView;
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSString *subtitle;
 @property (nonatomic) UIImage *thumbnail;
@@ -23,7 +24,6 @@
 @property (nonatomic) int numberdislikes;
 @property (nonatomic) int views;
 @property (nonatomic) int durationinseconds;
-
 @property UIButton *addToPlaylistButton;
 @property UIButton *watchLaterButton;
 @property UIButton *favoritesButton;
@@ -37,6 +37,8 @@
 @property UIImageView *hdImage;
 @property UIImageView *durationImage;
 @property UIImageView *playImage;
+@property BOOL favoritesResponse;
+@property BOOL watchLaterReponse;
 @end
 
 @implementation APPVideoCell
@@ -57,6 +59,8 @@
         [self initUI];
         [self prepareForReuse];
 
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToPlaylist object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromPlaylist object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToFavorites object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromFavorites object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToWatchLater object:nil];
@@ -98,6 +102,8 @@
     [self.commentsButton setImage:[UIImage imageNamed:@"video_cell_menu_icon_comment_down"] forState:UIControlStateSelected];
     [self.commentsButton setImage:[UIImage imageNamed:@"video_cell_menu_icon_comment_down"] forState:UIControlStateHighlighted];
     [self.tableCellSubMenu addSubview:self.commentsButton];
+    
+    self.tableViewMaskView = [[UITableViewMaskView alloc] initWithRootView:self.tableCellSubMenu customMaskView:nil delegate:self];
 
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(140.0, 20.0, 170.0, 18.0)];
     [self.titleLabel setFont:[UIFont fontWithName:@"Nexa Bold" size:13]];
@@ -149,6 +155,9 @@
 {
     [super prepareForReuse];
     [self allowToOpen:YES];
+    [self.tableViewMaskView maskOnCompletion:nil];
+    self.favoritesResponse = FALSE;
+    self.watchLaterReponse = FALSE;
     [self.favoritesButton setSelected:NO];
     [self.watchLaterButton setSelected:NO];
     [self setThumbnail:[[APPGlobals classInstance] getGlobalForKey:@"noPreviewImage"]];
@@ -247,43 +256,69 @@
             [self setNeedsLayout];
         }
     }];
+}
 
-    // sub view set up
-
-    /*[[APPVideoIsFavorite instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
-            execute:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
-      onStateChange:^(NSString *state, id data) {
-          if ([state isEqual:tFinished]) {
-              if (![(NSDictionary*)data objectForKey:@"error"]) {
-                  if([(NSDictionary*)data objectForKey:@"favorite"])
-                    [self.favoritesButton setSelected:YES];
-              } else {
-                  NSLog(@"APPVideoIsFavorite: error");
-              }
-          }
-      }];
-
+-(void)cellDidOpen
+{
+    [[APPVideoIsFavorite instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+        execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
+        context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
+        onStateChange:^(NSString *state, id data, NSError *error, id context) {
+            if ([state isEqual:tFinished]) {
+                if (!error) {
+                    if (data)
+                        [self.favoritesButton setSelected:YES];
+                    self.favoritesResponse = TRUE;
+                    [self checkMaskState];
+                } else {
+                    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                                message:[NSString stringWithFormat:@"Unable to check if video is a favorite. Please try again later."]
+                                               delegate:nil
+                                      cancelButtonTitle:@"OK"
+                                      otherButtonTitles:nil] show];
+                }
+            }
+    }];
+    
     [[APPVideoIsWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
-            execute:[NSDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
-      onStateChange:^(NSString *state, id data) {
-          if ([state isEqual:tFinished]) {
-              if (![(NSDictionary*)data objectForKey:@"error"]) {
-                  if([(NSDictionary*)data objectForKey:@"playlist"])
-                      [self.watchLaterButton setSelected:YES];
-              } else {
-                  NSLog(@"APPVideoIsWatchLater: error");
-              }
-          }
-      }];*/
+     execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
+     context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
+     onStateChange:^(NSString *state, id data, NSError *error, id context) {
+         if ([state isEqual:tFinished]) {
+             if (!error) {
+                 if (data)
+                     [self.watchLaterButton setSelected:YES];
+                 self.watchLaterReponse = TRUE;
+                 [self checkMaskState];
+             } else {
+                 [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                             message:[NSString stringWithFormat:@"Unable to check if video is a watch later. Please try again later."]
+                                            delegate:nil
+                                   cancelButtonTitle:@"OK"
+                                   otherButtonTitles:nil] show];
+             }
+         }
+     }];
+}
+
+-(void)checkMaskState
+{
+    if (self.favoritesResponse && self.watchLaterReponse)
+        [self.tableViewMaskView unmaskOnCompletion:nil];
 }
 
 -(void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event
 {
     [super touchesEnded:touches withEvent:event];
+    
+    if ([self.tableViewMaskView isMasked])
+        return;
+    
     if ([self isOpened]) {
         CGPoint location = [((UITouch *)[touches anyObject]) locationInView:self];
         if (CGRectContainsPoint(self.addToPlaylistButton.frame, location)) {
             APPContentPlaylistListController *select = [[APPContentPlaylistListController alloc] init];
+            [select undoDefaultMode:nil];
             select.afterSelect = ^(GDataEntryBase *entry) {
                 [APPQueryHelper addVideo:self.video toPlaylist:(GDataEntryYouTubePlaylistLink*)entry];
             };
@@ -316,25 +351,59 @@
 
 -(void)processEvent:(NSNotification*)notification
 {
-    /*if (![[(NSDictionary*)[notification object] objectForKey:@"video"] isEqual:self.video])
+    NSDictionary *context = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
+    if ([context objectForKey:@"video"] != self.video)
         return;
+    
+    if ([[notification name] isEqualToString:eventAddedVideoToPlaylist]) {
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to add video to playlist."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+        }
+        
+    } else if ([[notification name] isEqualToString:eventRemovedVideoFromPlaylist]) {
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to add video to playlist."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+        }
 
-    if ([[notification name] isEqualToString:eventAddedVideoToFavorites]) {
-        if ([(NSDictionary*)[notification object] objectForKey:@"error"])
-            [self.favoritesButton setSelected:NO];
+    } else if ([[notification name] isEqualToString:eventAddedVideoToFavorites]) {
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"])
+            [self reset];
 
     } else if ([[notification name] isEqualToString:eventRemovedVideoFromFavorites]) {
-        if ([(NSDictionary*)[notification object] objectForKey:@"error"])
-            [self.favoritesButton setSelected:YES];
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"])
+            [self reset];
 
     } else if ([[notification name] isEqualToString:eventAddedVideoToWatchLater]) {
-        if ([(NSDictionary*)[notification object] objectForKey:@"error"])
-            [self.watchLaterButton setSelected:NO];
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"])
+            [self reset];
 
     } else if ([[notification name] isEqualToString:eventRemovedVideoFromWatchLater]) {
-        if ([(NSDictionary*)[notification object] objectForKey:@"error"])
-            [self.watchLaterButton setSelected:YES];
-    }*/
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"])
+            [self reset];
+    }
+}
+
+-(void)reset
+{
+    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                message:[NSString stringWithFormat:@"Unable to manage state of this video."]
+                               delegate:nil
+                      cancelButtonTitle:@"OK"
+                      otherButtonTitles:nil] show];
+    [self.tableViewMaskView maskOnCompletion:nil];
+    self.favoritesResponse = FALSE;
+    self.watchLaterReponse = FALSE;
+    [self.favoritesButton setSelected:NO];
+    [self.watchLaterButton setSelected:NO];
+    [self cellDidOpen];
 }
 
 @end

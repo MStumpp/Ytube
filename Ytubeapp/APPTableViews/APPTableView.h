@@ -46,6 +46,5 @@
 -(BOOL)pullToRefreshViewShouldStartLoading:(SSPullToRefreshView*)view;
 -(void)beforeShowModeChange;
 -(void)afterShowModeChange;
-@optional
 -(void)pushViewController:(UIViewController*)controller;
 @end

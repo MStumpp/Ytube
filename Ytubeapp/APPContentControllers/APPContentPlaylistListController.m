@@ -163,7 +163,7 @@
     if ([[notification name] isEqualToString:eventAddedPlaylist]) {
         if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
             [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                        message:[NSString stringWithFormat:@"Unable to add you playlist."]
+                                        message:[NSString stringWithFormat:@"Unable to add your playlist."]
                                        delegate:nil
                               cancelButtonTitle:@"OK"
                               otherButtonTitles:nil] show];

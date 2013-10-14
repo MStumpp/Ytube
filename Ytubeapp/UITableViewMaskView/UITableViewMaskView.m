@@ -26,7 +26,7 @@
     self = [super init];
     if (self)
     {
-        self.alphaMasked = 0.5;
+        self.alphaMasked = 0.6;
         
         self._rootView = rootView;
         self._customMaskView = customMaskView;

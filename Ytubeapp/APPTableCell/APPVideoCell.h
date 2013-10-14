@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "APPTableCell.h"
 
-@interface APPVideoCell : APPTableCell
+@interface APPVideoCell : APPTableCell <UITableViewMaskViewDelegate>
 -(void)setVideo:(GDataEntryYouTubeVideo*)v;
 @end

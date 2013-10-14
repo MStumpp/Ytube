@@ -25,11 +25,14 @@
                     playlist = (GDataEntryYouTubePlaylist*)entryBase;
                     GDataYouTubeMediaGroup *mediaGroupEntry = [playlist mediaGroup];
                     if ([[mediaGroupVideo videoID] isEqualToString:[mediaGroupEntry videoID]]) {
+                        // video is watch later
                         [this setResult:playlist];
                         [this loaded];
                         return;
                     }
                 }
+                // video is not watch later
+                [this setResult:nil];
                 [this loaded];
 
             } else {

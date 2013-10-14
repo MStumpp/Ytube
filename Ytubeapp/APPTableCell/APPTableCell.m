@@ -32,7 +32,7 @@
         self.menuSubMenuMask.frame = CGRectMake(320.0, 0.0, 320.0, 88.0);
         self.tableCellSubMenu.layer.mask = self.menuSubMenuMask;
         self.tableCellSubMenu.layer.masksToBounds = YES;
-        
+                
         // table cell
         self.tableCellMain = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320.0, 88.0)];
         [self.tableCellMain setBackgroundColor:[UIColor clearColor]];
@@ -90,7 +90,8 @@
             
             if (animated) {
                 [CATransaction begin]; {
-                    [CATransaction setCompletionBlock:^{                    
+                    [CATransaction setCompletionBlock:^{
+                        [self cellDidOpen];
                         if (callback) {
                             callback(TRUE);
                         }
@@ -119,6 +120,7 @@
                 [self.menuSubMenuMask setPosition:toValue1];
                 [self.tableCellMain.layer setPosition:toValue2];
                 
+                [self cellDidOpen];
                 if (callback)
                     callback(TRUE);
             }
@@ -144,6 +146,7 @@
         if (animated) {
             [CATransaction begin]; {
                 [CATransaction setCompletionBlock:^{
+                    [self cellDidClose];
                     if (callback) {
                         callback(TRUE);
                     }
@@ -172,6 +175,7 @@
             [self.menuSubMenuMask setPosition:toValue1];
             [self.tableCellMain.layer setPosition:toValue2];
             
+            [self cellDidClose];
             if (callback)
                 callback(TRUE);
         }
@@ -179,6 +183,14 @@
         if (callback)
             callback(TRUE);
     }
+}
+
+-(void)cellDidOpen
+{
+}
+
+-(void)cellDidClose
+{
 }
 
 -(BOOL)isOpened

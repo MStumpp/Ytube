@@ -21,6 +21,8 @@
 @property NSIndexPath *indexPath;
 -(void)openOnCompletion:(void (^)(BOOL isOpened))callback animated:(BOOL)animated;
 -(void)closeOnCompletion:(void (^)(BOOL isClosed))callback animated:(BOOL)animated;
+-(void)cellDidOpen;
+-(void)cellDidClose;
 -(BOOL)isOpened;
 -(BOOL)isClosed;
 -(void)allowToOpen:(BOOL)value;
