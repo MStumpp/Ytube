@@ -43,6 +43,11 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataReloadedFinished:) name:eventDataReloadedFinished object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataReloadedError:) name:eventDataReloadedError object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataMoreLoadedFinished:) name:eventDataMoreLoadedFinished object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataMoreLoadedError:) name:eventDataMoreLoadedError object:nil];
     }
     return self;
 }
@@ -57,6 +62,8 @@
 
 -(void)userSignedIn:(NSNotification*)notification
 {
+    [self.dataCache clearAllData];
+    [self toState:tClearState];
 }
 
 -(void)userSignedOut:(NSNotification*)notification
@@ -82,6 +89,22 @@
     [self toState:tActiveState];
     if (callback)
         callback();
+}
+
+-(void)dataReloadedFinished:(NSNotification*)notification
+{
+}
+
+-(void)dataReloadedError:(NSNotification*)notification
+{
+}
+
+-(void)dataMoreLoadedFinished:(NSNotification*)notification
+{
+}
+
+-(void)dataMoreLoadedError:(NSNotification*)notification
+{
 }
 
 // other stuff

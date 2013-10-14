@@ -19,9 +19,8 @@
 #import "APPVideoComments.h"
 #import "APPFetchMoreQuery.h"
 
-#define tVideoDetailAll @"video_detail_all"
-#define tRelatedVideosAll @"related_videos"
-#define tCommentsVideosAll @"comments_videos"
+#define tRelatedVideosAll @"related_videos_all"
+#define tCommentsVideosAll @"comments_videos_all"
 #define tRelatedVideos 01
 #define tCommentsVideos 02
 
@@ -40,7 +39,6 @@
 @property UIButton *addToPlaylistButton;
 @property UIButton *commentsButton;
 @property UIButton *relatedVideosButton;
-@property DataCache *dataCache;
 @property BOOL subtopbarWasVisible;
 @end
 
@@ -61,7 +59,6 @@
 {
     self = [super init];
     if (self) {
-        self.dataCache = [[APPGlobals classInstance] getGlobalForKey:@"dataCache"];
         [self.dataCache clearData:tRelatedVideosAll];
         [self.dataCache clearData:tCommentsVideosAll];
         
@@ -71,9 +68,10 @@
         
         [[self configureState:tClearState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [self.tableView clearViewAndReloadAll];
+            [self refetchVideoState];
         }];
         
-        self.subtopbarWasVisible = TRUE;
+        self.subtopbarWasVisible = FALSE;
         
         [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             // save state of header form
@@ -93,14 +91,17 @@
         }];
         
         // configure tVideoDetailAll as default state
-        [self setDefaultState:tVideoDetailAll];
+        [self setDefaultState:tRelatedVideosAll];
         
         [self.dataCache configureReloadDataForKey:tCommentsVideosAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            NSLog(@"onStateChange 1");
             queryHandler(key, [[APPVideoComments instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
                                onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   NSLog(@"onStateChange 2");
                                    if ([state isEqual:tFinished]) {
+                                       NSLog(@"onStateChange 3");
                                        responseHandler([(NSDictionary*)context objectForKey:@"key"],
                                                        [(NSDictionary*)context objectForKey:@"context"],
                                                        data,
@@ -110,28 +111,16 @@
                          );
         }];
         
-        [self.dataCache configureLoadMoreDataForKey:tCommentsVideosAll withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
-            
-            queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
-                               execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
-                               context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
-                               onStateChange:^(NSString *state, id data, NSError *error, id context) {
-                                   if ([state isEqual:tFinished]) {
-                                       responseHandler([(NSDictionary*)context objectForKey:@"key"],
-                                                       [(NSDictionary*)context objectForKey:@"context"],
-                                                       data,
-                                                       error);
-                                   }
-                               }]
-                         );
-        }];
         
         [self.dataCache configureReloadDataForKey:tRelatedVideosAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            NSLog(@"onStateChange 1");
             queryHandler(key, [[APPVideoRelatedVideos instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
                                onStateChange:^(NSString *state, id data, NSError *error, id context) {
+                                   NSLog(@"onStateChange 2");
                                    if ([state isEqual:tFinished]) {
+                                       NSLog(@"onStateChange 3");
                                        responseHandler([(NSDictionary*)context objectForKey:@"key"],
                                                        [(NSDictionary*)context objectForKey:@"context"],
                                                        data,
@@ -141,7 +130,8 @@
                          );
         }];
         
-        [self.dataCache configureLoadMoreDataForKey:tRelatedVideosAll withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureLoadMoreDataForKeys:@[tCommentsVideosAll, tRelatedVideosAll] withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+            
             queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
@@ -216,9 +206,10 @@
     [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_normal_up"] forState:UIControlStateNormal];
     [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_normal_down"] forState:UIControlStateSelected];
     [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_normal_down"] forState:UIControlStateHighlighted];
-    [self.likeButton setSelected:FALSE];    
+    [self.likeButton setSelected:FALSE];
     [self.likeButton addTarget:self action:@selector(subtopbarButtonPress:) forControlEvents:UIControlEventTouchUpInside];
     self.likeButtonMask = [[UITableViewMaskView alloc] initWithRootView:self.likeButton customMaskView:nil delegate:self];
+    [self.likeButtonMask maskOnCompletion:nil];
     [subtopbarContainer addSubview:self.likeButton];
 
     self.watchLaterButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -227,8 +218,8 @@
     [self.watchLaterButton setImage:[UIImage imageNamed:@"video_detail_clock_up"] forState:UIControlStateNormal];
     [self.watchLaterButton setImage:[UIImage imageNamed:@"video_detail_clock_down"] forState:UIControlStateSelected];
     [self.watchLaterButton setImage:[UIImage imageNamed:@"video_detail_clock_down"] forState:UIControlStateHighlighted];
-    [self.watchLaterButton setSelected:FALSE];
     [self.watchLaterButton addTarget:self action:@selector(subtopbarButtonPress:) forControlEvents:UIControlEventTouchUpInside];
+    [self.watchLaterButton setSelected:NO];
     self.watchLaterButtonMask = [[UITableViewMaskView alloc] initWithRootView:self.watchLaterButton customMaskView:nil delegate:self];
     [self.watchLaterButtonMask maskOnCompletion:nil];
     [subtopbarContainer addSubview:self.watchLaterButton];
@@ -239,8 +230,8 @@
     [self.favoritesButton setImage:[UIImage imageNamed:@"video_detail_star_up"] forState:UIControlStateNormal];
     [self.favoritesButton setImage:[UIImage imageNamed:@"video_detail_star_down"] forState:UIControlStateSelected];
     [self.favoritesButton setImage:[UIImage imageNamed:@"video_detail_star_down"] forState:UIControlStateHighlighted];
-    [self.favoritesButton setSelected:FALSE];
     [self.favoritesButton addTarget:self action:@selector(subtopbarButtonPress:) forControlEvents:UIControlEventTouchUpInside];
+    [self.favoritesButton setSelected:NO];
     self.favoritesButtonMask = [[UITableViewMaskView alloc] initWithRootView:self.favoritesButton customMaskView:nil delegate:self];
     [self.favoritesButtonMask maskOnCompletion:nil];
     [subtopbarContainer addSubview:self.favoritesButton];
@@ -263,12 +254,13 @@
     [self.addToPlaylistButton addTarget:self action:@selector(subtopbarButtonPress:) forControlEvents:UIControlEventTouchUpInside];
     [subtopbarContainer addSubview:self.addToPlaylistButton];
     
-    [self fetchState];
+    [self refetchVideoState];
 
     // set up table
     ////////////////
-    self.tableView.frame = CGRectMake(0.0, heightVideoView+50.0+3.0, self.view.frame.size.width, self.view.frame.size.height-(heightVideoView+50.0+3.0));
+    self.tableView = [[APPTableView alloc] initWithFrame:CGRectMake(0.0, heightVideoView+50.0+3.0, self.view.frame.size.width, self.view.frame.size.height-(heightVideoView+50.0+3.0)) style:UITableViewStylePlain];
     self.tableView._del = self;
+    [self.view addSubview:self.tableView];
     self.tableViewHeaderFormView = [[UITableViewHeaderFormView alloc] initWithRootView:self.tableView headerView:nil delegate:self];
 
     UIControl *subtopbarContainer2 = [[UIControl alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0)];
@@ -304,8 +296,18 @@
     //NSString *tempURL = [flashContent URLString];
 }
 
--(void)fetchState
+-(void)refetchVideoState
 {
+    if ([self inState:tPassiveState]) return;
+    if (![[APPUserManager classInstance] isUserSignedIn]) return;
+    
+    [self.likeButton setTag:tLike];
+    [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_normal_up"] forState:UIControlStateNormal];
+    [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_normal_down"] forState:UIControlStateSelected];
+    [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_normal_down"] forState:UIControlStateHighlighted];
+    [self.likeButton setSelected:FALSE];
+    [self.likeButtonMask maskOnCompletion:nil];
+    
     switch ([APPContent likeStateOfVideo:self.video])
     {
         case tLikeLike:
@@ -324,7 +326,14 @@
             [self.likeButtonMask unmaskOnCompletion:nil];
             break;
         }
+        default:
+        {
+            [self.likeButtonMask unmaskOnCompletion:nil];
+        }
     }
+    
+    [self.watchLaterButton setSelected:NO];
+    [self.watchLaterButtonMask maskOnCompletion:nil];
     
     [[APPVideoIsWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
      execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
@@ -344,6 +353,9 @@
              }
          }
      }];
+    
+    [self.favoritesButton setSelected:NO];
+    [self.favoritesButtonMask maskOnCompletion:nil];
     
     [[APPVideoIsFavorite instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
      execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
@@ -576,6 +588,7 @@
 
 -(void)reloadData:(NSString*)key
 {
+    NSLog(@"reloadData %@", key);
     [self.dataCache reloadData:key withContext:self.tableView];
 }
 
@@ -592,9 +605,11 @@
 
 -(void)dataReloadedFinished:(NSNotification*)notification
 {
+    NSLog(@"dataReloadedFinished 1");
     NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
     UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
     if (self.tableView == tableView && [self.dataCache hasData:key]) {
+        NSLog(@"dataReloadedFinished 2");
         [self.tableView dataReloadedFinished:key];
     }
 }
@@ -723,19 +738,7 @@
                       cancelButtonTitle:@"OK"
                       otherButtonTitles:nil] show];
     
-    [self.likeButton setTag:tLike];
-    [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_normal_up"] forState:UIControlStateNormal];
-    [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_normal_down"] forState:UIControlStateSelected];
-    [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_normal_down"] forState:UIControlStateHighlighted];
-    [self.likeButton setSelected:FALSE];
-    [self.likeButtonMask maskOnCompletion:nil];
-
-    [self.watchLaterButton setSelected:NO];
-    [self.watchLaterButtonMask maskOnCompletion:nil];
-    
-    [self.favoritesButton setSelected:NO];
-    [self.favoritesButtonMask maskOnCompletion:nil];
-    [self fetchState];
+    [self refetchVideoState];
 }
 
 @end

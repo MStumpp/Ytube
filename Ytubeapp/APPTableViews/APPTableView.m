@@ -43,6 +43,7 @@
         self.tableViewSwipeView = [[UITableViewSwipeView alloc] initWithTableView:self delegate:self];
         self.tableViewAtBottomView = [[UITableViewAtBottomView alloc] initWithTableView:self delegate:self];
         self.tableViewMaskView = [[UITableViewMaskView alloc] initWithRootView:self customMaskView:nil delegate:self];
+        [self.tableViewMaskView showSpinner:TRUE];
         
         self.showModes = [NSMutableArray new];
 
@@ -234,7 +235,7 @@
 
 -(void)toShowMode:(NSString*)mode
 {
-    //NSLog(@"toShowMode %@", mode);
+    NSLog(@"toShowMode %@", mode);
     
     if (!mode || ![self hasShowMode:mode])
         [NSException raise:@"show mode is nil or doesn't exists" format:@"show mode is nil or doesn't exists"];

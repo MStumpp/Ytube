@@ -10,14 +10,18 @@
 #import <QuartzCore/QuartzCore.h>
 
 @interface UITableViewMaskView ()
-@property (nonatomic, assign) UIView *_rootView;
-@property (nonatomic, strong) UIView *_maskView;
-@property (nonatomic, assign) UIView *_customMaskView;
-@property (nonatomic, assign) id<UITableViewMaskViewDelegate> _delegate;
-@property float alphaMasked;
+@property UIView *_rootView;
+@property UIView *_maskView;
+@property UIView *_customMaskView;
+@property id<UITableViewMaskViewDelegate> _delegate;
+@property UIActivityIndicatorView *spinningWheel;
+@property (nonatomic) float alphaValue;
+@property (nonatomic) BOOL showSpinner;
 @end
 
 @implementation UITableViewMaskView
+@synthesize alphaValue;
+@synthesize showSpinner;
 
 -(id)initWithRootView:(UIView *)rootView customMaskView:(UIView*)customMaskView delegate:(id<UITableViewMaskViewDelegate>)delegate
 {
@@ -26,7 +30,8 @@
     self = [super init];
     if (self)
     {
-        self.alphaMasked = 0.6;
+        self.alphaValue = 0.5;
+        self.showSpinner = FALSE;
         
         self._rootView = rootView;
         self._customMaskView = customMaskView;
@@ -34,14 +39,13 @@
         
         self._maskView = [[UIControl alloc] initWithFrame:CGRectMake(0.0, 0.0, self._rootView.frame.size.width, self._rootView.frame.size.height)];
         self._maskView.backgroundColor = [UIColor blackColor];
-        self._maskView.alpha = self.alphaMasked;
+        self._maskView.alpha = self.alphaValue;
         self._maskView.layer.masksToBounds = NO;
         
-        UIActivityIndicatorView *spinningWheel = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(5.0, 5.0, 30.0, 30.0)];
-        [spinningWheel startAnimating];
-        spinningWheel.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
-        spinningWheel.center = self._maskView.center;
-        [self._maskView addSubview:spinningWheel];
+        self.spinningWheel = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(5.0, 5.0, 30.0, 30.0)];
+        self.spinningWheel.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+        self.spinningWheel.center = self._maskView.center;
+        [self._maskView addSubview:self.spinningWheel];
         
         [self._rootView addSubview:self._maskView];
     }
@@ -78,7 +82,7 @@
                               delay: 0
                             options: UIViewAnimationCurveEaseInOut
                          animations:^{
-                             self._maskView.alpha = self.alphaMasked;
+                             self._maskView.alpha = self.alphaValue;
                          }
                          completion:^(BOOL finished){
                              if (finished) {
@@ -101,7 +105,7 @@
 
 -(void)unmaskOnCompletion:(void (^)(BOOL isUnmasked))callback;
 {
-    if (self._maskView.alpha == self.alphaMasked) {
+    if (self._maskView.alpha == self.alphaValue) {
         
         if ([self._delegate respondsToSelector:@selector(tableViewMaskViewCanUnmask:)]) {
             if (![self._delegate tableViewMaskViewCanUnmask:self]) {
@@ -140,7 +144,7 @@
 
 -(BOOL)isMasked
 {
-    if (self._maskView.alpha == self.alphaMasked) return TRUE;
+    if (self._maskView.alpha == self.alphaValue) return TRUE;
     return FALSE;
 }
 
@@ -149,14 +153,24 @@
     return ![self isMasked];
 }
 
--(UIView*)rootView
+-(void)setAlphaValue:(float)n
 {
-    return self._rootView;
+    if (!(n == alphaValue)) {
+        alphaValue = n;
+        self._maskView.alpha = alphaValue;
+    }
 }
 
--(UIView*)maskView
+-(void)showSpinner:(BOOL)n
 {
-    return self._maskView;
+    if (!(n == showSpinner)) {
+        showSpinner = n;
+        if (showSpinner) {
+            [self.spinningWheel startAnimating];
+        } else {
+            [self.spinningWheel stopAnimating];
+        }
+    }
 }
 
 @end

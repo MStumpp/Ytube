@@ -16,8 +16,8 @@
 - (void)unmaskOnCompletion:(void (^)(BOOL isUnmasked))callback;
 - (BOOL)isMasked;
 - (BOOL)isUnmasked;
-- (UIView*)rootView;
-- (UIView*)maskView;
+-(void)setAlphaValue:(float)n;
+-(void)showSpinner:(BOOL)n;
 @end
 
 @protocol UITableViewMaskViewDelegate <NSObject>

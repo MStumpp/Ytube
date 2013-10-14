@@ -136,6 +136,11 @@ static DataCache *classInstance = nil;
                                    },
                                    ^(NSString *key, id context, id data, NSError *error) {
                                        
+                                       NSLog(@"key %@", key);
+                                       NSLog(@"context %@", context);
+                                       NSLog(@"data %@", data);
+                                       NSLog(@"error %@", error);
+                                       
                                        // no error
                                        if (!error) {
                                            // replace current feed for mode

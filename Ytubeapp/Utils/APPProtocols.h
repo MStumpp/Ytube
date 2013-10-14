@@ -33,10 +33,6 @@
 #define tFavorites 29
 #define tComments 30
 
-#define tIn 01
-#define tOut 02
-#define tInOut 03
-
 typedef void(^APPSelectDelegateCallback)(GDataEntryBase *entryBase);
 
 @interface APPProtocols
