@@ -100,6 +100,7 @@
     [self.tableView addShowMode:tMostViewedAll];
     
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
+
 }
 
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context

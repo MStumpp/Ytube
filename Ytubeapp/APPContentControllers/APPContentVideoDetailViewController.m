@@ -37,9 +37,9 @@
 @property UITableViewMaskView *favoritesButtonMask;
 @property UIButton *commentButton;
 @property UIButton *addToPlaylistButton;
-@property UIButton *commentsButton;
-@property UIButton *relatedVideosButton;
 @property BOOL subtopbarWasVisible;
+@property NSDictionary *buttons;
+@property NSDictionary *keyConvert;
 @end
 
 @implementation APPContentVideoDetailViewController
@@ -62,9 +62,11 @@
         [self.dataCache clearData:tRelatedVideosAll];
         [self.dataCache clearData:tCommentsVideosAll];
         
-        [[self configureDefaultState] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            [self.tableView toDefaultShowMode];
-        }];
+        self.keyConvert = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tRelatedVideos], tRelatedVideosAll,
+                           [NSNumber numberWithInt:tCommentsVideos], tCommentsVideosAll, nil];
+        
+        // configure tVideoDetailAll as default state
+        [self setDefaultState:tRelatedVideosAll];
         
         [[self configureState:tClearState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [self.tableView clearViewAndReloadAll];
@@ -90,18 +92,20 @@
             }
         }];
         
-        // configure tVideoDetailAll as default state
-        [self setDefaultState:tRelatedVideosAll];
+        [[self configureDefaultState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toDefaultShowMode];
+        }];
+        
+        [[self configureState:tCommentsVideosAll] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toShowMode:tCommentsVideosAll];
+        }];
         
         [self.dataCache configureReloadDataForKey:tCommentsVideosAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
-            NSLog(@"onStateChange 1");
             queryHandler(key, [[APPVideoComments instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
                                onStateChange:^(NSString *state, id data, NSError *error, id context) {
-                                   NSLog(@"onStateChange 2");
                                    if ([state isEqual:tFinished]) {
-                                       NSLog(@"onStateChange 3");
                                        responseHandler([(NSDictionary*)context objectForKey:@"key"],
                                                        [(NSDictionary*)context objectForKey:@"context"],
                                                        data,
@@ -113,14 +117,11 @@
         
         
         [self.dataCache configureReloadDataForKey:tRelatedVideosAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
-            NSLog(@"onStateChange 1");
             queryHandler(key, [[APPVideoRelatedVideos instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
                                onStateChange:^(NSString *state, id data, NSError *error, id context) {
-                                   NSLog(@"onStateChange 2");
                                    if ([state isEqual:tFinished]) {
-                                       NSLog(@"onStateChange 3");
                                        responseHandler([(NSDictionary*)context objectForKey:@"key"],
                                                        [(NSDictionary*)context objectForKey:@"context"],
                                                        data,
@@ -266,21 +267,21 @@
     UIControl *subtopbarContainer2 = [[UIControl alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0)];
     [subtopbarContainer2 addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sub_top_bar_back"]]];
     
-    self.commentsButton = [[UIButton alloc] initWithFrame:CGRectMake(16.0, 6.0, 132.0, 30.0)];
-    [self.commentsButton addTarget:self action:@selector(subtopbarButtonPress2:) forControlEvents:UIControlEventTouchUpInside];
-    [self.commentsButton setImage:[UIImage imageNamed:@"sub_top_bar_button_comments_up_2"] forState:UIControlStateNormal];
-    [self.commentsButton setImage:[UIImage imageNamed:@"sub_top_bar_button_comments_down_2"] forState:UIControlStateHighlighted];
-    [self.commentsButton setImage:[UIImage imageNamed:@"sub_top_bar_button_comments_down_2"] forState:UIControlStateSelected];
-    [self.commentsButton setTag:tCommentsVideos];
-    [subtopbarContainer2 addSubview:self.commentsButton];
+    UIButton *commentsButton = [[UIButton alloc] initWithFrame:CGRectMake(16.0, 6.0, 132.0, 30.0)];
+    [commentsButton addTarget:self action:@selector(subtopbarButtonPress2:) forControlEvents:UIControlEventTouchUpInside];
+    [commentsButton setImage:[UIImage imageNamed:@"sub_top_bar_button_comments_up_2"] forState:UIControlStateNormal];
+    [commentsButton setImage:[UIImage imageNamed:@"sub_top_bar_button_comments_down_2"] forState:UIControlStateHighlighted];
+    [commentsButton setImage:[UIImage imageNamed:@"sub_top_bar_button_comments_down_2"] forState:UIControlStateSelected];
+    [commentsButton setTag:tCommentsVideos];
+    [subtopbarContainer2 addSubview:commentsButton];
     
-    self.relatedVideosButton = [[UIButton alloc] initWithFrame:CGRectMake(172.0, 6.0, 132.0, 30.0)];
-    [self.relatedVideosButton addTarget:self action:@selector(subtopbarButtonPress2:) forControlEvents:UIControlEventTouchUpInside];
-    [self.relatedVideosButton setImage:[UIImage imageNamed:@"sub_top_bar_button_related_videos_up_2"] forState:UIControlStateNormal];
-    [self.relatedVideosButton setImage:[UIImage imageNamed:@"sub_top_bar_button_related_videos_down_2"] forState:UIControlStateHighlighted];
-    [self.relatedVideosButton setImage:[UIImage imageNamed:@"sub_top_bar_button_related_videos_down_2"] forState:UIControlStateSelected];
-    [self.relatedVideosButton setTag:tRelatedVideos];
-    [subtopbarContainer2 addSubview:self.relatedVideosButton];
+    UIButton *relatedVideosButton = [[UIButton alloc] initWithFrame:CGRectMake(172.0, 6.0, 132.0, 30.0)];
+    [relatedVideosButton addTarget:self action:@selector(subtopbarButtonPress2:) forControlEvents:UIControlEventTouchUpInside];
+    [relatedVideosButton setImage:[UIImage imageNamed:@"sub_top_bar_button_related_videos_up_2"] forState:UIControlStateNormal];
+    [relatedVideosButton setImage:[UIImage imageNamed:@"sub_top_bar_button_related_videos_down_2"] forState:UIControlStateHighlighted];
+    [relatedVideosButton setImage:[UIImage imageNamed:@"sub_top_bar_button_related_videos_down_2"] forState:UIControlStateSelected];
+    [relatedVideosButton setTag:tRelatedVideos];
+    [subtopbarContainer2 addSubview:relatedVideosButton];
     
     [self.tableViewHeaderFormView setHeaderView:subtopbarContainer2];
     
@@ -288,6 +289,8 @@
     [self.tableView addShowMode:tCommentsVideosAll];
     
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
+    
+    self.buttons = [[NSDictionary alloc] initWithObjectsAndKeys:commentsButton, tCommentsVideosAll, relatedVideosButton, tRelatedVideosAll, nil];
     
     [self displayGoogleVideo:[[self.video mediaGroup] videoID]];
     
@@ -465,19 +468,20 @@
 
         case tComments:
         {
-            APPContentCommentListController *select = [[APPContentCommentListController alloc] initWithVideo:self.video];
-            [self.navigationController pushViewController:select animated:YES];
+            APPContentCommentListController *commentController = [[APPContentCommentListController alloc] initWithVideo:self.video];
+            [commentController undoDefaultMode:nil];
+            [self.navigationController pushViewController:commentController animated:YES];
             break;
         }
 
         case tAddToPlaylist:
         {
-            APPContentPlaylistListController *select = [[APPContentPlaylistListController alloc] init];
-            [select undoDefaultMode:nil];
-            select.afterSelect = ^(GDataEntryBase *entry) {
+            APPContentPlaylistListController *playlistController = [[APPContentPlaylistListController alloc] init];
+            [playlistController undoDefaultMode:nil];
+            playlistController.afterSelect = ^(GDataEntryBase *entry) {
                 [APPQueryHelper addVideo:self.video toPlaylist:(GDataEntryYouTubePlaylistLink*)entry];
             };
-            [self.navigationController pushViewController:select animated:YES];
+            [self.navigationController pushViewController:playlistController animated:YES];
             break;
         }
     }
@@ -485,10 +489,21 @@
 
 -(void)subtopbarButtonPress2:(UIButton*)sender
 {
-    if ([sender tag] == tCommentsVideos)
-        [self.tableView toShowMode:tCommentsVideosAll];
-    if ([sender tag] == tRelatedVideos)
-        [self.tableView toShowMode:tRelatedVideosAll];
+    [self toState:[self keyToString:[NSNumber numberWithInt:[sender tag]]]];
+}
+
+// "APPTableViewDelegate" Protocol
+
+-(void)beforeShowModeChange
+{
+    if ([self.tableView showMode] && [self.buttons objectForKey:[self.tableView showMode]])
+        [[self.buttons objectForKey:[self.tableView showMode]] setSelected:NO];
+}
+
+-(void)afterShowModeChange
+{
+    if ([self.tableView showMode] && [self.buttons objectForKey:[self.tableView showMode]])
+        [[self.buttons objectForKey:[self.tableView showMode]] setSelected:YES];
 }
 
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
@@ -497,14 +512,19 @@
         CGPoint newContentOffset = [[change objectForKey:NSKeyValueChangeNewKey] CGPointValue];
         CGPoint oldContentOffset = [[change objectForKey:NSKeyValueChangeOldKey] CGPointValue];
         if (oldContentOffset.y < newContentOffset.y && [self.tableViewHeaderFormView isHeaderShown] && newContentOffset.y > downAtTopDistance) {
-            [self.tableViewHeaderFormView hideOnCompletion:nil animated:YES];
+            [self.tableViewHeaderFormView hideOnCompletion:nil animated:NO];
         } else if (oldContentOffset.y > newContentOffset.y && ![self.tableViewHeaderFormView isHeaderShown] && (downAtTopOnly ? (newContentOffset.y < downAtTopDistance) : (newContentOffset.y + self.tableView.bounds.size.height - self.tableView.contentInset.bottom < (self.tableView.contentSize.height - downAtTopDistance)))) {
-            [self.tableViewHeaderFormView showOnCompletion:nil animated:YES];
+            [self.tableViewHeaderFormView showOnCompletion:nil animated:NO];
         }
 
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
+}
+
+-(CGFloat)tableView:(UITableView*)tableView forMode:(NSString*)mode heightForRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    return 88.0;
 }
 
 -(APPTableCell*)tableView:(UITableView*)tableView forMode:(NSString*)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath
@@ -562,7 +582,7 @@
 
 -(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return FALSE;
+    return NO;
 }
 
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath
@@ -588,7 +608,6 @@
 
 -(void)reloadData:(NSString*)key
 {
-    NSLog(@"reloadData %@", key);
     [self.dataCache reloadData:key withContext:self.tableView];
 }
 
@@ -605,21 +624,21 @@
 
 -(void)dataReloadedFinished:(NSNotification*)notification
 {
-    NSLog(@"dataReloadedFinished 1");
-    NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
-    UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
+    NSString *key = [(NSDictionary*)[notification userInfo] objectForKey:@"key"];
+    UITableView *tableView = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
     if (self.tableView == tableView && [self.dataCache hasData:key]) {
-        NSLog(@"dataReloadedFinished 2");
+        [self.tableViewHeaderFormView hideOnCompletion:nil animated:NO];
         [self.tableView dataReloadedFinished:key];
     }
 }
 
 -(void)dataReloadedError:(NSNotification*)notification
 {
-    NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
-    UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
+    NSString *key = [(NSDictionary*)[notification userInfo] objectForKey:@"key"];
+    UITableView *tableView = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
     [self.dataCache clearData:key];
     if (self.tableView == tableView) {
+        [self.tableViewHeaderFormView hideOnCompletion:nil animated:NO];
         [self.tableView dataReloadedError:key];
         [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
                                     message:[NSString stringWithFormat:@"Unable to reload data. Please try again later."]
@@ -631,18 +650,20 @@
 
 -(void)dataMoreLoadedFinished:(NSNotification*)notification
 {
-    NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
-    UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
+    NSString *key = [(NSDictionary*)[notification userInfo] objectForKey:@"key"];
+    UITableView *tableView = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
     if (self.tableView == tableView && [self.dataCache hasData:key]) {
+        [self.tableViewHeaderFormView hideOnCompletion:nil animated:NO];
         [self.tableView loadedMoreFinished:key];
     }
 }
 
 -(void)dataMoreLoadedError:(NSNotification*)notification
 {
-    NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
-    UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
+    NSString *key = [(NSDictionary*)[notification userInfo] objectForKey:@"key"];
+    UITableView *tableView = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
     if (self.tableView == tableView) {
+        [self.tableViewHeaderFormView hideOnCompletion:nil animated:NO];
         [self.tableView loadedMoreError:key];
         [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
                                     message:[NSString stringWithFormat:@"Unable to load more data. Please try again later."]
@@ -662,16 +683,6 @@
 {
     if ([self inState:tPassiveState]) return FALSE;
     return TRUE;
-}
-
--(void)beforeShowModeChange
-{
-    return;
-}
-
--(void)afterShowModeChange
-{
-    return;
 }
 
 -(void)pushViewController:(UIViewController*)controller
@@ -739,6 +750,18 @@
                       otherButtonTitles:nil] show];
     
     [self refetchVideoState];
+}
+
+-(NSNumber*)keyToNumber:(NSString*)key
+{
+    return [self.keyConvert objectForKey:key];
+}
+
+-(NSString*)keyToString:(NSNumber*)key
+{
+    NSArray *keys = [self.keyConvert allKeysForObject:key];
+    if ([keys count] > 0) return keys[0];
+    return NULL;
 }
 
 @end

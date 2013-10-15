@@ -125,7 +125,11 @@ static DataCache *classInstance = nil;
     
     // if there is no handler for reload
     if (![self reloadHandlerForKey:key]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:eventDataReloadedError object:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil, @"data", [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"no reload handler for key"] code:1 userInfo:nil], @"error", nil]];
+        NSMutableDictionary *info = [NSMutableDictionary new];
+        [info setValue:key forKey:@"key"];
+        [info setValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"no reload handler for key"] code:1 userInfo:nil] forKey:@"error"];
+        [info setValue:context forKey:@"context"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventDataReloadedError object:self userInfo:info];
         return FALSE;
     }
     
@@ -135,11 +139,6 @@ static DataCache *classInstance = nil;
                                        [self setQuery:query forKey:key forType:self.queriesReload];
                                    },
                                    ^(NSString *key, id context, id data, NSError *error) {
-                                       
-                                       NSLog(@"key %@", key);
-                                       NSLog(@"context %@", context);
-                                       NSLog(@"data %@", data);
-                                       NSLog(@"error %@", error);
                                        
                                        // no error
                                        if (!error) {
@@ -152,11 +151,22 @@ static DataCache *classInstance = nil;
                                            // finally, add feed entries to custom feed
                                            [[self customFeedForKey:key] addObjectsFromArray:[data entries]];
                                            
-                                           [[NSNotificationCenter defaultCenter] postNotificationName:eventDataReloadedFinished object:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", data, @"data", error, @"error", nil]];
+                                           NSMutableDictionary *info = [NSMutableDictionary new];
+                                           [info setValue:key forKey:@"key"];
+                                           [info setValue:error forKey:@"error"];
+                                           [info setValue:data forKey:@"data"];
+                                           [info setValue:context forKey:@"context"];
+                                           [[NSNotificationCenter defaultCenter] postNotificationName:eventDataReloadedFinished object:self userInfo:info];
                                            
                                        // error
                                        } else {
-                                           [[NSNotificationCenter defaultCenter] postNotificationName:eventDataReloadedError object:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", data, @"data", error, @"error", nil]];
+                                           
+                                           NSMutableDictionary *info = [NSMutableDictionary new];
+                                           [info setValue:key forKey:@"key"];
+                                           [info setValue:error forKey:@"error"];
+                                           [info setValue:data forKey:@"data"];
+                                           [info setValue:context forKey:@"context"];
+                                           [[NSNotificationCenter defaultCenter] postNotificationName:eventDataReloadedError object:self userInfo:info];
                                        }
                                    });
     return TRUE;
@@ -175,13 +185,21 @@ static DataCache *classInstance = nil;
     
     // if there is no feed, cant load more data
     if (!previous) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:eventDataMoreLoadedError object:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil, @"data", [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"no feed for key"] code:1 userInfo:nil], @"error", nil]];
+        NSMutableDictionary *info = [NSMutableDictionary new];
+        [info setValue:key forKey:@"key"];
+        [info setValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"no feed for key"] code:1 userInfo:nil] forKey:@"error"];
+        [info setValue:context forKey:@"context"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventDataMoreLoadedError object:self userInfo:info];
         return FALSE;
     }
     
     // if feed doesn't has more data
     if (![self canLoadMoreData:key]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:eventDataMoreLoadedError object:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil, @"data", [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"feed for key doesn't has more data"] code:1 userInfo:nil], @"error", nil]];
+        NSMutableDictionary *info = [NSMutableDictionary new];
+        [info setValue:key forKey:@"key"];
+        [info setValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"feed for key doesn't has more data"] code:1 userInfo:nil] forKey:@"error"];
+        [info setValue:context forKey:@"context"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventDataMoreLoadedError object:self userInfo:info];
         return FALSE;
     }
     
@@ -193,7 +211,11 @@ static DataCache *classInstance = nil;
     
     // if there is no handler for load more
     if (![self loadMoreHandlerForKey:key]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:eventDataMoreLoadedError object:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil, @"data", [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"no load more handler for key"] code:1 userInfo:nil], @"error", nil]];
+        NSMutableDictionary *info = [NSMutableDictionary new];
+        [info setValue:key forKey:@"key"];
+        [info setValue:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"no load more handler for key"] code:1 userInfo:nil] forKey:@"error"];
+        [info setValue:context forKey:@"context"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventDataMoreLoadedError object:self userInfo:info];
         return FALSE;
     }
     
@@ -213,12 +235,22 @@ static DataCache *classInstance = nil;
                                            // finally, add feed entries to custom feed
                                            [[self customFeedForKey:key] addObjectsFromArray:[data entries]];
                                            
-                                           [[NSNotificationCenter defaultCenter] postNotificationName:eventDataMoreLoadedFinished object:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", data, @"data", error, @"error", nil]];
+                                           NSMutableDictionary *info = [NSMutableDictionary new];
+                                           [info setValue:key forKey:@"key"];
+                                           [info setValue:error forKey:@"error"];
+                                           [info setValue:data forKey:@"data"];
+                                           [info setValue:context forKey:@"context"];
+                                           [[NSNotificationCenter defaultCenter] postNotificationName:eventDataMoreLoadedFinished object:self userInfo:info];
                                            
                                        // error
                                        } else {
                                            
-                                           [[NSNotificationCenter defaultCenter] postNotificationName:eventDataMoreLoadedError object:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", data, @"data", error, @"error", nil]];
+                                           NSMutableDictionary *info = [NSMutableDictionary new];
+                                           [info setValue:key forKey:@"key"];
+                                           [info setValue:error forKey:@"error"];
+                                           [info setValue:data forKey:@"data"];
+                                           [info setValue:context forKey:@"context"];
+                                           [[NSNotificationCenter defaultCenter] postNotificationName:eventDataMoreLoadedError object:self userInfo:info];
                                        }
                                    });
     return TRUE;

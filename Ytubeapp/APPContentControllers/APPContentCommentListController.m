@@ -19,6 +19,7 @@
 @property UITextField *textField;
 @property UIImageView *userImageView;
 @property NSInteger rowOpenHeight;
+@property NSIndexPath *openCell;
 @end
 
 @implementation APPContentCommentListController
@@ -29,7 +30,6 @@
     self = [self init];
     if (self) {
         self.video = v;
-        [self.dataCache clearData:tCommentsAll];
     }
     return self;
 }
@@ -40,7 +40,9 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_comments"];
 
-        [[self configureDefaultState] onViewState:tDidLoadViewState do:^(State *this, State *other){
+        [self.dataCache clearData:tCommentsAll];
+        
+        [[self configureDefaultState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [self.userImageView setImage:nil];
             [[APPUserManager classInstance] imageForCurrentUserWithCallback:^(UIImage *image) {
                 if (image)
@@ -90,19 +92,19 @@
     [super loadView];
 
     UIControl *subtopbarContainer = [[UIControl alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, 120.0)];
-    [subtopbarContainer addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sub_top_bar_back"]]];
 
     self.userImageView = [[UIImageView alloc] initWithFrame:CGRectMake(14.0, 8.0, 48.0, 48.0)];
     [subtopbarContainer addSubview:self.userImageView];
 
     self.textField = [[UITextField alloc] initWithFrame:CGRectMake(85.0, 8.0, 220.0, 100.0)];
     [self.textField setFont:[UIFont fontWithName: @"Nexa Light" size:12]];
-    [self.textField setTextColor:[UIColor blackColor]];
+    [self.textField setTextColor:[UIColor whiteColor]];
+    self.textField.contentVerticalAlignment = UIControlContentVerticalAlignmentTop;
     self.textField.clipsToBounds = YES;
-    self.textField.layer.cornerRadius = 10.0f;
-    [self.textField setBackgroundColor:[UIColor whiteColor]];
+    self.textField.layer.cornerRadius = 5.0f;
+    [self.textField setBackgroundColor:[UIColor darkGrayColor]];
     [self.textField setDelegate:self];
-    [self.textField setReturnKeyType:UIReturnKeyDone];
+    [self.textField setReturnKeyType:UIReturnKeySend];
     [subtopbarContainer addSubview:self.textField];
 
     UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(14.0, 79.0, 64, 30)];
@@ -127,9 +129,9 @@
         self.textField.text = @"";
         [self.tableViewHeaderFormView2 hideOnCompletion:^(BOOL isHidden) {
             if (isHidden) {
-                [self.tableViewHeaderFormView1 showOnCompletion:nil animated:YES];
+                [self.tableViewHeaderFormView1 showOnCompletion:nil animated:NO];
             }
-        } animated:YES];
+        } animated:NO];
     }
     return YES;
 }
@@ -140,9 +142,9 @@
         self.textField.text = @"";
         [self.tableViewHeaderFormView2 hideOnCompletion:^(BOOL isHidden) {
             if (isHidden) {
-                [self.tableViewHeaderFormView1 showOnCompletion:nil animated:YES];
+                [self.tableViewHeaderFormView1 showOnCompletion:nil animated:NO];
             }
-        } animated:YES];
+        } animated:NO];
     }
 }
 
@@ -153,72 +155,95 @@
         cell = [[APPCommentCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPCommentCell"];
 
     [cell setComment:(GDataEntryYouTubeComment*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]]];
+    if ([indexPath isEqual:self.openCell])
+        [cell setOpen:TRUE];
     return cell;
 }
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    if (self.openCell && [self.openCell row] == [indexPath row]) {
-//        return self.rowOpenHeight;
-//    } else {
-//        return 88.0;
-//    }
-//}
+-(CGFloat)tableView:(UITableView*)tableView forMode:(NSString*)mode heightForRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    if (self.openCell && [self.openCell row] == [indexPath row]) {
+        return self.rowOpenHeight;
+    } else {
+        return 88.0;
+    }
+}
+
+-(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
+{
+    if ([self inState:tPassiveState]) return;
+    
+    APPCommentCell *cell = (APPCommentCell*) [tableView cellForRowAtIndexPath:indexPath];
+    
+    if (self.openCell) {
+        NSMutableArray *reloadArray = [NSMutableArray arrayWithObject:self.openCell];
+        NSIndexPath *tmp_row_open = self.openCell;
+        self.openCell = nil;
+    
+        if ([tmp_row_open row] != [indexPath row]) {
+            self.openCell = indexPath;
+            [reloadArray addObject:self.openCell];
+            self.rowOpenHeight = [cell cellHeightFullComment];
+        }
+    
+        [self.tableView reloadRowsAtIndexPaths:reloadArray withRowAnimation:UITableViewRowAnimationFade];
+    
+    } else {
+    
+        self.openCell = indexPath;
+        self.rowOpenHeight = [cell cellHeightFullComment];
+        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.openCell] withRowAnimation:UITableViewRowAnimationFade];
+    }
+}
 
 -(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    if (![[APPUserManager classInstance] isUserSignedIn])
-        return FALSE;
-
+    if ([self inState:tPassiveState]) return FALSE;
+    if (![[APPUserManager classInstance] isUserSignedIn]) return FALSE;
+    if (![self.tableView isEditing]) return FALSE;
+    
     GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*) [[self.dataCache getData:tCommentsAll] objectAtIndex:[indexPath row]];
     return [APPContent isUser:[[APPUserManager classInstance] getUserProfile] authorOf:comment];
 }
 
 #pragma mark -
 #pragma mark Table View Data Source Methods
-// TODO: Remove table cell locally
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
-    if (editingStyle == UITableViewCellEditingStyleDelete)
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        [[self.dataCache getData:mode] removeObjectAtIndex:[indexPath row]];
+        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
         [APPQueryHelper deleteComment:comment FromVideo:self.video];
-}
-
--(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
-{
-    if ([self inState:tPassiveState]) return;
-
-    GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
-
-//    APPCommentCell *cell = (APPCommentCell *) [tableView cellForRowAtIndexPath:indexPath];
-//
-//    if (self.openCell) {
-//        NSMutableArray *reloadArray = [NSMutableArray arrayWithObject:self.openCell];
-//        NSIndexPath *tmp_row_open = self.openCell;
-//        self.openCell = nil;
-//
-//        if ([tmp_row_open row] != [indexPath row]) {
-//            self.openCell = indexPath;
-//            [reloadArray addObject:self.openCell];
-//            self.rowOpenHeight = [cell cellHeightFullComment];
-//        }
-//
-//        [self.tableView reloadRowsAtIndexPaths:reloadArray withRowAnimation:UITableViewRowAnimationFade];
-//
-//    } else {
-//
-//        self.openCell = indexPath;
-//        self.rowOpenHeight = [cell cellHeightFullComment];
-//        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.openCell] withRowAnimation:UITableViewRowAnimationFade];
-//    }
-//}
+    }
 }
 
 -(void)processEvent:(NSNotification*)notification
 {
     NSDictionary *context = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
-    if ([context objectForKey:@"video"] == self.video)
-        if (![(NSDictionary*)[notification userInfo] objectForKey:@"error"])
+    if ([context objectForKey:@"video"] != self.video)
+        return;
+    
+    if ([[notification name] isEqualToString:eventAddedCommentToVideo]) {
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to add comment to video."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+        }
+        [self.tableView clearViewAndReloadAll];
+        
+    } else if ([[notification name] isEqualToString:eventDeletedCommentFromVideo]) {
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to remove comment from video."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
             [self.tableView clearViewAndReloadAll];
+        }
+    }
 }
 
 @end

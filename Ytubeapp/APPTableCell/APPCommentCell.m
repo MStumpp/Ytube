@@ -14,22 +14,24 @@
 @interface APPCommentCell()
 @property (nonatomic) GDataEntryYouTubeComment *comment;
 @property (nonatomic) NSString *name;
-@property (nonatomic) NSString *text;
+@property (nonatomic) NSString *commentText;
 @property (nonatomic) UIImage *profilePic;
 @property (nonatomic) NSDate *date;
+@property (nonatomic) BOOL open;
 @property BOOL showFullComment;
 @property UILabel *nameLabel;
 @property UILabel *commentLabel;
 @property UILabel *timeagoLabel;
 @property UIImageView *profilePicImage;
--(NSUInteger)cellHeightFullComment;
 @end
 
 @implementation APPCommentCell
+@synthesize comment;
 @synthesize name;
-@synthesize text;
+@synthesize commentText;
 @synthesize profilePic;
 @synthesize date;
+@synthesize open;
 
 -(id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier
 {
@@ -62,14 +64,8 @@
     self.commentLabel = [[UILabel alloc] initWithFrame:CGRectMake(85.0, 30.0, 215.0, 48.0)];
     [self.commentLabel setFont:[UIFont fontWithName: @"Nexa Light" size:12]];
     [self.commentLabel setTextColor:[UIColor whiteColor]];
-    //self.commentLabel.adjustsLetterSpacingToFitWidth = NO;
     self.commentLabel.numberOfLines = 4;
-    //[self.commentLabel sizeToFit];
-    
-    /*CGRect myFrame = self.commentLabel.frame;
-    if (myFrame.size.height > 4*12.0)
-        self.commentLabel.frame = CGRectMake(self.commentLabel.frame.origin.x, self.commentLabel.frame.origin.y, self.commentLabel.frame.size.width, 48.0);*/
-    
+
     [self.commentLabel setBackgroundColor:[UIColor clearColor]];
     [self.tableCellMain addSubview:self.commentLabel];
 }
@@ -77,17 +73,10 @@
 -(void)prepareForReuse
 {
     [super prepareForReuse];
-    self.showFullComment = FALSE;
     [self allowToOpen:NO];
+    self.open = NO;
     [self setProfilePic:[[APPGlobals classInstance] getGlobalForKey:@"silhouetteImage"]];
 }
-
-/*- (void)layoutSubviews
-{
-    [super layoutSubviews];
-    //CGSize s = [self.comment sizeWithFont:[UIFont systemFontOfSize:12] constrainedToSize:CGSizeMake(215.0, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
-    //self.commentLabel.frame = CGRectMake(85.0, 30.0, s.width, s.height);
-}*/
 
 -(void)setName:(NSString*)n
 {
@@ -97,18 +86,11 @@
     }
 }
 
--(void)setText:(NSString*)n
+-(void)setCommentText:(NSString*)n
 {
-    text = [n copy];
-    self.commentLabel.text = text;
-    if (self.showFullComment) {
-        [self.commentLabel setNumberOfLines:0];
-        [self.commentLabel sizeToFit];
-
-        /*NSUInteger characterCount = [comment length];
-        self.commentLabel.frame = CGRectMake(self.commentLabel.frame.origin.x, self.commentLabel.frame.origin.y, self.commentLabel.frame.size.width, (characterCount / 25) * 12);
-        //NSLog(@"height: %d", characterCount / 30);
-        self.commentLabel.numberOfLines = characterCount / 25;*/
+    if (![n isEqualToString:commentText]) {
+        commentText = [n copy];
+        self.commentLabel.text = commentText;
     }
 }
 
@@ -126,46 +108,57 @@
     [self.profilePicImage setImage:profilePic];
 }
 
--(NSUInteger)cellHeightFullComment
+-(void)setOpen:(BOOL)n
 {
-    //CGSize maximumSize = CGSizeMake(300, 9999);
-    /*CGSize dateStringSize = [comment sizeWithFont:[UIFont fontWithName: @"Nexa Light" size:12]
-                                   constrainedToSize:maximumSize
-                                       lineBreakMode:self.commentLabel.lineBreakMode];*/
-    
-    NSUInteger cellHeight = ([text length] / 27.0) * 12.0 + 30.0 + 16.0;
-    //NSUInteger cellHeight = dateStringSize.height + 30.0 + 16.0;
-    return cellHeight > 88.0 ? cellHeight : 88.0;
+    if (!(n == open)) {
+        open = n;
+        if (open) {
+            CGSize s = [commentText sizeWithFont:[UIFont fontWithName: @"Nexa Light" size:12] constrainedToSize:CGSizeMake(215.0, MAXFLOAT)];
+            self.commentLabel.frame = CGRectMake(85.0, 30.0, 215.0, s.height);
+            self.commentLabel.numberOfLines = (int) s.height / 12.0;
+        } else {
+            self.commentLabel.frame = CGRectMake(85.0, 30.0, 215.0, 48.0);
+            self.commentLabel.numberOfLines = 4;
+        }
+    }
 }
 
--(void)setComment:(GDataEntryYouTubeComment*)comment
+-(NSUInteger)cellHeightFullComment
 {
-    self.comment = comment;
+    CGSize s = [commentText sizeWithFont:[UIFont fontWithName: @"Nexa Light" size:12] constrainedToSize:CGSizeMake(215.0, MAXFLOAT) lineBreakMode:self.commentLabel.lineBreakMode];
+    NSUInteger cellHeight = s.height + 30.0 + 12.0;
+    return cellHeight >= 88.0 ? cellHeight : 88.0;
+}
 
-    self.name = [(GDataPerson*)[[comment authors] objectAtIndex:0] name];
-    self.text = [[comment content] stringValue];
+-(void)setComment:(GDataEntryYouTubeComment*)c
+{
+    comment = c;
 
-//    if (delegate.openCell && [delegate.openCell row] == [indexPath row])
-//        self.showFullComment = TRUE;
-//    else
-//        self.showFullComment = FALSE;
-
-    self.date = [[comment updatedDate] date];
+    if ([comment authors])
+        self.name = [(GDataPerson*)[[comment authors] objectAtIndex:0] name];
+    if ([comment content])
+        self.commentText = [[comment content] stringValue];
+    if ([comment updatedDate])
+        self.date = [[comment updatedDate] date];
 
     [[APPVideoImageOfComment instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
-            execute:[NSDictionary dictionaryWithObjectsAndKeys:self.comment, @"comment", nil]
-            context:NULL
-    onStateChange:^(NSString *state, id data, NSError *error, id context) {
-          if ([state isEqual:tFinished]) {
-              if (!error) {
-                  UIImage *image = (UIImage*)data;
-                  if (image)
-                      self.profilePic = image;
-              } else {
-                  NSLog(@"APPVideoImageOfComment: error");
-              }
-          }
-      }];
+        execute:[NSDictionary dictionaryWithObjectsAndKeys:comment, @"comment", nil]
+        context:[NSDictionary dictionaryWithObjectsAndKeys:comment, @"comment", nil]
+        onStateChange:^(NSString *state, id data, NSError *error, id context) {
+            if ([state isEqual:tFinished]) {
+                if (!error) {
+                    UIImage *image = (UIImage*)data;
+                    if (image)
+                        self.profilePic = image;
+                } else {
+                    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                             message:[NSString stringWithFormat:@"Unable to fetch profile picture for user."]
+                                            delegate:nil
+                                   cancelButtonTitle:@"OK"
+                                   otherButtonTitles:nil] show];
+                }
+            }
+    }];
 }
 
 @end

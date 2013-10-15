@@ -686,8 +686,8 @@
 				167C95E23922632614A17E81 /* APPFetchEntryByInsertingEntryQuery.h */,
 				167C9F3387CC01C5A2268602 /* APPFetchEntryByInsertingEntryQuery.m */,
 				167C9EE703BBD80D5319FA6E /* User */,
-				167C9323C84ADDCAA83BD484 /* APPFetchEntryWithURLQuery.m */,
 				167C94B8E95A26FD36378287 /* APPFetchEntryWithURLQuery.h */,
+				167C9323C84ADDCAA83BD484 /* APPFetchEntryWithURLQuery.m */,
 				167C9DC8FD11798A411FAE1F /* Comment */,
 				167C96F1151299F52A6FE45B /* APPFetchMoreQuery.m */,
 				167C94443277A3C830EF68D8 /* APPFetchMoreQuery.h */,
@@ -764,8 +764,8 @@
 				167C9AEB986D946CCC48737F /* APPVideoAddComment.h */,
 				167C933948764D9EB089FDF6 /* APPVideoAddComment.m */,
 				167C9DF2FEE5BCFC33CB16A0 /* APPVideoDeleteComment.m */,
-				167C91A3D99519CCD783BBFB /* APPVideoImageOfComment.m */,
 				167C9B0454397A0047B05BBA /* APPVideoImageOfComment.h */,
+				167C91A3D99519CCD783BBFB /* APPVideoImageOfComment.m */,
 			);
 			path = Comment;
 			sourceTree = "<group>";
@@ -773,8 +773,8 @@
 		167C9EE703BBD80D5319FA6E /* User */ = {
 			isa = PBXGroup;
 			children = (
-				167C947787353707BBDF833C /* APPDefaultUserProfileQuery.m */,
 				167C917A28184F06D4AB81BF /* APPDefaultUserProfileQuery.h */,
+				167C947787353707BBDF833C /* APPDefaultUserProfileQuery.m */,
 			);
 			path = User;
 			sourceTree = "<group>";

@@ -65,6 +65,9 @@
 
 -(void)editButtonPress:(id)sender
 {
+    if ([self inState:tPassiveState]) return;
+    if (![[APPUserManager classInstance] isUserSignedIn]) return;
+    
     if ([sender isSelected]) {
         [self.tableView setEditing:NO animated:YES];
         [self.editButton setSelected:NO];
@@ -85,6 +88,7 @@
 -(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
 {
     if ([self inState:tPassiveState]) return FALSE;
+    if (![[APPUserManager classInstance] isUserSignedIn]) return FALSE;
     return [self.tableView isEditing];
 }
 

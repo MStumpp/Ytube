@@ -20,7 +20,6 @@
     self = [self init];
     if (self) {
         self.playlist = pl;
-        [self.dataCache clearData:tPlaylistVideosAll];
     }
     return self;
 }
@@ -30,6 +29,8 @@
     self = [super init];
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_playlists"];
+        
+        [self.dataCache clearData:tPlaylistVideosAll];
         
         [self.dataCache configureReloadDataForKey:tPlaylistVideosAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPPlaylistVideos instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]

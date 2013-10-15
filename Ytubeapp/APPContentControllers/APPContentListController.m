@@ -35,6 +35,11 @@
 
 // APPTableViewDelegate
 
+-(CGFloat)tableView:(UITableView*)tableView forMode:(NSString*)mode heightForRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    return 88.0;
+}
+
 -(APPTableCell*)tableView:(UITableView*)tableView forMode:(NSString*)mode cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     return nil;
 }
@@ -101,8 +106,8 @@
 
 -(void)dataReloadedFinished:(NSNotification*)notification
 {
-    NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
-    UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
+    NSString *key = [(NSDictionary*)[notification userInfo] objectForKey:@"key"];
+    UITableView *tableView = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
     if (self.tableView == tableView && [self.dataCache hasData:key]) {
         [self.tableView dataReloadedFinished:key];
     }
@@ -110,8 +115,8 @@
 
 -(void)dataReloadedError:(NSNotification*)notification
 {
-    NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
-    UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
+    NSString *key = [(NSDictionary*)[notification userInfo] objectForKey:@"key"];
+    UITableView *tableView = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
     [self.dataCache clearData:key];
     if (self.tableView == tableView) {
         [self.tableView dataReloadedError:key];
@@ -125,8 +130,8 @@
 
 -(void)dataMoreLoadedFinished:(NSNotification*)notification
 {
-    NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
-    UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
+    NSString *key = [(NSDictionary*)[notification userInfo] objectForKey:@"key"];
+    UITableView *tableView = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
     if (self.tableView == tableView && [self.dataCache hasData:key]) {
         [self.tableView loadedMoreFinished:key];
     }
@@ -134,8 +139,8 @@
 
 -(void)dataMoreLoadedError:(NSNotification*)notification
 {
-    NSString *key = [(NSDictionary*)[notification object] objectForKey:@"key"];
-    UITableView *tableView = [(NSDictionary*)[notification object] objectForKey:@"context"];
+    NSString *key = [(NSDictionary*)[notification userInfo] objectForKey:@"key"];
+    UITableView *tableView = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
     if (self.tableView == tableView) {
         [self.tableView loadedMoreError:key];
         [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."

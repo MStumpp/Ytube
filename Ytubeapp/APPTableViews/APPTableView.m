@@ -90,7 +90,7 @@
 
 -(CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return 88.0;
+    return [self._del tableView:tableView forMode:self.showMode heightForRowAtIndexPath:indexPath];
 }
 
 #pragma mark - Table view delegate

@@ -11,4 +11,6 @@
 
 @interface APPCommentCell : APPTableCell
 -(void)setComment:(GDataEntryYouTubeComment*)comment;
+-(NSUInteger)cellHeightFullComment;
+-(void)setOpen:(BOOL)o;
 @end

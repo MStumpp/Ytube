@@ -62,8 +62,8 @@
 
 -(void)userSignedIn:(NSNotification*)notification
 {
-    [self.dataCache clearAllData];
-    [self toState:tClearState];
+    //[self.dataCache clearAllData];
+    //[self toState:tClearState];
 }
 
 -(void)userSignedOut:(NSNotification*)notification
@@ -85,7 +85,7 @@
 
 -(void)undoDefaultMode:(void (^)(void))callback;
 {
-    //NSLog(@"undoDefaultMode");
+    NSLog(@"undoDefaultMode");
     [self toState:tActiveState];
     if (callback)
         callback();
