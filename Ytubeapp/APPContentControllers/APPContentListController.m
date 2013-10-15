@@ -173,12 +173,6 @@
     return;
 }
 
--(void)pushViewController:(UIViewController*)controller
-{
-    if (!controller) return;
-    [self.navigationController pushViewController:controller animated:YES];
-}
-
 -(NSNumber*)keyToNumber:(NSString*)key
 {
     return [self.keyConvert objectForKey:key];

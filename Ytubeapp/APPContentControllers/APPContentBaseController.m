@@ -76,16 +76,15 @@
 
 -(void)doDefaultMode:(void (^)(void))callback;
 {
-    //NSLog(@"doDefaultMode");
+    NSLog(@"doDefaultMode %@", self.class);
     [self toState:tPassiveState];
-    //NSLog(@"doDefaultMode 2");
     if (callback)
         callback();
 }
 
 -(void)undoDefaultMode:(void (^)(void))callback;
 {
-    NSLog(@"undoDefaultMode");
+    NSLog(@"undoDefaultMode %@", self.class);
     [self toState:tActiveState];
     if (callback)
         callback();
@@ -112,6 +111,31 @@
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+-(void)pushViewController:(UIViewController*)controller
+{
+    if (!controller) return;
+    
+    // call doDefaultMode on currently showing top controller, but not root controller
+    if ([[self.navigationController viewControllers] count] > 1) {
+        dispatch_semaphore_t sema = dispatch_semaphore_create(1);
+        [((id<APPSliderViewControllerDelegate>)[self.navigationController topViewController]) doDefaultMode:^(){
+            dispatch_semaphore_signal(sema);
+        }];
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+    }
+    
+    [self.navigationController pushViewController:controller animated:YES];
+    
+    // call undoDefaultMode on just showing top controller, but not root controller
+    if ([[self.navigationController viewControllers] count] > 1) {
+        dispatch_semaphore_t sema = dispatch_semaphore_create(1);
+        [((id<APPSliderViewControllerDelegate>)[self.navigationController topViewController]) undoDefaultMode:^(){
+            dispatch_semaphore_signal(sema);
+        }];
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+    }
 }
 
 @end

@@ -28,8 +28,7 @@
 
     GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
     APPContentVideoDetailViewController *videoController = [[APPContentVideoDetailViewController alloc] initWithVideo:video];
-    [videoController undoDefaultMode:nil];
-    [self.navigationController pushViewController:videoController animated:YES];
+    [self pushViewController:videoController];
 }
 
 @end

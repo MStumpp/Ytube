@@ -83,6 +83,7 @@
                 [self setSubtopbarWasVisible:FALSE];
             }
             [self.tableViewHeaderFormView hideOnCompletion:nil animated:NO];
+            [self pauseVideo];
         }];
         
         [[self configureState:tActiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
@@ -165,7 +166,7 @@
 
     // set up video
     ////////////////
-    UIImageView *videoThumbnail = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, heightVideoView)];
+    /*UIImageView *videoThumbnail = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, heightVideoView)];
     videoThumbnail.contentMode = UIViewContentModeScaleAspectFill;
     videoThumbnail.clipsToBounds = YES;
     [self.view addSubview:videoThumbnail];
@@ -178,12 +179,13 @@
     // add play button on top of preview thumbnail
     UIImageView *videoPlayButton = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, heightVideoView)];
     [videoPlayButton setImage:[UIImage imageNamed:@"video_detail_back"]];
-    [self.view addSubview:videoPlayButton];
+    [self.view addSubview:videoPlayButton];*/
                 
     self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, heightVideoView)];
     self.webView.allowsInlineMediaPlayback = YES;
     self.webView.mediaPlaybackRequiresUserAction = NO;
-    self.webView.hidden = TRUE;
+    self.webView.scrollView.scrollEnabled = FALSE;
+    self.webView.delegate = self;
     [self.view addSubview:self.webView];
 
     // set up sub button bar
@@ -293,10 +295,6 @@
     self.buttons = [[NSDictionary alloc] initWithObjectsAndKeys:commentsButton, tCommentsVideosAll, relatedVideosButton, tRelatedVideosAll, nil];
     
     [self displayGoogleVideo:[[self.video mediaGroup] videoID]];
-    
-    //NSArray *contents = [[(GDataEntryYouTubeVideo *) ytvideo mediaGroup] mediaContents];
-    //GDataMediaContent *flashContent = [GDataUtilities firstObjectFromArray:contents withValue:@"application/x-shockwave-flash" forKeyPath:@"type"];
-    //NSString *tempURL = [flashContent URLString];
 }
 
 -(void)refetchVideoState
@@ -383,11 +381,20 @@
 #pragma mark - Managing the detail item
 -(void)displayGoogleVideo:(NSString*)videoId
 {
-    /*NSString *htmlString = [NSString stringWithFormat:@"<!DOCTYPE html><html><body><script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js\"></script><script type=\"text/javascript\">var tag = document.createElement('script');tag.src = \"http://www.youtube.com/iframe_api\";var firstScriptTag = document.getElementsByTagName('script')[0];firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);</script><script type=\"text/javascript\">var player;function onYouTubeIframeAPIReady() { $(\"#player\").contents().find(\"video.video-stream\").attr('webkit-playsinline', true); player = new YT.Player('player', {events: {'onReady': onPlayerReady}}); $(\"#player\").contents().find(\"video.video-stream\").attr('webkit-playsinline', true); } function onPlayerReady(event) { $(\"#player\").contents().find(\"video.video-stream\").attr('webkit-playsinline', true); $(\"#print\").html($(\"#player\").contents().find(\"video.video-stream\").attr('webkit-playsinline')); event.target.playVideo(); }</script><div id=\"print\"></div><iframe id=\"player\" type=\"text/html\" width=\"320\" height=\"175\" src=\"https://www.youtube.com/embed/%@?controls=0&enablejsapi=1&modestbranding=1&rel=0&showinfo=0&autohide=1\" frameborder=\"0\"></iframe></body></html>", videoId];*/
-    /*NSString *htmlString = [NSString stringWithFormat:@"<html><head><link href=\"http://vjs.zencdn.net/c/video-js.css\" rel=\"stylesheet\"><script src=\"http://vjs.zencdn.net/c/video.js\"></script></head><body><video id=\"example_video_1\" class=\"video-js vjs-default-skin\" controls preload=\"auto\" width=\"300\" height=\"150\" poster=\"http://video-js.zencoder.com/oceans-clip.png\" webkit-playsinline autoplay><source src=\"http://video-js.zencoder.com/oceans-clip.mp4\" type='video/mp4' /><source src=\"http://video-js.zencoder.com/oceans-clip.webm\" type='video/webm' /><source src=\"http://video-js.zencoder.com/oceans-clip.ogv\" type='video/ogg' /></video></body></html>"];*/
-    NSString *htmlString = [NSString stringWithFormat:@"<html><head><style>body,html,iframe{margin:0;padding:0;}</style><link href=\"https://dl.dropbox.com/u/1307305/video-js.css\" rel=\"stylesheet\" type=\"text/css\"><script src=\"https://dl.dropbox.com/u/1307305/video.js\"></script></head><body><video id=\"example_video_1\" class=\"video-js vjs-default-skin\" controls preload=\"auto\" width=\"320\" height=\"175\" border=\"0\" webkit-playsinline autoplay data-setup='{\"techOrder\":[\"youtube\",\"html5\"]}'><source src=\"http://www.youtube.com/watch?v=%@\" type=\"video/youtube\"></video></body></html>", videoId];
+    NSString *htmlString = [NSString stringWithFormat:@"<html><head><style>body,html,iframe{background-color:black;color:black;overflow:hidden;margin:0;padding:0;}</style></head><body style=\"margin:0\"><iframe id=\"player\" type=\"text/html\" webkit-playsinline width=\"320\" height=\"%d\" scrolling=\"no\" src=\"https://www.youtube.com/embed/%@?feature=player_detailpage&playsinline=1&enablejsapi=1&controls=1&showinfo=0\" frameborder=\"0\" border=\"0\"></iframe><script>var player; function onYouTubeIframeAPIReady() { player = new YT.Player(\"player\", {});} function pauseVideo(){player.pauseVideo();}</script></body></html>", heightVideoView, videoId];
     [self.webView loadHTMLString:htmlString baseURL:nil];
-    //[self.webView reload];
+}
+
+-(void)pauseVideo
+{
+    NSLog(@"pauseVideo");
+    [self.webView stopLoading];
+    NSLog(@"%@", [self.webView stringByEvaluatingJavaScriptFromString:@"pauseVideo()"]);
+}
+
+-(void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    NSLog(@"finished load");
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -469,19 +476,17 @@
         case tComments:
         {
             APPContentCommentListController *commentController = [[APPContentCommentListController alloc] initWithVideo:self.video];
-            [commentController undoDefaultMode:nil];
-            [self.navigationController pushViewController:commentController animated:YES];
+            [self pushViewController:commentController];
             break;
         }
 
         case tAddToPlaylist:
         {
             APPContentPlaylistListController *playlistController = [[APPContentPlaylistListController alloc] init];
-            [playlistController undoDefaultMode:nil];
             playlistController.afterSelect = ^(GDataEntryBase *entry) {
                 [APPQueryHelper addVideo:self.video toPlaylist:(GDataEntryYouTubePlaylistLink*)entry];
             };
-            [self.navigationController pushViewController:playlistController animated:YES];
+            [self pushViewController:playlistController];
             break;
         }
     }
@@ -570,13 +575,11 @@
 
     if ([mode isEqualToString:tRelatedVideosAll]) {
         APPContentVideoDetailViewController *videoController = [[APPContentVideoDetailViewController alloc] initWithVideo:otherVideo];
-        [videoController undoDefaultMode:nil];
-        [self.navigationController pushViewController:videoController animated:YES];
+        [self pushViewController:videoController];
     
     } else {
         APPContentCommentListController *commentController = [[APPContentCommentListController alloc] initWithVideo:otherVideo];
-        [commentController undoDefaultMode:nil];
-        [self.navigationController pushViewController:commentController animated:YES];
+        [self pushViewController:commentController];
     }
 }
 
@@ -683,12 +686,6 @@
 {
     if ([self inState:tPassiveState]) return FALSE;
     return TRUE;
-}
-
--(void)pushViewController:(UIViewController*)controller
-{
-    if (!controller) return;
-    [self.navigationController pushViewController:controller animated:YES];
 }
 
 -(void)processEvent:(NSNotification*)notification

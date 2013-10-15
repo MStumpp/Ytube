@@ -142,9 +142,8 @@
         [self.navigationController popViewControllerAnimated:YES];
         self.afterSelect(playlist);
     } else {
-        APPContentPlaylistVideosController *controller = [[APPContentPlaylistVideosController alloc] initWithPlaylist:playlist];
-        [controller undoDefaultMode:nil];
-        [self.navigationController pushViewController:controller animated:YES];
+        APPContentPlaylistVideosController *playlistController = [[APPContentPlaylistVideosController alloc] initWithPlaylist:playlist];
+        [self pushViewController:playlistController];
     }
 }
 

@@ -26,4 +26,5 @@
 @property UIImage *topbarImage;
 @property NSString *topbarTitle;
 @property DataCache *dataCache;
+-(void)pushViewController:(UIViewController*)controller;
 @end
