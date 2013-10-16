@@ -185,7 +185,6 @@
     self.webView.allowsInlineMediaPlayback = YES;
     self.webView.mediaPlaybackRequiresUserAction = NO;
     self.webView.scrollView.scrollEnabled = FALSE;
-    self.webView.delegate = self;
     [self.view addSubview:self.webView];
 
     // set up sub button bar
@@ -381,20 +380,13 @@
 #pragma mark - Managing the detail item
 -(void)displayGoogleVideo:(NSString*)videoId
 {
-    NSString *htmlString = [NSString stringWithFormat:@"<html><head><style>body,html,iframe{background-color:black;color:black;overflow:hidden;margin:0;padding:0;}</style></head><body style=\"margin:0\"><iframe id=\"player\" type=\"text/html\" webkit-playsinline width=\"320\" height=\"%d\" scrolling=\"no\" src=\"https://www.youtube.com/embed/%@?feature=player_detailpage&playsinline=1&enablejsapi=1&controls=1&showinfo=0\" frameborder=\"0\" border=\"0\"></iframe><script>var player; function onYouTubeIframeAPIReady() { player = new YT.Player(\"player\", {});} function pauseVideo(){player.pauseVideo();}</script></body></html>", heightVideoView, videoId];
-    [self.webView loadHTMLString:htmlString baseURL:nil];
+    NSString* embedHTML = [NSString stringWithFormat:@"<html><body style='margin:0px;padding:0px;'><script type='text/javascript' src='http://www.youtube.com/iframe_api'></script><script type='text/javascript'>function onYouTubeIframeAPIReady(){ytplayer=new YT.Player('playerId', {events:{onReady:onPlayerReady}})}function onPlayerReady(a){a.target.playVideo();}</script><iframe id='playerId' type='text/html' width='320' height='%d' src='http://www.youtube.com/embed/%@?enablejsapi=1&rel=0&playsinline=1&showinfo=0&controls=1&modestbranding=1&color=white&iv_load_policy=3&theme=light&autoplay=1' frameborder='0'></body></html>", heightVideoView, videoId];
+    [self.webView loadHTMLString:embedHTML baseURL:[[NSBundle mainBundle] resourceURL]];
 }
 
 -(void)pauseVideo
 {
-    NSLog(@"pauseVideo");
-    [self.webView stopLoading];
-    NSLog(@"%@", [self.webView stringByEvaluatingJavaScriptFromString:@"pauseVideo()"]);
-}
-
--(void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    NSLog(@"finished load");
+    [self.webView stringByEvaluatingJavaScriptFromString:@"ytplayer.pauseVideo()"];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -573,6 +565,8 @@
 
     GDataEntryYouTubeVideo *otherVideo = (GDataEntryYouTubeVideo*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
 
+    [self pauseVideo];
+    
     if ([mode isEqualToString:tRelatedVideosAll]) {
         APPContentVideoDetailViewController *videoController = [[APPContentVideoDetailViewController alloc] initWithVideo:otherVideo];
         [self pushViewController:videoController];
