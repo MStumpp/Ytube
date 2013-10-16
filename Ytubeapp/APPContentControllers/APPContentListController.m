@@ -8,6 +8,10 @@
 
 #import "APPContentListController.h"
 
+@interface APPContentListController()
+@property NSIndexPath *openSubMenuCell;
+@end
+
 @implementation APPContentListController
 
 -(id)init
@@ -20,6 +24,23 @@
 
         [[self configureState:tClearState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [self.tableView clearViewAndReloadAll];
+        }];
+        
+        [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            // close open cell if one is open
+            if ([self.tableView openCell]) {
+                self.openSubMenuCell = [self.tableView openCell];
+                [self.tableView closeCell:[self.tableView openCell] onCompletion:nil];
+            } else {
+                self.openSubMenuCell = nil;
+            }
+        }];
+        
+        [[self configureState:tActiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            // open cell if one was opened
+            if (self.openSubMenuCell) {
+                [self.tableView openCell:self.openSubMenuCell onCompletion:nil];
+            }
         }];
     }
     return self;

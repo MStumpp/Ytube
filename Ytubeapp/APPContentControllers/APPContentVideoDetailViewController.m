@@ -44,7 +44,9 @@
 @property NSString *commentsId;
 // for comment cell opening/closing
 @property NSInteger rowOpenHeight;
-@property NSIndexPath *openCell;
+@property NSIndexPath *openSubMenuCell;
+@property NSIndexPath *openCommentCell;
+@property NSIndexPath *wasOpenCommentCell;
 @property BOOL *wasVideoPlaying;
 @end
 
@@ -80,10 +82,27 @@
             // save state of header form
             if ([self.tableViewHeaderFormView isHeaderShown]) {
                 [self setSubtopbarWasVisible:TRUE];
+                [self.tableViewHeaderFormView hideOnCompletion:nil animated:NO];
             } else {
                 [self setSubtopbarWasVisible:FALSE];
             }
-            [self.tableViewHeaderFormView hideOnCompletion:nil animated:NO];
+            
+            // close open cell if one is open
+            if ([self.tableView openCell]) {
+                self.openSubMenuCell = [self.tableView openCell];
+                [self.tableView closeCell:[self.tableView openCell] onCompletion:nil];
+            } else {
+                self.openSubMenuCell = nil;
+            }
+            
+            // close open comment cell
+            if (self.openCommentCell) {
+                self.wasOpenCommentCell = self.openCommentCell;
+                [self tapCell:self.openCommentCell];
+            } else {
+                self.wasOpenCommentCell = nil;
+            }
+            
             if ([self isVideoPlaying])
                 self.wasVideoPlaying = TRUE;
             [self pauseVideo];
@@ -94,6 +113,17 @@
             if (self.subtopbarWasVisible) {
                 [self.tableViewHeaderFormView showOnCompletion:nil animated:NO];
             }
+            
+            // open cell if one was opened
+            if (self.openSubMenuCell) {
+                [self.tableView openCell:self.openSubMenuCell onCompletion:nil];
+            }
+            
+            // open comment cell if one was open previously
+            if (self.wasOpenCommentCell) {
+                [self tapCell:self.wasOpenCommentCell];
+            }
+            
             if (self.wasVideoPlaying)
                 [self playVideo];
         }];
@@ -544,7 +574,7 @@
         return 88.0;
         
     } else {
-        if (self.openCell && [self.openCell row] == [indexPath row]) {
+        if (self.openCommentCell && [self.openCommentCell row] == [indexPath row]) {
             return self.rowOpenHeight;
         } else {
             return 88.0;
@@ -568,7 +598,7 @@
             cell = [[APPCommentCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPCommentCell"];
 
         [cell setComment:(GDataEntryYouTubeComment*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]]];
-        if ([indexPath isEqual:self.openCell])
+        if ([indexPath isEqual:self.openCommentCell])
             [cell setOpen:TRUE];
         return cell;
         
@@ -599,27 +629,32 @@
         [self pushViewController:videoController];
     
     } else {
-        APPCommentCell *cell = (APPCommentCell*) [tableView cellForRowAtIndexPath:indexPath];
+        [self tapCell:indexPath];
+    }
+}
+
+-(void)tapCell:(NSIndexPath*)indexPath;
+{
+    APPCommentCell *cell = (APPCommentCell*) [self.tableView cellForRowAtIndexPath:indexPath];
+    
+    if (self.openCommentCell) {
+        NSMutableArray *reloadArray = [NSMutableArray arrayWithObject:self.openCommentCell];
+        NSIndexPath *tmp_row_open = self.openCommentCell;
+        self.openCommentCell = nil;
         
-        if (self.openCell) {
-            NSMutableArray *reloadArray = [NSMutableArray arrayWithObject:self.openCell];
-            NSIndexPath *tmp_row_open = self.openCell;
-            self.openCell = nil;
-            
-            if ([tmp_row_open row] != [indexPath row]) {
-                self.openCell = indexPath;
-                [reloadArray addObject:self.openCell];
-                self.rowOpenHeight = [cell cellHeightFullComment];
-            }
-            
-            [self.tableView reloadRowsAtIndexPaths:reloadArray withRowAnimation:UITableViewRowAnimationFade];
-            
-        } else {
-            
-            self.openCell = indexPath;
+        if ([tmp_row_open row] != [indexPath row]) {
+            self.openCommentCell = indexPath;
+            [reloadArray addObject:self.openCommentCell];
             self.rowOpenHeight = [cell cellHeightFullComment];
-            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.openCell] withRowAnimation:UITableViewRowAnimationFade];
         }
+        
+        [self.tableView reloadRowsAtIndexPaths:reloadArray withRowAnimation:UITableViewRowAnimationFade];
+        
+    } else {
+        
+        self.openCommentCell = indexPath;
+        self.rowOpenHeight = [cell cellHeightFullComment];
+        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.openCommentCell] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
 

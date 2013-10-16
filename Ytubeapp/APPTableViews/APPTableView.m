@@ -18,7 +18,6 @@
 @property UITableViewSwipeView *tableViewSwipeView;
 @property UITableViewAtBottomView *tableViewAtBottomView;
 @property UITableViewMaskView *tableViewMaskView;
-@property NSIndexPath *openCell;
 @property NSString *defaultShowMode;
 @property NSMutableArray *showModes;
 @end
@@ -159,64 +158,83 @@
     // do not allow to open cell when controller is in passive state and/or user not signed in
     if (![self._del tableView:view canOpenCellforMode:self.showMode forRowAtIndexPath:indexPath])
         return;
+    
+    [self openCell:indexPath onCompletion:nil];
+}
 
+-(void)tableViewSwipeViewDidSwipeRight:(UITableView*)view rowAtIndexPath:(NSIndexPath*)indexPath
+{
+    [self closeCell:indexPath onCompletion:nil];
+}
+
+-(void)openCell:(NSIndexPath*)indexPath onCompletion:(void (^)(BOOL isOpen))callback
+{
     APPTableCell *cell = (APPTableCell*)[self cellForRowAtIndexPath:indexPath];
+    
+    if (!cell) {
+        if (callback)
+            callback(false);
+        return;
+    }
+    
     // if there is an open cell, close this first, then open the requested cell
     if (self.openCell) {
         if ([self.openCell row] == [indexPath row])
-            return;
-
+            if (callback);
+                callback(true);
+        
         // close open cell
         APPTableCell *currentOpenCell = (APPTableCell*) [self cellForRowAtIndexPath:self.openCell];
         [currentOpenCell closeOnCompletion:^(BOOL isClosed) {
             if (isClosed) {
                 [cell openOnCompletion:^(BOOL isOpened) {
-                    if (isOpened)
+                    if (isOpened) {
                         self.openCell = indexPath;
+                        if (callback)
+                            callback(true);
+                    } else {
+                        if (callback)
+                            callback(FALSE);
+                    }
                 } animated:YES];
             }
         } animated:YES];
-
+        
     // open the requested cell
     } else {
         [cell openOnCompletion:^(BOOL isOpened) {
-            if (isOpened)
+            if (isOpened) {
                 self.openCell = indexPath;
+                if (callback)
+                    callback(true);
+            } else {
+                if (callback)
+                    callback(FALSE);
+            }
         } animated:YES];
     }
-
-//    APPTableCell *cell = (APPTableCell*) [self.tableView cellForRowAtIndexPath:indexPath];
-//    if ([cell isClosed] && self.tmpEditingCell && [self.tmpEditingCell row] == [indexPath row]) {
-//        self.tmpEditingCell = nil;
-//        [self.tableView setEditing:NO animated:YES];
-//
-//    } else {
-//        [super tableViewSwipeViewDidSwipeLeft:view rowAtIndexPath:indexPath];
-//    }
 }
 
--(void)tableViewSwipeViewDidSwipeRight:(UITableView*)view rowAtIndexPath:(NSIndexPath*)indexPath
+-(void)closeCell:(NSIndexPath*)indexPath onCompletion:(void (^)(BOOL isClose))callback
 {
     APPTableCell *cell = (APPTableCell*) [self cellForRowAtIndexPath:indexPath];
+    
+    if (!cell) {
+        if (callback)
+            callback(false);
+        return;
+    }
+    
     [cell closeOnCompletion:^(BOOL isClosed) {
         if (isClosed) {
             self.openCell = nil;
+            if (callback)
+                callback(TRUE);
+        } else {
+            if (callback)
+                callback(FALSE);
         }
     } animated:YES];
-
-//    APPTableCell *cell = (APPTableCell*) [self.tableView cellForRowAtIndexPath:indexPath];
-//    if (![self.tableView isEditing] && [cell isClosed] && !self.tmpEditingCell) {
-//        self.tmpEditingCell = indexPath;
-//        [self.tableView setEditing:YES animated:YES];
-//
-//    } else if ([self.tableView isEditing] && [cell isClosed] && self.tmpEditingCell && [self.tmpEditingCell row] != [indexPath row]) {
-//        self.tmpEditingCell = indexPath;
-//        [self.tableView setEditing:NO animated:YES];
-//        [self.tableView setEditing:YES animated:YES];
-//
-//    } else {
-//        [super tableViewSwipeViewDidSwipeRight:view rowAtIndexPath:indexPath];
-//    }
 }
 
 -(BOOL)addShowMode:(NSString*)mode

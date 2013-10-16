@@ -17,6 +17,7 @@
 @interface APPTableView : UITableView <UITableViewDataSource, UITableViewDelegate, UITableViewAtBottomViewDelegate, SSPullToRefreshViewDelegate, UITableViewSwipeViewDelegate, UITableViewMaskViewDelegate>
 @property id<APPTableViewDelegate> _del;
 @property NSString *showMode;
+@property NSIndexPath *openCell;
 -(BOOL)addShowMode:(NSString*)mode;
 -(BOOL)addDefaultShowMode:(NSString*)mode;
 -(void)toShowMode:(NSString*)mode;
@@ -27,6 +28,8 @@
 -(void)dataReloadedError:(NSString*)mode;
 -(void)loadedMoreFinished:(NSString*)mode;
 -(void)loadedMoreError:(NSString*)mode;
+-(void)openCell:(NSIndexPath*)indexPath onCompletion:(void (^)(BOOL isOpen))callback;
+-(void)closeCell:(NSIndexPath*)indexPath onCompletion:(void (^)(BOOL isClose))callback;
 @end
 
 @protocol APPTableViewDelegate

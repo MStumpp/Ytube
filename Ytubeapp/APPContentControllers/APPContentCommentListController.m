@@ -19,7 +19,8 @@
 @property UITextField *textField;
 @property UIImageView *userImageView;
 @property NSInteger rowOpenHeight;
-@property NSIndexPath *openCell;
+@property NSIndexPath *openCommentCell;
+@property NSIndexPath *wasOpenCommentCell;
 @property NSString *commentsId;
 @end
 
@@ -41,6 +42,26 @@
                 if (image)
                     [self.userImageView setImage:image];
             }];
+        }];
+        
+        [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            // close open comment cell
+            if (self.openCommentCell) {
+                self.wasOpenCommentCell = self.openCommentCell;
+                [self tapCell:self.openCommentCell];
+                NSLog(@"self.openCommentCell true");
+            } else {
+                NSLog(@"self.openCommentCell false");
+                self.wasOpenCommentCell = nil;
+            }
+        }];
+        
+        [[self configureState:tActiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            // open comment cell if one was open previously
+            if (self.wasOpenCommentCell) {
+                NSLog(@"self.wasOpenCommentCell true");
+                [self tapCell:self.wasOpenCommentCell];
+            }
         }];
         
         [self.dataCache configureReloadDataForKey:self.commentsId withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
@@ -148,14 +169,14 @@
         cell = [[APPCommentCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPCommentCell"];
 
     [cell setComment:(GDataEntryYouTubeComment*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]]];
-    if ([indexPath isEqual:self.openCell])
+    if ([indexPath isEqual:self.openCommentCell])
         [cell setOpen:TRUE];
     return cell;
 }
 
 -(CGFloat)tableView:(UITableView*)tableView forMode:(NSString*)mode heightForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    if (self.openCell && [self.openCell row] == [indexPath row]) {
+    if (self.openCommentCell && [self.openCommentCell row] == [indexPath row]) {
         return self.rowOpenHeight;
     } else {
         return 88.0;
@@ -165,27 +186,35 @@
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     if ([self inState:tPassiveState]) return;
+    [self tapCell:indexPath];
+}
+
+-(void)tapCell:(NSIndexPath*)indexPath;
+{
+    APPCommentCell *cell = (APPCommentCell*) [self.tableView cellForRowAtIndexPath:indexPath];
     
-    APPCommentCell *cell = (APPCommentCell*) [tableView cellForRowAtIndexPath:indexPath];
+    if (!cell) {
+        return;
+    }
     
-    if (self.openCell) {
-        NSMutableArray *reloadArray = [NSMutableArray arrayWithObject:self.openCell];
-        NSIndexPath *tmp_row_open = self.openCell;
-        self.openCell = nil;
-    
+    if (self.openCommentCell) {
+        NSMutableArray *reloadArray = [NSMutableArray arrayWithObject:self.openCommentCell];
+        NSIndexPath *tmp_row_open = self.openCommentCell;
+        self.openCommentCell = nil;
+        
         if ([tmp_row_open row] != [indexPath row]) {
-            self.openCell = indexPath;
-            [reloadArray addObject:self.openCell];
+            self.openCommentCell = indexPath;
+            [reloadArray addObject:self.openCommentCell];
             self.rowOpenHeight = [cell cellHeightFullComment];
         }
-    
+        
         [self.tableView reloadRowsAtIndexPaths:reloadArray withRowAnimation:UITableViewRowAnimationFade];
-    
+        
     } else {
-    
-        self.openCell = indexPath;
+        
+        self.openCommentCell = indexPath;
         self.rowOpenHeight = [cell cellHeightFullComment];
-        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.openCell] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.openCommentCell] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
 
