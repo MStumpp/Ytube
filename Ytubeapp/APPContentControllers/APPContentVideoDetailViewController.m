@@ -391,13 +391,11 @@
 
 -(void)playVideo
 {
-    NSLog(@"playVideo");
     [self.webView stringByEvaluatingJavaScriptFromString:@"ytplayer.playVideo()"];
 }
 
 -(BOOL)isVideoPlaying
 {
-    NSLog(@"isVideoPlaying");
     NSString *result = [self.webView stringByEvaluatingJavaScriptFromString:@"ytplayer.getPlayerState()"];
     if ([result isEqualToString:@"1"] || [result isEqualToString:@"3"])
         return true;
