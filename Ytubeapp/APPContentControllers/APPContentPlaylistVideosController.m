@@ -12,27 +12,23 @@
 
 #define tPlaylistVideosAll @"playlist_videos_all"
 
+@interface APPContentPlaylistVideosController()
+@property NSString *playlistVideosId;
+@end
+
 @implementation APPContentPlaylistVideosController
 @synthesize playlist;
 
 -(id)initWithPlaylist:(GDataEntryYouTubePlaylistLink*)pl
 {
-    self = [self init];
-    if (self) {
-        self.playlist = pl;
-    }
-    return self;
-}
-
--(id)init
-{
     self = [super init];
     if (self) {
+        self.playlist = pl;
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_playlists"];
         
-        [self.dataCache clearData:tPlaylistVideosAll];
+        self.playlistVideosId = [NSString stringWithFormat:@"%@_%@", tPlaylistVideosAll, [APPContent playlistID:self.playlist]];
         
-        [self.dataCache configureReloadDataForKey:tPlaylistVideosAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureReloadDataForKey:self.playlistVideosId withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPPlaylistVideos instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.playlist, @"playlist", nil]
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
@@ -47,7 +43,7 @@
                          );
         }];
         
-        [self.dataCache configureLoadMoreDataForKey:tPlaylistVideosAll withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureLoadMoreDataForKey:self.playlistVideosId withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             
             queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
@@ -72,7 +68,7 @@
 -(void)loadView
 {
     [super loadView];
-    [self.tableView addDefaultShowMode:tPlaylistVideosAll];
+    [self.tableView addDefaultShowMode:self.playlistVideosId];
 }
 
 #pragma mark -

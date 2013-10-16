@@ -101,7 +101,7 @@
 -(void)back
 {
     if ([self.navigationController.viewControllers count] > 1)
-        [self.navigationController popViewControllerAnimated:YES];
+        [self popViewController];
 }
 
 -(void)editButtonPress:(id)sender

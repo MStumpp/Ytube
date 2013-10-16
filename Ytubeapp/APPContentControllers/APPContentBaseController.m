@@ -138,4 +138,27 @@
     }
 }
 
+-(void)popViewController
+{    
+    // call doDefaultMode on currently showing top controller, but not root controller
+    if ([[self.navigationController viewControllers] count] > 1) {
+        dispatch_semaphore_t sema = dispatch_semaphore_create(1);
+        [((id<APPSliderViewControllerDelegate>)[self.navigationController topViewController]) doDefaultMode:^(){
+            dispatch_semaphore_signal(sema);
+        }];
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+    }
+    
+    [self.navigationController popViewControllerAnimated:YES];
+    
+    // call undoDefaultMode on just showing top controller, but not root controller
+    if ([[self.navigationController viewControllers] count] > 1) {
+        dispatch_semaphore_t sema = dispatch_semaphore_create(1);
+        [((id<APPSliderViewControllerDelegate>)[self.navigationController topViewController]) undoDefaultMode:^(){
+            dispatch_semaphore_signal(sema);
+        }];
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+    }
+}
+
 @end

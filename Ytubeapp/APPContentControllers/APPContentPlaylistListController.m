@@ -139,7 +139,7 @@
     GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
 
     if (self.afterSelect) {
-        [self.navigationController popViewControllerAnimated:YES];
+        [self popViewController];
         self.afterSelect(playlist);
     } else {
         APPContentPlaylistVideosController *playlistController = [[APPContentPlaylistVideosController alloc] initWithPlaylist:playlist];

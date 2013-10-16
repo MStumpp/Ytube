@@ -40,6 +40,12 @@
 @property BOOL subtopbarWasVisible;
 @property NSDictionary *buttons;
 @property NSDictionary *keyConvert;
+@property NSString *relatedVideosId;
+@property NSString *commentsId;
+// for comment cell opening/closing
+@property NSInteger rowOpenHeight;
+@property NSIndexPath *openCell;
+@property BOOL *wasVideoPlaying;
 @end
 
 @implementation APPContentVideoDetailViewController
@@ -47,26 +53,21 @@
 
 -(id)initWithVideo:(GDataEntryYouTubeVideo*)v
 {
-    self = [self init];
+    self = [super init];
     if (self) {
         self.video = v;
         self.topbarTitle = [[self.video title] stringValue];
-    }
-    return self;
-}
+        self.wasVideoPlaying = FALSE;
 
--(id)init
-{
-    self = [super init];
-    if (self) {
-        [self.dataCache clearData:tRelatedVideosAll];
-        [self.dataCache clearData:tCommentsVideosAll];
+        self.relatedVideosId = [NSString stringWithFormat:@"%@_%@", tRelatedVideosAll, [APPContent videoID:self.video]];
+        self.commentsId = [NSString stringWithFormat:@"%@_%@", tCommentsVideosAll, [APPContent videoID:self.video]];
         
-        self.keyConvert = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tRelatedVideos], tRelatedVideosAll,
-                           [NSNumber numberWithInt:tCommentsVideos], tCommentsVideosAll, nil];
+        self.keyConvert = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tRelatedVideos], self.relatedVideosId,
+                           [NSNumber numberWithInt:tCommentsVideos], self.commentsId, nil];
         
-        // configure tVideoDetailAll as default state
-        [self setDefaultState:tRelatedVideosAll];
+        [[self configureDefaultState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toDefaultShowMode];
+        }];
         
         [[self configureState:tClearState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [self.tableView clearViewAndReloadAll];
@@ -83,6 +84,8 @@
                 [self setSubtopbarWasVisible:FALSE];
             }
             [self.tableViewHeaderFormView hideOnCompletion:nil animated:NO];
+            if ([self isVideoPlaying])
+                self.wasVideoPlaying = TRUE;
             [self pauseVideo];
         }];
         
@@ -91,17 +94,19 @@
             if (self.subtopbarWasVisible) {
                 [self.tableViewHeaderFormView showOnCompletion:nil animated:NO];
             }
+            if (self.wasVideoPlaying)
+                [self playVideo];
         }];
         
-        [[self configureDefaultState] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            [self.tableView toDefaultShowMode];
+        // configure tVideoDetailAll as default state
+        [self setDefaultState:self.relatedVideosId];
+        
+        
+        [[self configureState:self.commentsId] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toShowMode:self.commentsId];
         }];
         
-        [[self configureState:tCommentsVideosAll] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            [self.tableView toShowMode:tCommentsVideosAll];
-        }];
-        
-        [self.dataCache configureReloadDataForKey:tCommentsVideosAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureReloadDataForKey:self.commentsId withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPVideoComments instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
@@ -117,7 +122,7 @@
         }];
         
         
-        [self.dataCache configureReloadDataForKey:tRelatedVideosAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureReloadDataForKey:self.relatedVideosId withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPVideoRelatedVideos instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
@@ -132,7 +137,7 @@
                          );
         }];
         
-        [self.dataCache configureLoadMoreDataForKeys:@[tCommentsVideosAll, tRelatedVideosAll] withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureLoadMoreDataForKeys:@[self.commentsId, self.relatedVideosId] withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             
             queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
@@ -286,12 +291,12 @@
     
     [self.tableViewHeaderFormView setHeaderView:subtopbarContainer2];
     
-    [self.tableView addDefaultShowMode:tRelatedVideosAll];
-    [self.tableView addShowMode:tCommentsVideosAll];
+    [self.tableView addDefaultShowMode:self.relatedVideosId];
+    [self.tableView addShowMode:self.commentsId];
     
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
     
-    self.buttons = [[NSDictionary alloc] initWithObjectsAndKeys:commentsButton, tCommentsVideosAll, relatedVideosButton, tRelatedVideosAll, nil];
+    self.buttons = [[NSDictionary alloc] initWithObjectsAndKeys:commentsButton, self.commentsId, relatedVideosButton, self.relatedVideosId, nil];
     
     [self displayGoogleVideo:[[self.video mediaGroup] videoID]];
 }
@@ -384,6 +389,22 @@
     [self.webView loadHTMLString:embedHTML baseURL:[[NSBundle mainBundle] resourceURL]];
 }
 
+-(void)playVideo
+{
+    NSLog(@"playVideo");
+    [self.webView stringByEvaluatingJavaScriptFromString:@"ytplayer.playVideo()"];
+}
+
+-(BOOL)isVideoPlaying
+{
+    NSLog(@"isVideoPlaying");
+    NSString *result = [self.webView stringByEvaluatingJavaScriptFromString:@"ytplayer.getPlayerState()"];
+    if ([result isEqualToString:@"1"] || [result isEqualToString:@"3"])
+        return true;
+    else
+        return false;
+}
+
 -(void)pauseVideo
 {
     [self.webView stringByEvaluatingJavaScriptFromString:@"ytplayer.pauseVideo()"];
@@ -401,7 +422,7 @@
 -(void)back
 {
     if ([self.navigationController.viewControllers count] > 1)
-        [self.navigationController popViewControllerAnimated:YES];
+        [self popViewController];
 }
 
 -(void)subtopbarButtonPress:(UIButton*)sender
@@ -521,12 +542,21 @@
 
 -(CGFloat)tableView:(UITableView*)tableView forMode:(NSString*)mode heightForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return 88.0;
+    if ([mode isEqualToString:tRelatedVideosAll]) {
+        return 88.0;
+        
+    } else {
+        if (self.openCell && [self.openCell row] == [indexPath row]) {
+            return self.rowOpenHeight;
+        } else {
+            return 88.0;
+        }
+    }
 }
 
 -(APPTableCell*)tableView:(UITableView*)tableView forMode:(NSString*)mode cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    if ([mode isEqualToString:tRelatedVideosAll]) {
+    if ([mode isEqualToString:self.relatedVideosId]) {
         APPVideoCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"APPVideoCell"];
         if (cell == nil)
             cell = [[APPVideoCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPVideoCell"];
@@ -540,6 +570,8 @@
             cell = [[APPCommentCell alloc] initWithStyle:UITableViewCellSelectionStyleNone reuseIdentifier:@"APPCommentCell"];
 
         [cell setComment:(GDataEntryYouTubeComment*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]]];
+        if ([indexPath isEqual:self.openCell])
+            [cell setOpen:TRUE];
         return cell;
         
     }
@@ -562,18 +594,34 @@
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath;
 {
     if ([self inState:tPassiveState]) return;
-
-    GDataEntryYouTubeVideo *otherVideo = (GDataEntryYouTubeVideo*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
-
-    [self pauseVideo];
     
-    if ([mode isEqualToString:tRelatedVideosAll]) {
+    if ([mode isEqualToString:self.relatedVideosId]) {
+        GDataEntryYouTubeVideo *otherVideo = (GDataEntryYouTubeVideo*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
         APPContentVideoDetailViewController *videoController = [[APPContentVideoDetailViewController alloc] initWithVideo:otherVideo];
         [self pushViewController:videoController];
     
     } else {
-        APPContentCommentListController *commentController = [[APPContentCommentListController alloc] initWithVideo:otherVideo];
-        [self pushViewController:commentController];
+        APPCommentCell *cell = (APPCommentCell*) [tableView cellForRowAtIndexPath:indexPath];
+        
+        if (self.openCell) {
+            NSMutableArray *reloadArray = [NSMutableArray arrayWithObject:self.openCell];
+            NSIndexPath *tmp_row_open = self.openCell;
+            self.openCell = nil;
+            
+            if ([tmp_row_open row] != [indexPath row]) {
+                self.openCell = indexPath;
+                [reloadArray addObject:self.openCell];
+                self.rowOpenHeight = [cell cellHeightFullComment];
+            }
+            
+            [self.tableView reloadRowsAtIndexPaths:reloadArray withRowAnimation:UITableViewRowAnimationFade];
+            
+        } else {
+            
+            self.openCell = indexPath;
+            self.rowOpenHeight = [cell cellHeightFullComment];
+            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.openCell] withRowAnimation:UITableViewRowAnimationFade];
+        }
     }
 }
 

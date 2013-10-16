@@ -11,6 +11,7 @@
 
 @interface APPContent : NSObject
 +(NSString*)videoID:(GDataEntryYouTubeVideo *)video;
++(NSString*)playlistID:(GDataEntryYouTubePlaylistLink*)playlist;
 +(NSString*)timeString:(NSNumber*)mode;
 +(int)likeStateOfVideo:(GDataEntryYouTubeVideo*)video;
 +(BOOL)isUser:(GDataEntryYouTubeUserProfile*)user authorOf:(GDataEntryBase*)entry;

@@ -27,4 +27,5 @@
 @property NSString *topbarTitle;
 @property DataCache *dataCache;
 -(void)pushViewController:(UIViewController*)controller;
+-(void)popViewController;
 @end

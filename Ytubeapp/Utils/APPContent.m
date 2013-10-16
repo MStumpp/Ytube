@@ -22,6 +22,11 @@
     return [mediaGroupVideo videoID];
 }
 
++(NSString*)playlistID:(GDataEntryYouTubePlaylistLink*)playlist
+{
+    return [playlist playlistID];
+}
+
 +(NSString*)timeString:(NSNumber*)key
 {
     NSString *mode = NULL;

@@ -20,6 +20,7 @@
 @property UIImageView *userImageView;
 @property NSInteger rowOpenHeight;
 @property NSIndexPath *openCell;
+@property NSString *commentsId;
 @end
 
 @implementation APPContentCommentListController
@@ -27,20 +28,12 @@
 
 -(id)initWithVideo:(GDataEntryYouTubeVideo*)v
 {
-    self = [self init];
-    if (self) {
-        self.video = v;
-    }
-    return self;
-}
-
--(id)init
-{
     self = [super init];
     if (self) {
+        self.video = v;
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_comments"];
 
-        [self.dataCache clearData:tCommentsAll];
+        self.commentsId = [NSString stringWithFormat:@"%@_%@", tCommentsAll, [APPContent videoID:self.video]];
         
         [[self configureDefaultState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [self.userImageView setImage:nil];
@@ -50,7 +43,7 @@
             }];
         }];
         
-        [self.dataCache configureReloadDataForKey:tCommentsAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureReloadDataForKey:self.commentsId withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPVideoComments instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.video, @"video", nil]
                                context:[NSMutableDictionary dictionaryWithObjectsAndKeys:key, @"key", context, @"context", nil]
@@ -65,7 +58,7 @@
                          );
         }];
         
-        [self.dataCache configureLoadMoreDataForKey:tCommentsAll withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
+        [self.dataCache configureLoadMoreDataForKey:self.commentsId withHandler:^(NSString *key, id previous, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             
             queryHandler(key, [[APPFetchMoreQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSDictionary dictionaryWithObjectsAndKeys:previous, @"feed", nil]
@@ -116,7 +109,7 @@
 
     [self.tableViewHeaderFormView2 setHeaderView:subtopbarContainer];
     
-    [self.tableView addDefaultShowMode:tCommentsAll];
+    [self.tableView addDefaultShowMode:self.commentsId];
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField*)textField
