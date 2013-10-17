@@ -38,6 +38,7 @@
     [[APPGlobals classInstance] setGlobalObject:manager forKey:@"queuemanager"];
 
     // set up other stuff in globals
+    [[APPGlobals classInstance] setGlobalObject:[UIImage imageNamed:@"main_back"] forKey:@"main_back"];
     [[APPGlobals classInstance] setGlobalObject:[UIImage imageNamed:@"silhouette"] forKey:@"silhouetteImage"];
     [[APPGlobals classInstance] setGlobalObject:[UIImage imageNamed:@"no_preview"] forKey:@"noPreviewImage"];
 

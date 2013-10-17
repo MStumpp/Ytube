@@ -9,6 +9,7 @@
 #import "APPIndexViewController.h"
 #import "APPSliderViewController.h"
 #import "APPUserManager.h"
+#import "APPGlobals.h"
 
 #define tLeftButton 0
 #define tRightButton 1
@@ -41,9 +42,8 @@
     }
     self.view = contentView;
     
-    // Set up UI
     [self.view addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main_back"]]];
-
+    
     self.buttonsEnabled = TRUE;
     
     // toolbar
@@ -193,9 +193,11 @@
 {
     // login controller shows up
     if (viewController != self.sliderViewController) {
+        NSLog(@"testtest");
         // when signing in, replace the current toolbar background image with the sign in image
         // change the image back once the user is signed in
         self.tmpTopBarBackImage = [ViewHelpers getBackgroundImageForToolbar:self.toolbar];
+        [self.toolbarLabel setHidden:TRUE];
         [self.toolbar setBackgroundImage:[UIImage imageNamed:@"top_bar_back_sign_in"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
 
         // call willBePushed on slider controller
@@ -212,6 +214,7 @@
             [self.toolbar setBackgroundImage:self.tmpTopBarBackImage forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
             self.tmpTopBarBackImage = nil;
         }
+        [self.toolbarLabel setHidden:FALSE];
 
         // call didPop on slider controller
         dispatch_semaphore_t sema = dispatch_semaphore_create(1);

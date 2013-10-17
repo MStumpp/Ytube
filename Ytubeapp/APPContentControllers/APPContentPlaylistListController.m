@@ -67,6 +67,8 @@
 -(void)loadView
 {
     [super loadView];
+    
+    //[self.view addSubview:[[UIImageView alloc] initWithImage:[[APPGlobals classInstance] getGlobalForKey:@"main_back"]]];
 
     UIControl *subtopbarContainer = [[UIControl alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0)];
     [subtopbarContainer addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sub_top_bar_back"]]];

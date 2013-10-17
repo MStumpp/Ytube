@@ -101,6 +101,8 @@
 -(void)loadView
 {
     [super loadView];
+    
+    //[self.view addSubview:[[UIImageView alloc] initWithImage:[[APPGlobals classInstance] getGlobalForKey:@"main_back"]]];
 
     UIControl *subtopbarContainer = [[UIControl alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, 120.0)];
 
@@ -221,7 +223,7 @@
     if (![[APPUserManager classInstance] isUserSignedIn]) return FALSE;
     if (![self.tableView isEditing]) return FALSE;
     
-    GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*) [[self.dataCache getData:tCommentsAll] objectAtIndex:[indexPath row]];
+    GDataEntryYouTubeComment *comment = (GDataEntryYouTubeComment*) [[self.dataCache getData:self.commentsId] objectAtIndex:[indexPath row]];
     return [APPContent isUser:[[APPUserManager classInstance] getUserProfile] authorOf:comment];
 }
 

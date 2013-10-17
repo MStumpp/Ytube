@@ -67,13 +67,6 @@
 
 -(void)removeFavorite:(NSNotification*)notification
 {
-    GDataEntryYouTubeFavorite *video = [(NSDictionary*)[notification userInfo] objectForKey:@"video"];
-    [[self.dataCache getData:tFavoritesAll] removeObject:video];
-    [[self.tableView visibleCells] enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
-        if ([[object video] isEqual:video]) {
-            [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[object indexPath]] withRowAnimation:UITableViewRowAnimationTop];
-        }
-    }];
 }
 
 #pragma mark -

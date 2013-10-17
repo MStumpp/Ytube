@@ -196,7 +196,9 @@
 -(void)loadView
 {
     [super loadView];
-
+    
+    //[self.view addSubview:[[UIImageView alloc] initWithImage:[[APPGlobals classInstance] getGlobalForKey:@"main_back"]]];
+    
     // set up video
     ////////////////
     /*UIImageView *videoThumbnail = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, heightVideoView)];
