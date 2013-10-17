@@ -26,9 +26,11 @@
             // save state of header form
             if ([self.tableViewHeaderFormView1 isHeaderShown]) {
                 self.subtopbarWasVisible1 = TRUE;
+                self.subtopbarWasVisible2 = FALSE;
                 [self.tableViewHeaderFormView1 hideOnCompletion:nil animated:NO];
 
             } else if ([self.tableViewHeaderFormView2 isHeaderShown]) {
+                self.subtopbarWasVisible1 = FALSE;
                 self.subtopbarWasVisible2 = TRUE;
                 [self.tableViewHeaderFormView2 hideOnCompletion:nil animated:NO];
 
@@ -107,7 +109,10 @@
 -(void)editButtonPress:(id)sender
 {
     if ([self inState:tPassiveState]) return;
-    if (![[APPUserManager classInstance] isUserSignedIn]) return;
+    if (![[APPUserManager classInstance] isUserSignedIn]) {
+        [self showSignAlert];
+        return;
+    };
     
     if ([sender isSelected]) {
         [self.tableView setEditing:NO animated:YES];
@@ -136,7 +141,10 @@
 -(void)addButtonPress:(id)sender
 {
     if ([self inState:tPassiveState]) return;
-    if (![[APPUserManager classInstance] isUserSignedIn]) return;
+    if (![[APPUserManager classInstance] isUserSignedIn]) {
+        [self showSignAlert];
+        return;
+    };
     
     if ([self.tableViewHeaderFormView1 isHeaderShown]) {
         [self.tableViewHeaderFormView1 hideOnCompletion:^(BOOL isHidden) {

@@ -85,7 +85,7 @@
 
 -(BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return NO;
+    return FALSE;
 }
 
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath
@@ -95,7 +95,6 @@
 -(BOOL)tableView:(UITableView*)tableView canOpenCellforMode:(NSString*)mode forRowAtIndexPath:(NSIndexPath*)indexPath
 {
     if ([self inState:tPassiveState]) return FALSE;
-    if (![[APPUserManager classInstance] isUserSignedIn]) return FALSE;
     return TRUE;
 }
 
@@ -186,12 +185,10 @@
 
 -(void)beforeShowModeChange
 {
-    return;
 }
 
 -(void)afterShowModeChange
 {
-    return;
 }
 
 -(NSNumber*)keyToNumber:(NSString*)key

@@ -135,6 +135,7 @@
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
     if ([self inState:tPassiveState]) return;
+    if (![[APPUserManager classInstance] isUserSignedIn]) return;
     
     GDataEntryYouTubePlaylistLink *playlist = (GDataEntryYouTubePlaylistLink*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
 

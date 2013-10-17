@@ -23,10 +23,10 @@
         [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             // save state of header form
             if ([self.tableViewHeaderFormView isHeaderShown]) {
-                [self setSubtopbarWasVisible:TRUE];
+                self.subtopbarWasVisible = TRUE;
                 [self.tableViewHeaderFormView hideOnCompletion:nil animated:NO];
             } else {
-                [self setSubtopbarWasVisible:FALSE];
+                self.subtopbarWasVisible = FALSE;
             }
         }];
         

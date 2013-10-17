@@ -52,6 +52,7 @@
         }];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToWatchLater object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeWatchLater:) name:eventWillRemoveVideoFromWatchLater object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromWatchLater object:nil];
     }
     return self;
@@ -61,6 +62,17 @@
 {
     [super loadView];
     [self.tableView addDefaultShowMode:tWatchLaterAll];
+}
+
+-(void)removeWatchLater:(NSNotification*)notification
+{
+    GDataEntryYouTubeFavorite *video = [(NSDictionary*)[notification userInfo] objectForKey:@"video"];
+    [[self.dataCache getData:tWatchLaterAll] removeObject:video];
+    [[self.tableView visibleCells] enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+        if ([[object video] isEqual:video]) {
+            [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[object indexPath]] withRowAnimation:UITableViewRowAnimationTop];
+        }
+    }];
 }
 
 #pragma mark -

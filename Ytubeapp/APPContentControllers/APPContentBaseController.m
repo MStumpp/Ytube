@@ -76,7 +76,7 @@
 
 -(void)doDefaultMode:(void (^)(void))callback;
 {
-    NSLog(@"doDefaultMode %@", self.class);
+    //NSLog(@"doDefaultMode %@", self.class);
     [self toState:tPassiveState];
     if (callback)
         callback();
@@ -84,7 +84,7 @@
 
 -(void)undoDefaultMode:(void (^)(void))callback;
 {
-    NSLog(@"undoDefaultMode %@", self.class);
+    //NSLog(@"undoDefaultMode %@", self.class);
     [self toState:tActiveState];
     if (callback)
         callback();
@@ -159,6 +159,15 @@
         }];
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     }
+}
+
+-(void)showSignAlert
+{
+    [[[UIAlertView alloc] initWithTitle:@"Please sign in..."
+                                message:[NSString stringWithFormat:@"...to use this function."]
+                               delegate:nil
+                      cancelButtonTitle:@"OK"
+                      otherButtonTitles:nil] show];
 }
 
 @end

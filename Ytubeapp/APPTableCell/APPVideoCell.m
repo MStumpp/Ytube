@@ -57,10 +57,11 @@
     if (self)
     {
         [self initUI];
-        [self prepareForReuse];
+        [self reset];
 
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToPlaylist object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromPlaylist object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToFavorites object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromFavorites object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToWatchLater object:nil];
@@ -96,7 +97,7 @@
     [self.tableCellSubMenu addSubview:self.favoritesButton];
     
     self.commentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.commentsButton.frame = CGRectMake(228.0, 0, 77.0, 88.0);
+    self.commentsButton.frame = CGRectMake(232.0, 0, 77.0, 88.0);
     self.commentsButton.tag = tComments;
     [self.commentsButton setImage:[UIImage imageNamed:@"video_cell_menu_icon_comment_up"] forState:UIControlStateNormal];
     [self.commentsButton setImage:[UIImage imageNamed:@"video_cell_menu_icon_comment_down"] forState:UIControlStateSelected];
@@ -104,7 +105,8 @@
     [self.tableCellSubMenu addSubview:self.commentsButton];
     
     self.tableViewMaskView = [[UITableViewMaskView alloc] initWithRootView:self.tableCellSubMenu customMaskView:nil delegate:self];
-
+    [self.tableViewMaskView showSpinner:TRUE];
+    
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(140.0, 20.0, 170.0, 18.0)];
     [self.titleLabel setFont:[UIFont fontWithName:@"Nexa Bold" size:13]];
     [self.titleLabel setTextColor:[UIColor whiteColor]];
@@ -149,18 +151,89 @@
     self.playImage = [[UIImageView alloc] initWithFrame:CGRectMake(16.0, 8.0, 105.0, 71.0)];
     [self.playImage setImage:[UIImage imageNamed:@"video_cell_play_arrow"]];
     [self.tableCellMain addSubview:self.playImage];
+    
+    [self allowToOpen:YES];
 }
 
 -(void)prepareForReuse
 {
     [super prepareForReuse];
-    [self allowToOpen:YES];
-    [self.tableViewMaskView maskOnCompletion:nil];
+    [self reset];
+}
+
+-(void)reset
+{
+    if ([[APPUserManager classInstance] isUserSignedIn]) {
+        [self.tableViewMaskView maskOnCompletion:nil];
+    } else {
+        [self.tableViewMaskView unmaskOnCompletion:nil];
+    }
     self.favoritesResponse = FALSE;
     self.watchLaterReponse = FALSE;
     [self.favoritesButton setSelected:NO];
     [self.watchLaterButton setSelected:NO];
     [self setThumbnail:[[APPGlobals classInstance] getGlobalForKey:@"noPreviewImage"]];
+    if ([self isOpened])
+        [self fetchState];
+}
+
+-(void)cellDidOpen
+{
+    [self fetchState];
+}
+
+-(void)fetchState
+{
+    if (![[APPUserManager classInstance] isUserSignedIn] || [self hasStateFetched])
+        return;
+    
+    [[APPVideoIsFavorite instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+     execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
+     context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
+     onStateChange:^(NSString *state, id data, NSError *error, id context) {
+         if ([state isEqual:tFinished]) {
+             if (!error) {
+                 if (data)
+                     [self.favoritesButton setSelected:YES];
+                 self.favoritesResponse = TRUE;
+                 if ([self hasStateFetched])
+                     [self.tableViewMaskView unmaskOnCompletion:nil];
+             } else {
+                 [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                             message:[NSString stringWithFormat:@"Unable to check if video is a favorite. Please try again later."]
+                                            delegate:nil
+                                   cancelButtonTitle:@"OK"
+                                   otherButtonTitles:nil] show];
+             }
+         }
+     }];
+    
+    [[APPVideoIsWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
+     execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
+     context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
+     onStateChange:^(NSString *state, id data, NSError *error, id context) {
+         if ([state isEqual:tFinished]) {
+             if (!error) {
+                 if (data)
+                     [self.watchLaterButton setSelected:YES];
+                 self.watchLaterReponse = TRUE;
+                 if ([self hasStateFetched])
+                     [self.tableViewMaskView unmaskOnCompletion:nil];
+             } else {
+                 [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                             message:[NSString stringWithFormat:@"Unable to check if video is a watch later. Please try again later."]
+                                            delegate:nil
+                                   cancelButtonTitle:@"OK"
+                                   otherButtonTitles:nil] show];
+             }
+         }
+     }];
+}
+
+-(BOOL)hasStateFetched
+{
+    if (self.favoritesResponse && self.watchLaterReponse) return true;
+    return false;
 }
 
 -(void)setTitle:(NSString*)n
@@ -258,55 +331,6 @@
     }];
 }
 
--(void)cellDidOpen
-{
-    [[APPVideoIsFavorite instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
-        execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
-        context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
-        onStateChange:^(NSString *state, id data, NSError *error, id context) {
-            if ([state isEqual:tFinished]) {
-                if (!error) {
-                    if (data)
-                        [self.favoritesButton setSelected:YES];
-                    self.favoritesResponse = TRUE;
-                    [self checkMaskState];
-                } else {
-                    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                                message:[NSString stringWithFormat:@"Unable to check if video is a favorite. Please try again later."]
-                                               delegate:nil
-                                      cancelButtonTitle:@"OK"
-                                      otherButtonTitles:nil] show];
-                }
-            }
-    }];
-    
-    [[APPVideoIsWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
-     execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
-     context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
-     onStateChange:^(NSString *state, id data, NSError *error, id context) {
-         if ([state isEqual:tFinished]) {
-             if (!error) {
-                 if (data)
-                     [self.watchLaterButton setSelected:YES];
-                 self.watchLaterReponse = TRUE;
-                 [self checkMaskState];
-             } else {
-                 [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                             message:[NSString stringWithFormat:@"Unable to check if video is a watch later. Please try again later."]
-                                            delegate:nil
-                                   cancelButtonTitle:@"OK"
-                                   otherButtonTitles:nil] show];
-             }
-         }
-     }];
-}
-
--(void)checkMaskState
-{
-    if (self.favoritesResponse && self.watchLaterReponse)
-        [self.tableViewMaskView unmaskOnCompletion:nil];
-}
-
 -(void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event
 {
     [super touchesEnded:touches withEvent:event];
@@ -317,14 +341,25 @@
     if ([self isOpened]) {
         CGPoint location = [((UITouch *)[touches anyObject]) locationInView:self];
         if (CGRectContainsPoint(self.addToPlaylistButton.frame, location)) {
+            
+            if (![[APPUserManager classInstance] isUserSignedIn]) {
+                [self showSignAlert];
+                return;
+            }
+            
             APPContentPlaylistListController *playlistController = [[APPContentPlaylistListController alloc] init];
-            [playlistController undoDefaultMode:nil];
             playlistController.afterSelect = ^(GDataEntryBase *entry) {
                 [APPQueryHelper addVideo:self.video toPlaylist:(GDataEntryYouTubePlaylistLink*)entry];
             };
             [[self.__tableView _del] pushViewController:playlistController];
 
         } else if (CGRectContainsPoint(self.watchLaterButton.frame, location)) {
+            
+            if (![[APPUserManager classInstance] isUserSignedIn]) {
+                [self showSignAlert];
+                return;
+            }
+            
             if ([self.watchLaterButton isSelected]) {
                 [self.watchLaterButton setSelected:NO];
                 [APPQueryHelper removeVideoFromWatchLater:self.video];
@@ -334,6 +369,12 @@
             }
 
         } else if (CGRectContainsPoint(self.favoritesButton.frame, location)) {
+            
+            if (![[APPUserManager classInstance] isUserSignedIn]) {
+                [self showSignAlert];
+                return;
+            }
+            
             if ([self.favoritesButton isSelected]) {
                 [self.favoritesButton setSelected:NO];
                 [APPQueryHelper removeVideoFromFavorites:self.video];
@@ -344,7 +385,6 @@
 
         } else if (CGRectContainsPoint(self.commentsButton.frame, location)) {
             APPContentCommentListController *commentController = [[APPContentCommentListController alloc] initWithVideo:self.video];
-            [commentController undoDefaultMode:nil];
             [[self.__tableView _del] pushViewController:commentController];
         }
     }
@@ -356,55 +396,65 @@
     if ([context objectForKey:@"video"] != self.video)
         return;
     
-    if ([[notification name] isEqualToString:eventAddedVideoToPlaylist]) {
+    if ([[notification name] isEqualToString:eventAddedVideoToFavorites]) {
         if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
             [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                        message:[NSString stringWithFormat:@"Unable to add video to playlist."]
+                                        message:[NSString stringWithFormat:@"Unable to add video to favorites."]
                                        delegate:nil
                               cancelButtonTitle:@"OK"
                               otherButtonTitles:nil] show];
-        }
-        
-    } else if ([[notification name] isEqualToString:eventRemovedVideoFromPlaylist]) {
-        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
-            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                        message:[NSString stringWithFormat:@"Unable to add video to playlist."]
-                                       delegate:nil
-                              cancelButtonTitle:@"OK"
-                              otherButtonTitles:nil] show];
-        }
-
-    } else if ([[notification name] isEqualToString:eventAddedVideoToFavorites]) {
-        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"])
             [self reset];
+        }
 
     } else if ([[notification name] isEqualToString:eventRemovedVideoFromFavorites]) {
-        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"])
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to remove video from favorites."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
             [self reset];
+        }
 
     } else if ([[notification name] isEqualToString:eventAddedVideoToWatchLater]) {
-        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"])
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to add video to watch later."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
             [self reset];
+        }
 
     } else if ([[notification name] isEqualToString:eventRemovedVideoFromWatchLater]) {
-        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"])
+        if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
+                                        message:[NSString stringWithFormat:@"Unable to remove video from watch later."]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
             [self reset];
+        }
     }
 }
 
--(void)reset
+-(void)userSignedIn:(NSNotification*)notification
 {
-    [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                message:[NSString stringWithFormat:@"Unable to manage state of this video."]
+    [self reset];
+}
+
+-(void)userSignedOut:(NSNotification*)notification
+{
+    [self reset];
+}
+
+-(void)showSignAlert
+{
+    [[[UIAlertView alloc] initWithTitle:@"Please sign in..."
+                                message:[NSString stringWithFormat:@"...to use this function."]
                                delegate:nil
                       cancelButtonTitle:@"OK"
                       otherButtonTitles:nil] show];
-    [self.tableViewMaskView maskOnCompletion:nil];
-    self.favoritesResponse = FALSE;
-    self.watchLaterReponse = FALSE;
-    [self.favoritesButton setSelected:NO];
-    [self.watchLaterButton setSelected:NO];
-    [self cellDidOpen];
 }
 
 @end

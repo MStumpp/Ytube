@@ -9,6 +9,7 @@
 #import "APPContentFavoritesController.h"
 #import "APPFavorites.h"
 #import "APPFetchMoreQuery.h"
+#import "APPVideoCell.h"
 
 #define tFavoritesAll @"favorites_all"
 
@@ -52,15 +53,27 @@
         }];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToFavorites object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeFavorite:) name:eventWillRemoveVideoFromFavorites object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromFavorites object:nil];
     }
     return self;
 }
 
-- (void)loadView
+-(void)loadView
 {
     [super loadView];
     [self.tableView addDefaultShowMode:tFavoritesAll];
+}
+
+-(void)removeFavorite:(NSNotification*)notification
+{
+    GDataEntryYouTubeFavorite *video = [(NSDictionary*)[notification userInfo] objectForKey:@"video"];
+    [[self.dataCache getData:tFavoritesAll] removeObject:video];
+    [[self.tableView visibleCells] enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+        if ([[object video] isEqual:video]) {
+            [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[object indexPath]] withRowAnimation:UITableViewRowAnimationTop];
+        }
+    }];
 }
 
 #pragma mark -

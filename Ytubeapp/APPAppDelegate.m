@@ -98,6 +98,12 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
+{
+    DataCache *dataCache = [[APPGlobals classInstance] getGlobalForKey:@"dataCache"];
+    [dataCache clearAllData];
+}
+
 -(void)authTokenValidated:(NSNotification*)notification
 {
     //GDataServiceGoogleYouTube *service = [[APPGlobals classInstance] getGlobalForKey:@"service"];

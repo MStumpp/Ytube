@@ -28,4 +28,7 @@
 @property DataCache *dataCache;
 -(void)pushViewController:(UIViewController*)controller;
 -(void)popViewController;
+-(void)showSignAlert;
+-(void)userSignedIn:(NSNotification*)notification;
+-(void)userSignedOut:(NSNotification*)notification;
 @end

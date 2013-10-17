@@ -66,7 +66,10 @@
 -(void)editButtonPress:(id)sender
 {
     if ([self inState:tPassiveState]) return;
-    if (![[APPUserManager classInstance] isUserSignedIn]) return;
+    if (![[APPUserManager classInstance] isUserSignedIn]) {
+        [self showSignAlert];
+        return;
+    };
     
     if ([sender isSelected]) {
         [self.tableView setEditing:NO animated:YES];

@@ -155,7 +155,7 @@
     if ([self isEditing])
         return;
     
-    // do not allow to open cell when controller is in passive state and/or user not signed in
+    // do not allow to open cell when controller is in passive state
     if (![self._del tableView:view canOpenCellforMode:self.showMode forRowAtIndexPath:indexPath])
         return;
     
@@ -179,9 +179,10 @@
     
     // if there is an open cell, close this first, then open the requested cell
     if (self.openCell) {
-        if ([self.openCell row] == [indexPath row])
-            if (callback);
+        if ([self.openCell row] == [indexPath row]) {
+            if (callback)
                 callback(true);
+        }
         
         // close open cell
         APPTableCell *currentOpenCell = (APPTableCell*) [self cellForRowAtIndexPath:self.openCell];
@@ -253,7 +254,7 @@
 
 -(void)toShowMode:(NSString*)mode
 {
-    NSLog(@"toShowMode %@", mode);
+    //NSLog(@"toShowMode %@", mode);
     
     if (!mode || ![self hasShowMode:mode])
         [NSException raise:@"show mode is nil or doesn't exists" format:@"show mode is nil or doesn't exists"];

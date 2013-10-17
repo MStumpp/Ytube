@@ -49,9 +49,7 @@
             if (self.openCommentCell) {
                 self.wasOpenCommentCell = self.openCommentCell;
                 [self tapCell:self.openCommentCell];
-                NSLog(@"self.openCommentCell true");
             } else {
-                NSLog(@"self.openCommentCell false");
                 self.wasOpenCommentCell = nil;
             }
         }];
@@ -59,7 +57,6 @@
         [[self configureState:tActiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             // open comment cell if one was open previously
             if (self.wasOpenCommentCell) {
-                NSLog(@"self.wasOpenCommentCell true");
                 [self tapCell:self.wasOpenCommentCell];
             }
         }];

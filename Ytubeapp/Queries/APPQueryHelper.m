@@ -109,6 +109,10 @@
 
 +(Query*)removeVideoFromFavorites:(GDataEntryYouTubeVideo*)video
 {
+    NSMutableDictionary *info = [NSMutableDictionary new];
+    [info setValue:video forKey:@"video"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:eventWillRemoveVideoFromFavorites object:self userInfo:info];
+    
     return [[APPVideoRemoveFromFavorites instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
             context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
@@ -141,6 +145,10 @@
 
 +(Query*)removeVideoFromWatchLater:(GDataEntryYouTubeVideo*)video
 {
+    NSMutableDictionary *info = [NSMutableDictionary new];
+    [info setValue:video forKey:@"video"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:eventWillRemoveVideoFromWatchLater object:self userInfo:info];
+    
     return [[APPVideoRemoveFromWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
             execute:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
             context:[NSDictionary dictionaryWithObjectsAndKeys:video, @"video", nil]
