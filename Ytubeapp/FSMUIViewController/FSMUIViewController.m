@@ -18,6 +18,7 @@
 @property (atomic) NSString *allState;
 @property (atomic) int currentControllerViewState;
 @property (atomic) int currentProcessedViewState;
+@property (atomic) int currentViewState;
 @property (atomic) NSMutableDictionary *states;
 @property (atomic) NSMutableDictionary *all;
 @end
@@ -40,6 +41,7 @@
 
         self.currentControllerViewState = tDidInitViewState;
         self.currentProcessedViewState = self.currentControllerViewState;
+        self.currentViewState = tNone;
         self.states = [NSMutableDictionary dictionary];
         self.all = [NSMutableDictionary dictionary];
         
@@ -317,55 +319,62 @@
 {
     [super viewDidLoad];
     self.currentControllerViewState = tDidLoadViewState;
-    [self processOnViewDidLoadForPrev:self.previousState andCurrent:self.currState];
+    //[self processOnViewDidLoadForPrev:self.previousState andCurrent:self.currState];
+    [self processOnInitForPrev:self.previousState andCurrent:self.currState];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     self.currentControllerViewState = tWillAppearViewState;
-    self.currentProcessedViewState = tDidLoadViewState;
-    [self processOnViewWillAppearForPrev:self.previousState andCurrent:self.currState];
+    //self.currentProcessedViewState = tDidLoadViewState;
+    //[self processOnViewWillAppearForPrev:self.previousState andCurrent:self.currState];
+    [self processOnInitForPrev:self.previousState andCurrent:self.currState];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     self.currentControllerViewState = tDidAppearViewState;
-    self.currentProcessedViewState = tWillAppearViewState;
-    [self processOnViewDidAppearForPrev:self.previousState andCurrent:self.currState];
+    //self.currentProcessedViewState = tWillAppearViewState;
+    //[self processOnViewDidAppearForPrev:self.previousState andCurrent:self.currState];
+    [self processOnInitForPrev:self.previousState andCurrent:self.currState];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     self.currentControllerViewState = tWillDisappearViewState;
-    self.currentProcessedViewState = tDidAppearViewState;
-    [self processOnViewWillDisappearForPrev:self.previousState andCurrent:self.currState];
+    //self.currentProcessedViewState = tDidAppearViewState;
+    //[self processOnViewWillDisappearForPrev:self.previousState andCurrent:self.currState];
+    [self processOnInitForPrev:self.previousState andCurrent:self.currState];
 }
 
 -(void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
     self.currentControllerViewState = tDidDisappearViewState;
-    self.currentProcessedViewState = tWillDisappearViewState;
-    [self processOnViewDidDisappearForPrev:self.previousState andCurrent:self.currState];
+    //self.currentProcessedViewState = tWillDisappearViewState;
+    //[self processOnViewDidDisappearForPrev:self.previousState andCurrent:self.currState];
+    [self processOnInitForPrev:self.previousState andCurrent:self.currState];
 }
 
 -(void)viewWillUnload
 {
     [super viewWillUnload];
     self.currentControllerViewState = tWillUnloadViewState;
-    self.currentProcessedViewState = tDidDisappearViewState;
-    [self processOnViewWillUnloadForPrev:self.previousState andCurrent:self.currState];
+    //self.currentProcessedViewState = tDidDisappearViewState;
+    //[self processOnViewWillUnloadForPrev:self.previousState andCurrent:self.currState];
+    [self processOnInitForPrev:self.previousState andCurrent:self.currState];
 }
 
 -(void)viewDidUnload
 {
     [super viewDidUnload];
     self.currentControllerViewState = tDidUnloadViewState;
-    self.currentProcessedViewState = tWillUnloadViewState;
-    [self processOnViewDidUnloadForPrev:self.previousState andCurrent:self.currState];
+    //self.currentProcessedViewState = tWillUnloadViewState;
+    //[self processOnViewDidUnloadForPrev:self.previousState andCurrent:self.currState];
+    [self processOnInitForPrev:self.previousState andCurrent:self.currState];
 }
 
 -(void)processOnInitForPrev:(State*)previousState andCurrent:(State*)currentState

@@ -28,6 +28,14 @@
         
         self.playlistVideosId = [NSString stringWithFormat:@"%@_%@", tPlaylistVideosAll, [APPContent playlistID:self.playlist]];
         
+        [[self configureState:tUserSignOutState] onViewState:tDidInitViewState do:^(State *this, State *other){
+            [self.tableView clearView];
+        }];
+
+        [[self configureState:tUserSignInState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toDefaultShowModeForce];
+        }];
+        
         [self.dataCache configureReloadDataForKey:self.playlistVideosId withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPPlaylistVideos instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.playlist, @"playlist", nil]

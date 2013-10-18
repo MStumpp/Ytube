@@ -59,6 +59,7 @@
     if (self)
     {
         [self initUI];
+        [self allowToOpen:YES];
         [self reset];
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
@@ -150,13 +151,12 @@
     self.playImage = [[UIImageView alloc] initWithFrame:CGRectMake(16.0, 8.0, 105.0, 71.0)];
     [self.playImage setImage:[UIImage imageNamed:@"video_cell_play_arrow"]];
     [self.tableCellMain addSubview:self.playImage];
-    
-    [self allowToOpen:YES];
 }
 
 -(void)prepareForReuse
 {
     [super prepareForReuse];
+    [self setThumbnail:[[APPGlobals classInstance] getGlobalForKey:@"noPreviewImage"]];
     [self reset];
 }
 
@@ -168,7 +168,6 @@
     self.watchLaterFetched = FALSE;
     [self.favoritesButton setSelected:NO];
     [self.watchLaterButton setSelected:NO];
-    [self setThumbnail:[[APPGlobals classInstance] getGlobalForKey:@"noPreviewImage"]];
     if ([self isOpened])
         [self fetchState];
 }

@@ -46,57 +46,35 @@ static APPUserManager *classInstance = nil;
         return;
     }
     
-    //[self signOutOnCompletion:^(BOOL isSignedOut) {
-    //    if (isSignedOut) {
-            self.auth = auth;
-            
-            GDataServiceGoogleYouTube *service = [[APPGlobals classInstance] getGlobalForKey:@"service"];
-            [service setAuthorizer:self.auth];
-            
+    self.auth = auth;
+    
+    // inform observers
+    NSMutableDictionary *info = [NSMutableDictionary new];
+    [info setValue:self.auth forKey:@"auth"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:eventAuthTokenValidated object:self userInfo:info];
+    
+    [self currentUserProfileWithCallback:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
+
+        if (user && !error) {
+                    
             // inform observers
             NSMutableDictionary *info = [NSMutableDictionary new];
-            [info setValue:self.auth forKey:@"auth"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:eventAuthTokenValidated object:self userInfo:info];
-            
-            //NSLog(@"test1");
-
-            [self currentUserProfileWithCallback:^(GDataEntryYouTubeUserProfile *user, NSError *error) {
-                //NSLog(@"test2");
-
-                if (user && !error) {
+            [info setValue:user forKey:@"user"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedIn object:self userInfo:info];
                     
-                    // inform observers
-                    NSMutableDictionary *info = [NSMutableDictionary new];
-                    [info setValue:user forKey:@"user"];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:eventUserSignedIn object:self userInfo:info];
-                    
-                    //NSLog(@"test3");
-
-                    if (callback)
-                        callback(user, nil);
-                    
-                } else {
-                    //NSLog(@"test4");
-
-                    if (callback)
-                        callback(nil, error);
-                }
-            }];
-
-        /*} else {
             if (callback)
-                callback(nil, [[NSError alloc] initWithDomain:[NSString stringWithFormat:@"error when authenticating"] code:1 userInfo:nil]);
-        }*/
-    //}];
+                callback(user, nil);
+                    
+            } else {
+                if (callback)
+                    callback(nil, error);
+            }
+    }];
 }
 
 -(void)signOutOnCompletion:(void (^)(BOOL isSignedOut))callback
 {
-    //NSLog(@"signOutOnCompletion1");
-    
     if (self.auth) {
-        //NSLog(@"signOutOnCompletion2");
-        
         NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
         NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
         
@@ -106,13 +84,11 @@ static APPUserManager *classInstance = nil;
         // remove the token from Google's servers
         [GTMOAuth2ViewControllerTouch revokeTokenForGoogleAuthentication:self.auth];
 
+        NSMutableDictionary *info;
         // inform observers
-        NSMutableDictionary *info = [NSMutableDictionary new];
+        info = [NSMutableDictionary new];
         [info setValue:self.auth forKey:@"auth"];
         [[NSNotificationCenter defaultCenter] postNotificationName:eventAuthTokenInvalidated object:self userInfo:info];
-        
-        //GDataServiceGoogleYouTube *service = [[APPGlobals classInstance] getGlobalForKey:@"service"];
-        //[service setAuthorizer:nil];
         
         self.auth = nil;
 
@@ -153,7 +129,6 @@ static APPUserManager *classInstance = nil;
 
 -(void)currentUserProfileWithCallback:(void (^)(GDataEntryYouTubeUserProfile *user, NSError *error))callback
 {
-    //NSLog(@"currentUserProfileWithCallback1");
     if (self.currentUserProfile) {
         if (callback)
             callback(self.currentUserProfile, nil);

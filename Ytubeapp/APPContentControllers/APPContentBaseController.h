@@ -18,7 +18,8 @@
 #import "APPUserManager.h"
 #import "FSMUIViewController.h"
 
-#define tClearState @"clearState"
+#define tUserSignInState @"userSignInState"
+#define tUserSignOutState @"userSignOutState"
 #define tActiveState @"activeState"
 #define tPassiveState @"passiveState"
 

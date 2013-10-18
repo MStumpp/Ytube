@@ -142,6 +142,7 @@ static DataCache *classInstance = nil;
                                        
                                        // no error
                                        if (!error) {
+                                           
                                            // replace current feed for mode
                                            [self feed:data forKey:key];
                                            
@@ -320,6 +321,7 @@ static DataCache *classInstance = nil;
 
 -(BOOL)resetKey:(NSString*)key
 {
+    //NSLog(@"DataCache: resetKey %@", key);
     if ([self queryForKey:key forType:self.queriesReload] &&
         [self queryForKey:key forType:self.queriesReload] != (id)[NSNull new])
         [[self queryForKey:key forType:self.queriesReload] cancel];

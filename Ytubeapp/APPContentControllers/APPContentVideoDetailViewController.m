@@ -71,8 +71,11 @@
             [self.tableView toDefaultShowMode];
         }];
         
-        [[self configureState:tClearState] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            [self.tableView clearViewAndReloadAll];
+        [[self configureState:tUserSignInState] onViewState:tDidInitViewState do:^(State *this, State *other){
+            [self reset];
+        }];
+        
+        [[self configureState:tUserSignOutState] onViewState:tDidInitViewState do:^(State *this, State *other){
             [self reset];
         }];
         

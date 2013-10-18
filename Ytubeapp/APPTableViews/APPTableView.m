@@ -254,16 +254,26 @@
 
 -(void)toShowMode:(NSString*)mode
 {
-    //NSLog(@"toShowMode %@", mode);
+    //NSLog(@"toShowModeForce %@", mode);
     
     if (!mode || ![self hasShowMode:mode])
         [NSException raise:@"show mode is nil or doesn't exists" format:@"show mode is nil or doesn't exists"];
-
+    
     // if current show mode equal to requested show mode, then just scroll to top
     if (self.showMode == mode) {
         //[self scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
         return;
     }
+    
+    [self toShowModeForce:mode];
+}
+
+-(void)toShowModeForce:(NSString*)mode
+{
+    NSLog(@"toShowModeForce %@", mode);
+    
+    if (!mode || ![self hasShowMode:mode])
+        [NSException raise:@"show mode is nil or doesn't exists" format:@"show mode is nil or doesn't exists"];
 
     // do some exit processing
     [self._del beforeShowModeChange];
@@ -274,6 +284,7 @@
     [self._del afterShowModeChange];
 
     if ([self._del hasData:mode]) {
+        NSLog(@"toShowModeForce hasData");
         [self.tableViewMaskView unmaskOnCompletion:^(BOOL isUnmasked) {
             if (isUnmasked) {
                 [self performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
@@ -281,6 +292,7 @@
         }];
 
     } else {
+        NSLog(@"toShowModeForce hasNoData");
         [self.tableViewMaskView maskOnCompletion:^(BOOL isMasked) {
             if (isMasked) {
                 [self reloadDataForShowMode:mode];
@@ -294,14 +306,25 @@
     [self toShowMode:self.defaultShowMode];
 }
 
+-(void)toDefaultShowModeForce
+{
+    [self toShowModeForce:self.defaultShowMode];
+}
+
 -(void)clearView
 {
+    //NSLog(@"clearView");
     // reset all show modes
-    [self resetAllShowModesAndClear];
+    //[self resetAllShowModesAndClear];
+    for (NSString* mode in self.showModes) {
+        [self._del clearData:mode];
+    }
+    [self performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 -(void)clearViewAndReloadAll
 {
+    //NSLog(@"clearViewAndReloadAll");
     [self clearView];
     // load initial data for current show mode
     [self reloadDataForShowMode:self.showMode];
@@ -347,20 +370,13 @@
 
 -(void)reloadDataForShowMode:(NSString*)mode
 {
+    //NSLog(@"reloadDataForShowMode %@", mode);
     [self._del reloadData:mode];
 }
 
 -(void)loadMoreDataForShowMode:(NSString*)mode
 {
     [self._del loadMoreData:mode];
-}
-
--(void)resetAllShowModesAndClear
-{
-    for (NSString* mode in self.showModes) {
-        [self._del clearData:mode];
-    }
-    [self performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 -(BOOL)hasShowMode:(NSString*)mode

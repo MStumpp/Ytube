@@ -39,6 +39,7 @@
     if (self)
     {
         [self initUI];
+        [self allowToOpen:NO];
         [self prepareForReuse];
     }
     return self;
@@ -73,7 +74,6 @@
 -(void)prepareForReuse
 {
     [super prepareForReuse];
-    [self allowToOpen:NO];
     self.open = NO;
     [self setProfilePic:[[APPGlobals classInstance] getGlobalForKey:@"silhouetteImage"]];
 }

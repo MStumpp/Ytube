@@ -1324,6 +1324,11 @@
 				CLASSPREFIX = APP;
 				LastUpgradeCheck = 0440;
 				ORGANIZATIONNAME = "Matthias Stumpp";
+				TargetAttributes = {
+					395A876B15E186F4004F39E2 = {
+						DevelopmentTeam = 823A88EWHM;
+					};
+				};
 			};
 			buildConfigurationList = 395A876615E186F4004F39E2 /* Build configuration list for PBXProject "Ytubeapp" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1712,6 +1717,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 916ADCFB97E841D48CB69C0C /* Pods.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Ytubeapp/Ytubeapp-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1725,6 +1732,7 @@
 					"-lxml2",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods\"/**";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1734,6 +1742,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 916ADCFB97E841D48CB69C0C /* Pods.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Ytubeapp/Ytubeapp-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1747,6 +1757,7 @@
 					"-lxml2",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods\"/**";
 				WRAPPER_EXTENSION = app;
 			};

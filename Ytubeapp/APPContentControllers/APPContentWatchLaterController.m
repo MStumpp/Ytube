@@ -20,6 +20,16 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_watch_later"];
         
+        [[self configureState:tUserSignOutState] onViewState:tDidInitViewState do:^(State *this, State *other){
+            NSLog(@"[self.tableView clearView %@]", self.class);
+            [self.tableView clearView];
+        }];
+        
+        [[self configureState:tUserSignInState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            NSLog(@"[self.tableView toDefaultShowModeForce] %@", self.class);
+            [self.tableView toDefaultShowModeForce];
+        }];
+        
         [self.dataCache configureReloadDataForKey:tWatchLaterAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPWatchLater instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:NULL

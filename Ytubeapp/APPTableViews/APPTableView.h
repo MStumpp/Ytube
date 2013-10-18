@@ -21,7 +21,9 @@
 -(BOOL)addShowMode:(NSString*)mode;
 -(BOOL)addDefaultShowMode:(NSString*)mode;
 -(void)toShowMode:(NSString*)mode;
+-(void)toShowModeForce:(NSString*)mode;
 -(void)toDefaultShowMode;
+-(void)toDefaultShowModeForce;
 -(void)clearView;
 -(void)clearViewAndReloadAll;
 -(void)dataReloadedFinished:(NSString*)mode;

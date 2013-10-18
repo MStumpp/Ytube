@@ -32,6 +32,13 @@
 #define tOut 02
 #define tInOut 03
 
+// states
+
+#define tNone 21
+#define tInit 22
+#define tLoad 23
+#define tAppear 24
+
 typedef void(^ViewCallback)(State *this, State *other);
 typedef void(^ForwardResponseCallback)(State *to, BOOL block, BOOL skip);
 typedef void(^ForwardCallback)(State *this, State *from, ForwardResponseCallback callback);

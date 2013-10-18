@@ -36,6 +36,7 @@
     if (self)
     {
         [self initUI];
+        [self allowToOpen:NO];
         [self prepareForReuse];
     }
     return self;
@@ -68,7 +69,6 @@
 -(void)prepareForReuse
 {
     [super prepareForReuse];
-    [self allowToOpen:NO];
     [self setTextPic:[[APPGlobals classInstance] getGlobalForKey:@"noPreviewImage"]];
 }
 

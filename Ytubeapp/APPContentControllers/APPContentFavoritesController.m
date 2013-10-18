@@ -21,6 +21,14 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_favorites"];
         
+        [[self configureState:tUserSignOutState] onViewState:tDidInitViewState do:^(State *this, State *other){
+            [self.tableView clearView];
+        }];
+
+        [[self configureState:tUserSignInState] onViewState:tDidAppearViewState do:^(State *this, State *other){
+            [self.tableView toDefaultShowModeForce];
+        }];
+        
         [self.dataCache configureReloadDataForKey:tFavoritesAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPFavorites instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:NULL
