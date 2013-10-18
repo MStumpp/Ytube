@@ -18,7 +18,6 @@
 @property (atomic) NSString *allState;
 @property (atomic) int currentControllerViewState;
 @property (atomic) int currentProcessedViewState;
-@property (atomic) int currentViewState;
 @property (atomic) NSMutableDictionary *states;
 @property (atomic) NSMutableDictionary *all;
 @end
@@ -40,8 +39,7 @@
         self.allState = tAllState;
 
         self.currentControllerViewState = tDidInitViewState;
-        self.currentProcessedViewState = self.currentControllerViewState;
-        self.currentViewState = tNone;
+        self.currentProcessedViewState = tNoneViewState;
         self.states = [NSMutableDictionary dictionary];
         self.all = [NSMutableDictionary dictionary];
         
@@ -177,18 +175,15 @@
     }
 
     State *tmp = [self getOrNewState:state];
-    
-    State *refState = self.currState;
-    if ([self.nextStates count] > 0)
-        refState = [(StateQueueWrapper*)[self.nextStates lastObject] state];
-    
-    if (![self transitionFrom:refState to:tmp]) {
-        return FALSE;
-    }
-    
+
     State *previousState = self.currState;
     if ([self.nextStates count] > 0)
         previousState = [(StateQueueWrapper*)[self.nextStates lastObject] state];
+    
+    if (![self transitionFrom:previousState to:tmp]) {
+        return FALSE;
+    }
+    
     State *currState = tmp;
     
     [currState processForwardFromState:previousState andCallback:^(State *toState, BOOL block, BOOL skip) {
@@ -223,9 +218,6 @@
 
 -(void)toStateProcessor
 {
-    //NSLog(@"toStateProcessor %@", self);
-    //NSLog(@"toStateProcessor currentControllerViewState %i", self.currentControllerViewState);
-    //NSLog(@"toStateProcessor currentProcessedViewState %i", self.currentProcessedViewState);
     if (self.blockCurrentState && self.currState && [self.currState hasViewStateAfterViewState:self.currentProcessedViewState]) {
         return;
     }
@@ -233,16 +225,13 @@
     if ([self.nextStates count] == 0)
         return;
     
-    //NSLog(@"previousState Was: %@", self.previousState.name);
-    //NSLog(@"currState Was: %@", self.currState.name);
     self.previousState = self.currState;
     StateQueueWrapper *stateQueueWrapper = [self.nextStates firstObject];
     self.currState = [stateQueueWrapper state];
     self.blockCurrentState = [stateQueueWrapper block];
     [self.nextStates removeObject:stateQueueWrapper];
-    //NSLog(@"previousState Is: %@", self.previousState.name);
-    //NSLog(@"currState Is: %@", self.currState.name);
     
+    self.currentProcessedViewState = tNoneViewState;
     [self processOnInitForPrev:self.previousState andCurrent:self.currState];
 }
 
@@ -319,250 +308,140 @@
 {
     [super viewDidLoad];
     self.currentControllerViewState = tDidLoadViewState;
-    //[self processOnViewDidLoadForPrev:self.previousState andCurrent:self.currState];
-    [self processOnInitForPrev:self.previousState andCurrent:self.currState];
+    self.currentProcessedViewState = tDidInitViewState;
+    [self processOnViewDidLoadForPrev:self.previousState andCurrent:self.currState];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     self.currentControllerViewState = tWillAppearViewState;
-    //self.currentProcessedViewState = tDidLoadViewState;
-    //[self processOnViewWillAppearForPrev:self.previousState andCurrent:self.currState];
-    [self processOnInitForPrev:self.previousState andCurrent:self.currState];
+    self.currentProcessedViewState = tDidLoadViewState;
+    [self processOnViewWillAppearForPrev:self.previousState andCurrent:self.currState];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     self.currentControllerViewState = tDidAppearViewState;
-    //self.currentProcessedViewState = tWillAppearViewState;
-    //[self processOnViewDidAppearForPrev:self.previousState andCurrent:self.currState];
-    [self processOnInitForPrev:self.previousState andCurrent:self.currState];
+    self.currentProcessedViewState = tWillAppearViewState;
+    [self processOnViewDidAppearForPrev:self.previousState andCurrent:self.currState];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    self.currentControllerViewState = tWillDisappearViewState;
-    //self.currentProcessedViewState = tDidAppearViewState;
-    //[self processOnViewWillDisappearForPrev:self.previousState andCurrent:self.currState];
-    [self processOnInitForPrev:self.previousState andCurrent:self.currState];
+    self.currentControllerViewState = tDidLoadViewState;
+    self.currentProcessedViewState = tWillDisappearViewState;
+
+    if (self.previousState) {
+        [self.previousState processStateOut:tWillDisappearViewState toState:self.currentState];
+        [(State*)[self.states objectForKey:self.allState] processStateOut:tWillDisappearViewState toState:self.currentState];
+    }
+    if (self.currentState) {
+        [self.currentState processStateIn:tWillDisappearViewState fromState:self.previousState];
+        [(State*)[self.states objectForKey:self.allState] processStateIn:tWillDisappearViewState fromState:self.previousState];
+    }
+    [self toStateProcessor];
 }
 
 -(void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    self.currentControllerViewState = tDidDisappearViewState;
-    //self.currentProcessedViewState = tWillDisappearViewState;
-    //[self processOnViewDidDisappearForPrev:self.previousState andCurrent:self.currState];
-    [self processOnInitForPrev:self.previousState andCurrent:self.currState];
-}
+    self.currentControllerViewState = tDidLoadViewState;
+    self.currentProcessedViewState = tDidDisappearViewState;
 
--(void)viewWillUnload
-{
-    [super viewWillUnload];
-    self.currentControllerViewState = tWillUnloadViewState;
-    //self.currentProcessedViewState = tDidDisappearViewState;
-    //[self processOnViewWillUnloadForPrev:self.previousState andCurrent:self.currState];
-    [self processOnInitForPrev:self.previousState andCurrent:self.currState];
-}
-
--(void)viewDidUnload
-{
-    [super viewDidUnload];
-    self.currentControllerViewState = tDidUnloadViewState;
-    //self.currentProcessedViewState = tWillUnloadViewState;
-    //[self processOnViewDidUnloadForPrev:self.previousState andCurrent:self.currState];
-    [self processOnInitForPrev:self.previousState andCurrent:self.currState];
+    if (self.previousState) {
+        [self.previousState processStateOut:tDidDisappearViewState toState:self.currentState];
+        [(State*)[self.states objectForKey:self.allState] processStateOut:tDidDisappearViewState toState:self.currentState];
+    }
+    if (self.currentState) {
+        [self.currentState processStateIn:tDidDisappearViewState fromState:self.previousState];
+        [(State*)[self.states objectForKey:self.allState] processStateIn:tDidDisappearViewState fromState:self.previousState];
+    }
+    [self toStateProcessor];
 }
 
 -(void)processOnInitForPrev:(State*)previousState andCurrent:(State*)currentState
 {
-    //NSLog(@"processOnInitForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
-    self.currentProcessedViewState = tDidInitViewState;
-    if (previousState) {
-        [previousState processStateOut:self.currentProcessedViewState toState:currentState];
-        [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState toState:currentState];
+    if (self.currentControllerViewState >= tDidInitViewState) {
+        if (self.currentProcessedViewState < tDidInitViewState) {
+            self.currentProcessedViewState = tDidInitViewState;
+            if (previousState) {
+                [previousState processStateOut:tDidInitViewState toState:currentState];
+                [(State*)[self.states objectForKey:self.allState] processStateOut:tDidInitViewState toState:currentState];
+            }
+            if (currentState) {
+                [currentState processStateIn:tDidInitViewState fromState:previousState];
+                [(State*)[self.states objectForKey:self.allState] processStateIn:tDidInitViewState fromState:previousState];
+            }
+        }
+        [self processOnViewDidLoadForPrev:previousState andCurrent:currentState];
+        
+    } else {
+        [self toStateProcessor];
     }
-    if (currentState) {
-        [currentState processStateIn:self.currentProcessedViewState fromState:previousState];
-        [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState fromState:previousState];
-    }
-    [self processOnViewDidLoadForPrev:previousState andCurrent:currentState];
 }
 
 -(void)processOnViewDidLoadForPrev:(State*)previousState andCurrent:(State*)currentState
 {
-    //NSLog(@"processOnViewDidLoadForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
-    //NSLog(@"currentControllerViewState %i", self.currentControllerViewState);
-    //NSLog(@"currentProcessedViewState %i", self.currentProcessedViewState);
     if (self.currentControllerViewState >= tDidLoadViewState) {
-        //NSLog(@"processOnViewDidLoadForPrev 1");
         if (self.currentProcessedViewState < tDidLoadViewState) {
-            //NSLog(@"processOnViewDidLoadForPrev 2");
             self.currentProcessedViewState = tDidLoadViewState;
             if (previousState) {
-                [previousState processStateOut:self.currentProcessedViewState toState:currentState];
-                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState toState:currentState];
+                [previousState processStateOut:tDidLoadViewState toState:currentState];
+                [(State*)[self.states objectForKey:self.allState] processStateOut:tDidLoadViewState toState:currentState];
             }
             if (currentState) {
-                [currentState processStateIn:self.currentProcessedViewState fromState:previousState];
-                [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState fromState:previousState];
+                [currentState processStateIn:tDidLoadViewState fromState:previousState];
+                [(State*)[self.states objectForKey:self.allState] processStateIn:tDidLoadViewState fromState:previousState];
             }
         }
         [self processOnViewWillAppearForPrev:previousState andCurrent:currentState];
         
     } else {
-        //NSLog(@"processOnViewDidLoadForPrev 3");
         [self toStateProcessor];
     }
 }
 
 -(void)processOnViewWillAppearForPrev:(State*)previousState andCurrent:(State*)currentState
 {
-    //NSLog(@"processOnViewWillAppearForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
-    //NSLog(@"currentControllerViewState %i", self.currentControllerViewState);
-    //NSLog(@"currentProcessedViewState %i", self.currentProcessedViewState);
     if (self.currentControllerViewState >= tWillAppearViewState) {
-        //NSLog(@"processOnViewWillAppearForPrev 1");
         if (self.currentProcessedViewState < tWillAppearViewState) {
-            //NSLog(@"processOnViewWillAppearForPrev 2");
             self.currentProcessedViewState = tWillAppearViewState;
             if (previousState) {
-                [previousState processStateOut:self.currentProcessedViewState toState:currentState];
-                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState toState:currentState];
+                [previousState processStateOut:tWillAppearViewState toState:currentState];
+                [(State*)[self.states objectForKey:self.allState] processStateOut:tWillAppearViewState toState:currentState];
             }
             if (currentState) {
-                [currentState processStateIn:self.currentProcessedViewState fromState:previousState];
-                [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState fromState:previousState];
+                [currentState processStateIn:tWillAppearViewState fromState:previousState];
+                [(State*)[self.states objectForKey:self.allState] processStateIn:tWillAppearViewState fromState:previousState];
             }
         }
         [self processOnViewDidAppearForPrev:previousState andCurrent:currentState];
         
     } else {
-        //NSLog(@"processOnViewWillAppearForPrev 3");
         [self toStateProcessor];
     }
 }
 
 -(void)processOnViewDidAppearForPrev:(State*)previousState andCurrent:(State*)currentState
 {
-    //NSLog(@"processOnViewDidAppearForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
-    //NSLog(@"currentControllerViewState %i", self.currentControllerViewState);
-    //NSLog(@"currentProcessedViewState %i", self.currentProcessedViewState);
-    if (self.currentControllerViewState >= tDidAppearViewState) {
-        //NSLog(@"processOnViewDidAppearForPrev 1");
+    if (self.currentControllerViewState == tDidAppearViewState) {
         if (self.currentProcessedViewState < tDidAppearViewState) {
-            //NSLog(@"processOnViewDidAppearForPrev 2");
             self.currentProcessedViewState = tDidAppearViewState;
             if (previousState) {
-                [previousState processStateOut:self.currentProcessedViewState toState:currentState];
-                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState toState:currentState];
-            }
-            //NSLog(@"blabla 1");
-
-            if (currentState) {
-                [currentState processStateIn:self.currentProcessedViewState fromState:previousState];
-                [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState fromState:previousState];
-            }
-            //NSLog(@"blabla 2");
-        }
-        [self processOnViewWillDisappearForPrev:previousState andCurrent:currentState];
-        
-    } else {
-        //NSLog(@"processOnViewDidAppearForPrev 3");
-        [self toStateProcessor];
-    }
-}
-
--(void)processOnViewWillDisappearForPrev:(State*)previousState andCurrent:(State*)currentState
-{
-    //NSLog(@"processOnViewWillDisappearForPrev: prev:%@ and currnt:%@", previousState.name, currentState.name);
-    //NSLog(@"currentControllerViewState %i", self.currentControllerViewState);
-    //NSLog(@"currentProcessedViewState %i", self.currentProcessedViewState);
-    if (self.currentControllerViewState >= tWillDisappearViewState) {
-        //NSLog(@"processOnViewWillDisappearForPrev 1");
-        if (self.currentProcessedViewState < tWillDisappearViewState) {
-            //NSLog(@"processOnViewWillDisappearForPrev 2");
-            self.currentProcessedViewState = tWillDisappearViewState;
-            if (previousState) {
-                [previousState processStateOut:self.currentProcessedViewState toState:currentState];
-                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState toState:currentState];
+                [previousState processStateOut:tDidAppearViewState toState:currentState];
+                [(State*)[self.states objectForKey:self.allState] processStateOut:tDidAppearViewState toState:currentState];
             }
             if (currentState) {
-                [currentState processStateIn:self.currentProcessedViewState fromState:previousState];
-                [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState fromState:previousState];
+                [currentState processStateIn:tDidAppearViewState fromState:previousState];
+                [(State*)[self.states objectForKey:self.allState] processStateIn:tDidAppearViewState fromState:previousState];
             }
         }
-        [self processOnViewDidDisappearForPrev:previousState andCurrent:currentState];
-        
-    } else {
-        //NSLog(@"processOnViewWillDisappearForPrev 3");
-        [self toStateProcessor];
     }
-}
-
--(void)processOnViewDidDisappearForPrev:(State*)previousState andCurrent:(State*)currentState
-{
-    if (self.currentControllerViewState >= tDidDisappearViewState) {
-        if (self.currentProcessedViewState < tDidDisappearViewState) {
-            self.currentProcessedViewState = tDidDisappearViewState;
-            if (previousState) {
-                [previousState processStateOut:self.currentProcessedViewState toState:currentState];
-                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState toState:currentState];
-            }
-            if (currentState) {
-                [currentState processStateIn:self.currentProcessedViewState fromState:previousState];
-                [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState fromState:previousState];
-            }
-        }
-        [self processOnViewWillUnloadForPrev:previousState andCurrent:currentState];
-        
-    } else {
-        [self toStateProcessor];
-    }
-}
-
--(void)processOnViewWillUnloadForPrev:(State*)previousState andCurrent:(State*)currentState
-{
-    if (self.currentControllerViewState >= tWillUnloadViewState) {
-        if (self.currentProcessedViewState < tWillUnloadViewState) {
-            self.currentProcessedViewState = tWillUnloadViewState;
-            if (previousState) {
-                [previousState processStateOut:self.currentProcessedViewState toState:currentState];
-                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState toState:currentState];
-            }
-            if (currentState) {
-                [currentState processStateIn:self.currentProcessedViewState fromState:previousState];
-                [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState fromState:previousState];
-            }
-        }
-        [self processOnViewDidUnloadForPrev:previousState andCurrent:currentState];
-        
-    } else {
-        [self toStateProcessor];
-    }
-}
-
--(void)processOnViewDidUnloadForPrev:(State*)previousState andCurrent:(State*)currentState
-{
-    if (self.currentControllerViewState >= tDidUnloadViewState) {
-        if (self.currentProcessedViewState < tDidUnloadViewState) {
-            self.currentProcessedViewState = tDidUnloadViewState;
-            if (previousState) {
-                [previousState processStateOut:self.currentProcessedViewState toState:currentState];
-                [(State*)[self.states objectForKey:self.allState] processStateOut:self.currentProcessedViewState toState:currentState];
-            }
-            if (currentState) {
-                [currentState processStateIn:self.currentProcessedViewState fromState:previousState];
-                [(State*)[self.states objectForKey:self.allState] processStateIn:self.currentProcessedViewState fromState:previousState];
-            }
-        }
-        
-    } else {
-        [self toStateProcessor];
-    }
+    
+    [self toStateProcessor];
 }
 
 @end

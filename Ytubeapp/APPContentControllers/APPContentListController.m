@@ -19,7 +19,6 @@
     self = [super init];
     if (self) {
         [[self configureDefaultState] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            NSLog(@"[self.tableView toDefaultShowMode] %@", self.class);
             [self.tableView toDefaultShowMode];
         }];
         

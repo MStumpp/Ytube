@@ -31,7 +31,7 @@
     [service setShouldCacheDatedData:TRUE];
     [service setAuthorizer:auth];
     [service setIsServiceRetryEnabled:TRUE];
-    [service setServiceMaxRetryInterval:30.0];
+    [service setServiceMaxRetryInterval:10.0];
     [[APPGlobals classInstance] setGlobalObject:service forKey:@"service"];
 
     // set up QueryManager and Queues

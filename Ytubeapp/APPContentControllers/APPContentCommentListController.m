@@ -36,6 +36,8 @@
 
         self.commentsId = [NSString stringWithFormat:@"%@_%@", tCommentsAll, [APPContent videoID:self.video]];
         
+        [self setDefaultState:self.commentsId];
+        
         [[self configureDefaultState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [self.userImageView setImage:nil];
             [[APPUserManager classInstance] imageForCurrentUserWithCallback:^(UIImage *image) {
@@ -253,7 +255,7 @@
                               cancelButtonTitle:@"OK"
                               otherButtonTitles:nil] show];
         }
-        [self.tableView clearViewAndReloadAll];
+        [self.tableView clearViewAndReload];
         
     } else if ([[notification name] isEqualToString:eventDeletedCommentFromVideo]) {
         if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
@@ -262,7 +264,7 @@
                                        delegate:nil
                               cancelButtonTitle:@"OK"
                               otherButtonTitles:nil] show];
-            [self.tableView clearViewAndReloadAll];
+            [self.tableView clearViewAndReload];
         }
     }
 }

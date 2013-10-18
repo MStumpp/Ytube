@@ -71,14 +71,6 @@
             [self.tableView toDefaultShowMode];
         }];
         
-        [[self configureState:tUserSignInState] onViewState:tDidInitViewState do:^(State *this, State *other){
-            [self reset];
-        }];
-        
-        [[self configureState:tUserSignOutState] onViewState:tDidInitViewState do:^(State *this, State *other){
-            [self reset];
-        }];
-        
         [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             // save state of header form
             if ([self.tableViewHeaderFormView isHeaderShown]) {

@@ -18,35 +18,17 @@
         self.dataCache = [[APPGlobals classInstance] getGlobalForKey:@"dataCache"];
         
         [[self configureState:tActiveState] forwardToState:^(State *this, State *from, ForwardResponseCallback callback){
-            if (from && [[from name] isEqualToString:tPassiveState]) {
-                callback(this.data, TRUE, FALSE);
-            } else if (from && [[from name] isEqualToString:tUserSignInState]) {
-                callback(this.data, TRUE, FALSE);
-            } else if (from && [[from name] isEqualToString:tUserSignOutState]) {
-                callback(this.data, TRUE, FALSE);
+            if (this.data && from && [[from name] isEqualToString:tPassiveState]) {
+                id data = this.data;
+                this.data = nil;
+                callback(data, TRUE, FALSE);
             } else {
                 callback([self defaultState], TRUE, FALSE);
             }
         }];
         
-        [[self configureState:tPassiveState] onViewState:tDidInitViewState do:^(State *this, State *other){
+        [[self configureState:tPassiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
             [[self state:tActiveState] setData:[self prevState]];
-        }];
-        
-        [[self configureState:tUserSignInState] onViewState:tDidInitViewState do:^(State *this, State *other){
-            [[self state:tActiveState] setData:[self prevState]];
-        }];
-        
-        [[self configureState:tUserSignOutState] onViewState:tDidInitViewState do:^(State *this, State *other){
-            [[self state:tActiveState] setData:[self prevState]];
-        }];
-        
-        [[self configureState:tUserSignInState] forwardToState:^(State *this, State *from, ForwardResponseCallback callback){
-            callback([self state:tActiveState], TRUE, FALSE);
-        }];
-        
-        [[self configureState:tUserSignOutState] forwardToState:^(State *this, State *from, ForwardResponseCallback callback){
-            callback([self state:tActiveState], TRUE, FALSE);
         }];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
@@ -60,11 +42,6 @@
     return self;
 }
 
--(void)loadView
-{
-    [super loadView];
-}
-
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -75,17 +52,15 @@
 
 -(void)userSignedIn:(NSNotification*)notification
 {
-    [self toState:tUserSignInState];
 }
 
 -(void)userSignedOut:(NSNotification*)notification
 {
-    [self toState:tUserSignOutState];
 }
 
 // "APPSliderViewControllerDelegate" Protocol
 
--(void)doDefaultMode:(void (^)(void))callback;
+-(void)doDefaultMode:(void (^)(void))callback
 {
     //NSLog(@"doDefaultMode %@", self.class);
     [self toState:tPassiveState];
@@ -93,7 +68,7 @@
         callback();
 }
 
--(void)undoDefaultMode:(void (^)(void))callback;
+-(void)undoDefaultMode:(void (^)(void))callback
 {
     //NSLog(@"undoDefaultMode %@", self.class);
     [self toState:tActiveState];

@@ -20,6 +20,8 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_featured"];
         
+        [self setDefaultState:tFeaturedAll];
+        
         [self.dataCache configureReloadDataForKey:tFeaturedAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPVideoRecentlyFeatured instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:NULL

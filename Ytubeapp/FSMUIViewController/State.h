@@ -17,27 +17,19 @@
 
 // view states
 
-#define tDidInitViewState 11
-#define tDidLoadViewState 12
-#define tWillAppearViewState 13
-#define tDidAppearViewState 14
-#define tWillDisappearViewState 15
-#define tDidDisappearViewState 16
-#define tWillUnloadViewState 17
-#define tDidUnloadViewState 18
+#define tNoneViewState 1
+#define tDidInitViewState 2
+#define tDidLoadViewState 3
+#define tWillAppearViewState 4
+#define tDidAppearViewState 5
+#define tWillDisappearViewState 6
+#define tDidDisappearViewState 7
 
 // transition modes
 
-#define tIn 01
-#define tOut 02
-#define tInOut 03
-
-// states
-
-#define tNone 21
-#define tInit 22
-#define tLoad 23
-#define tAppear 24
+#define tIn 1
+#define tOut 2
+#define tInOut 3
 
 typedef void(^ViewCallback)(State *this, State *other);
 typedef void(^ForwardResponseCallback)(State *to, BOOL block, BOOL skip);

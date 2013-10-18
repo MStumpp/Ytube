@@ -157,7 +157,7 @@
     }
 }
 
--(void)viewController:(GTMOAuth2ViewControllerTouch *)viewController finishedWithAuth:(GTMOAuth2Authentication *)auth error:(NSError *)error
+-(void)viewController:(GTMOAuth2ViewControllerTouch*)viewController finishedWithAuth:(GTMOAuth2Authentication*)auth error:(NSError *)error
 {
     // authentication object received
     if (auth && error == nil) {
@@ -189,14 +189,13 @@
     }
 }
 
--(void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+-(void)navigationController:(UINavigationController*)navigationController didShowViewController:(UIViewController*)viewController animated:(BOOL)animated
 {
     // login controller shows up
     if (viewController != self.sliderViewController) {
-        NSLog(@"testtest");
         // when signing in, replace the current toolbar background image with the sign in image
         // change the image back once the user is signed in
-        self.tmpTopBarBackImage = [ViewHelpers getBackgroundImageForToolbar:self.toolbar];
+        self.tmpTopBarBackImage = [self.toolbar backgroundImageForToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
         [self.toolbarLabel setHidden:TRUE];
         [self.toolbar setBackgroundImage:[UIImage imageNamed:@"top_bar_back_sign_in"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
 
@@ -231,7 +230,7 @@
     if (!image)
         return;
     [self.toolbarLabel setText:@""];
-    [ViewHelpers setToolbar:self.toolbar withBackgroundImage:image];
+    [self.toolbar setBackgroundImage:image forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
 }
 
 // allows to set the toolbar title from the outside
@@ -239,7 +238,7 @@
 {
     if (!title)
         return;
-    [ViewHelpers setToolbar:self.toolbar withBackgroundImage:[UIImage imageNamed:@"top_bar_back"]];
+    [self.toolbar setBackgroundImage:[UIImage imageNamed:@"top_bar_back"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
     [self.toolbarLabel setText:title];
 }
 

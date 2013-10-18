@@ -24,6 +24,8 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_search"];
         
+        [self setDefaultState:tVideoQueryAll];
+        
         [self.dataCache configureReloadDataForKey:tVideoQueryAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPVideoQuery instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
                                execute:[NSMutableDictionary dictionaryWithObjectsAndKeys:self.query, @"query", nil]
@@ -100,7 +102,7 @@
     self.query = textField.text;
     // clear cache in order to process new query
     [self.dataCache clearData:tVideoQueryAll];
-    [self.tableView clearViewAndReloadAll];
+    [self.tableView toDefaultShowModeForce];
     return YES;
 }
 

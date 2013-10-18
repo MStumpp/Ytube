@@ -440,7 +440,7 @@
 -(void)navigationController:(UINavigationController *)navController willBePushed:(UIViewController*)viewController context:(id)context onCompletion:(void (^)(void))callback
 {
     dispatch_semaphore_t sema = dispatch_semaphore_create(1);
-        [self mask:YES onCompletion:^{
+        [self.maskView maskOnCompletion:^(BOOL isMasked){
             dispatch_semaphore_signal(sema);
         }];
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
@@ -455,7 +455,7 @@
 -(void)navigationController:(UINavigationController *)navController didPop:(UIViewController*)viewController context:(id)context onCompletion:(void (^)(void))callback
 {
     dispatch_semaphore_t sema = dispatch_semaphore_create(1);
-    [self mask:NO onCompletion:^{
+    [self.maskView unmaskOnCompletion:^(BOOL isUnmasked){
         dispatch_semaphore_signal(sema);
     }];
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);

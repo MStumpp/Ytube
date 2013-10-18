@@ -20,13 +20,7 @@
     if (self) {
         self.topbarImage = [UIImage imageNamed:@"top_bar_back_my_videos"];
         
-        [[self configureState:tUserSignOutState] onViewState:tDidInitViewState do:^(State *this, State *other){
-            [self.tableView clearView];
-        }];
-
-        [[self configureState:tUserSignInState] onViewState:tDidAppearViewState do:^(State *this, State *other){
-            [self.tableView toDefaultShowModeForce];
-        }];
+        [self setDefaultState:tMyVideoAll];
         
         [self.dataCache configureReloadDataForKey:tMyVideoAll withHandler:^(NSString *key, id context, QueryHandler queryHandler, ResponseHandler responseHandler) {
             queryHandler(key, [[APPVideoMyVideos instanceWithQueue:[[[APPGlobals classInstance] getGlobalForKey:@"queuemanager"] queueWithName:@"queue"]]
@@ -91,9 +85,15 @@
                                        delegate:nil
                               cancelButtonTitle:@"OK"
                               otherButtonTitles:nil] show];
-            [self.tableView clearViewAndReloadAll];
+            [self.tableView clearViewAndReload];
         }
     }
+}
+
+-(void)userSignedOut:(NSNotification*)notification
+{
+    [super userSignedOut:notification];
+    [self.tableView clearView];
 }
 
 @end
