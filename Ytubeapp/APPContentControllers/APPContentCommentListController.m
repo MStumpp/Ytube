@@ -27,6 +27,11 @@
 @implementation APPContentCommentListController
 @synthesize video;
 
+-(id)initWithData:(id)data
+{
+    return [self initWithVideo:data];
+}
+
 -(id)initWithVideo:(GDataEntryYouTubeVideo*)v
 {
     self = [super init];

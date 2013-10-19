@@ -12,6 +12,7 @@
 #import "APPUserManager.h"
 #import "APPGlobals.h"
 #import "DataCache.h"
+#import "APPContentBaseController.h"
 
 @implementation APPAppDelegate
 
@@ -104,6 +105,7 @@
 {
     DataCache *dataCache = [[APPGlobals classInstance] getGlobalForKey:@"dataCache"];
     [dataCache clearAllData];
+    [APPContentBaseController clearInstances];
 }
 
 -(void)authTokenValidated:(NSNotification*)notification

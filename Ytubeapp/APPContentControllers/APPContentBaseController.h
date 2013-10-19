@@ -24,6 +24,9 @@
 #define tPassiveState @"passiveState"
 
 @interface APPContentBaseController : FSMUIViewController <APPSliderViewControllerDelegate>
++(id)getInstance:(NSString*)identifier withData:(id)data;
++(void)clearInstances;
+-(id)initWithData:(id)data;
 @property UIImage *topbarImage;
 @property NSString *topbarTitle;
 @property DataCache *dataCache;

@@ -11,6 +11,31 @@
 
 @implementation APPContentBaseController
 
+static NSMutableDictionary *instances;
+
++(id)getInstance:(NSString*)identifier withData:(id)data
+{
+    if (!instances)
+        instances = [NSMutableDictionary new];
+    
+    id instance = [instances objectForKey:identifier];
+    if (!instance) {
+        instance = [[self.class alloc] initWithData:data];
+        [instances setObject:instance forKey:identifier];
+    }
+    return instance;
+}
+
++(void)clearInstances
+{
+    [instances removeAllObjects];
+}
+
+-(id)initWithData:(id)data
+{
+    return [self init];
+}
+
 -(id)init
 {
     self = [super init];

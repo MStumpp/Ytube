@@ -54,6 +54,11 @@
 @implementation APPContentVideoDetailViewController
 @synthesize video;
 
+-(id)initWithData:(id)data
+{
+    return [self initWithVideo:data];
+}
+
 -(id)initWithVideo:(GDataEntryYouTubeVideo*)v
 {
     self = [super init];
@@ -600,7 +605,7 @@
 
         case tComments:
         {
-            APPContentCommentListController *commentController = [[APPContentCommentListController alloc] initWithVideo:self.video];
+            APPContentCommentListController *commentController = [APPContentCommentListController getInstance:[NSString stringWithFormat:@"comments_%@", [APPContent videoID:self.video]] withData:self.video];
             [self pushViewController:commentController];
             break;
         }
@@ -612,7 +617,7 @@
                 return;
             }
             
-            APPContentPlaylistListController *playlistController = [[APPContentPlaylistListController alloc] init];
+            APPContentPlaylistListController *playlistController = [APPContentPlaylistListController getInstance:[NSString stringWithFormat:@"playlists"] withData:nil];
             playlistController.afterSelect = ^(GDataEntryBase *entry) {
                 [APPQueryHelper addVideo:self.video toPlaylist:(GDataEntryYouTubePlaylistLink*)entry];
             };
@@ -713,9 +718,7 @@
     
     if ([mode isEqualToString:self.relatedVideosId]) {
         GDataEntryYouTubeVideo *otherVideo = (GDataEntryYouTubeVideo*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
-        APPContentVideoDetailViewController *videoController = [[APPContentVideoDetailViewController alloc] initWithVideo:otherVideo];
-        [self pushViewController:videoController];
-    
+        [self pushViewController:[APPContentVideoDetailViewController getInstance:[NSString stringWithFormat:@"video_detail_%@", [APPContent videoID:otherVideo]] withData:otherVideo]];
     } else {
         [self tapCell:indexPath];
     }

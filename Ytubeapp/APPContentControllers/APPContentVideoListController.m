@@ -27,8 +27,7 @@
     if ([self inState:tPassiveState]) return;
 
     GDataEntryYouTubeVideo *video = (GDataEntryYouTubeVideo*)[[self.dataCache getData:mode] objectAtIndex:[indexPath row]];
-    APPContentVideoDetailViewController *videoController = [[APPContentVideoDetailViewController alloc] initWithVideo:video];
-    [self pushViewController:videoController];
+    [self pushViewController:[APPContentVideoDetailViewController getInstance:[NSString stringWithFormat:@"video_detail_%@", [APPContent videoID:video]] withData:video]];
 }
 
 @end

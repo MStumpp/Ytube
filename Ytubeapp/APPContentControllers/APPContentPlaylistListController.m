@@ -147,7 +147,7 @@
         [self popViewController];
         self.afterSelect(playlist);
     } else {
-        APPContentPlaylistVideosController *playlistController = [[APPContentPlaylistVideosController alloc] initWithPlaylist:playlist];
+        APPContentPlaylistVideosController *playlistController = [APPContentPlaylistVideosController getInstance:[NSString stringWithFormat:@"playlist_videos_%@", [APPContent playlistID:playlist]] withData:playlist];
         [self pushViewController:playlistController];
     }
 }

@@ -55,16 +55,16 @@
     self = [super init];
     if (self) {
         self.controllers = [[NSDictionary alloc] initWithObjectsAndKeys:
-                            [[APPContentTopSearchBarController alloc] init], [NSNumber numberWithInt:tSearch],
-                            [[APPContentMostViewedVideoController alloc] init], [NSNumber numberWithInt:tMostPopular],
-                            [[APPContentTopRatedController alloc] init], [NSNumber numberWithInt:ttopRated],
-                            [[APPContentTopFavoritesController alloc] init], [NSNumber numberWithInt:ttopFavorites],
-                            [[APPContentFeaturedVideoController alloc] init], [NSNumber numberWithInt:tRecentlyFeatured],
-                            [[APPContentFavoritesController alloc] init], [NSNumber numberWithInt:tFavorites],
-                            [[APPContentPlaylistListController alloc] init], [NSNumber numberWithInt:tPlaylists],
-                            [[APPContentHistoryController alloc] init], [NSNumber numberWithInt:tHistory],
-                            [[APPContentWatchLaterController alloc] init], [NSNumber numberWithInt:tWatchLater],
-                            [[APPContentMyVideoController alloc] init], [NSNumber numberWithInt:tMyVideos],
+                            [APPContentTopSearchBarController getInstance:@"search" withData:nil], [NSNumber numberWithInt:tSearch],
+                            [APPContentMostViewedVideoController getInstance:@"most_viewed" withData:nil], [NSNumber numberWithInt:tMostPopular],
+                            [APPContentTopRatedController getInstance:@"top_rated" withData:nil], [NSNumber numberWithInt:ttopRated],
+                            [APPContentTopFavoritesController getInstance:@"top_favorites" withData:nil], [NSNumber numberWithInt:ttopFavorites],
+                            [APPContentFeaturedVideoController getInstance:@"featured" withData:nil], [NSNumber numberWithInt:tRecentlyFeatured],
+                            [APPContentFavoritesController getInstance:@"favorites" withData:nil], [NSNumber numberWithInt:tFavorites],
+                            [APPContentPlaylistListController getInstance:@"playlists" withData:nil], [NSNumber numberWithInt:tPlaylists],
+                            [APPContentHistoryController getInstance:@"history" withData:nil], [NSNumber numberWithInt:tHistory],
+                            [APPContentWatchLaterController getInstance:@"watch_later" withData:nil], [NSNumber numberWithInt:tWatchLater],
+                            [APPContentMyVideoController getInstance:@"my_videos" withData:nil], [NSNumber numberWithInt:tMyVideos],
                             nil];
         self.defaultContext = tMostPopular;
         self.currentContext = self.defaultContext;

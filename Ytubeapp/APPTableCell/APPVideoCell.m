@@ -349,7 +349,7 @@
                 return;
             }
             
-            APPContentPlaylistListController *playlistController = [[APPContentPlaylistListController alloc] init];
+            APPContentPlaylistListController *playlistController = [APPContentPlaylistListController getInstance:[NSString stringWithFormat:@"playlists"] withData:nil];
             playlistController.afterSelect = ^(GDataEntryBase *entry) {
                 [APPQueryHelper addVideo:self.video toPlaylist:(GDataEntryYouTubePlaylistLink*)entry];
             };
@@ -424,7 +424,7 @@
             }
 
         } else if (CGRectContainsPoint(self.commentsButton.frame, location)) {
-            APPContentCommentListController *commentController = [[APPContentCommentListController alloc] initWithVideo:self.video];
+            APPContentCommentListController *commentController = [APPContentCommentListController getInstance:[NSString stringWithFormat:@"comments_%@", [APPContent videoID:self.video]] withData:self.video];
             [[self.__tableView _del] pushViewController:commentController];
         }
     }

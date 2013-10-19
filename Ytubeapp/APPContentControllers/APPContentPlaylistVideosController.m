@@ -19,6 +19,11 @@
 @implementation APPContentPlaylistVideosController
 @synthesize playlist;
 
+-(id)initWithData:(id)data
+{
+    return [self initWithPlaylist:data];
+}
+
 -(id)initWithPlaylist:(GDataEntryYouTubePlaylistLink*)pl
 {
     self = [super init];
