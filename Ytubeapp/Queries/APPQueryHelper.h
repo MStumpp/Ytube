@@ -34,6 +34,7 @@
 #define eventAddedVideoToFavorites @"addedVideoToFavorites"
 +(Query*)addVideoToFavorites:(GDataEntryYouTubeVideo*)video;
 
+#define eventWillAddVideoToFavorites @"willAddVideoToFavorites"
 #define eventWillRemoveVideoFromFavorites @"willRemoveVideoFromFavorites"
 #define eventRemovedVideoFromFavorites @"removedVideoFromFavorites"
 +(Query*)removeVideoFromFavorites:(GDataEntryYouTubeVideo*)video;
@@ -41,6 +42,7 @@
 #define eventAddedVideoToWatchLater @"addedVideoToWatchLater"
 +(Query*)addVideoToWatchLater:(GDataEntryYouTubeVideo*)video;
 
+#define eventWillAddVideoToWatchLater @"willAddVideoToWatchLater"
 #define eventWillRemoveVideoFromWatchLater @"willRemoveVideoFromWatchLater"
 #define eventRemovedVideoFromWatchLater @"removedVideoFromWatchLater"
 +(Query*)removeVideoFromWatchLater:(GDataEntryYouTubeVideo*)video;

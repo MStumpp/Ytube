@@ -14,7 +14,7 @@
 {
     NSDictionary *dict = (NSDictionary*) props;
     GDataEntryYouTubeVideo *video = [dict objectForKey:@"video"];
-    [[video rating] setValue:@"unlike"];
+    [[video rating] setValue:@"dislike"];
     [self fetchEntryByInsertingEntry:video andURL:[[video ratingsLink] URL]];
 }
 

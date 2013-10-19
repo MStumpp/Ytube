@@ -178,6 +178,11 @@
                          );
         }];
         
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processWillEvent:) name:eventWillAddVideoToFavorites object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processWillEvent:) name:eventWillRemoveVideoFromFavorites object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processWillEvent:) name:eventWillAddVideoToWatchLater object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processWillEvent:) name:eventWillRemoveVideoFromWatchLater object:nil];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToFavorites object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromFavorites object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToWatchLater object:nil];
@@ -353,7 +358,7 @@
 {
     if (![[APPUserManager classInstance] isUserSignedIn]) return;
     
-    switch ([APPContent likeStateOfVideo:self.video])
+    /*switch ([APPContent likeStateOfVideo:self.video])
     {
         case tLikeLike:
         {
@@ -369,7 +374,7 @@
             [self.likeButton setTag:tLikeDislike];
             break;
         }
-    }
+    }*/
     
     if (!self.watchLaterFetched && !self.watchLaterFetching) {
         self.watchLaterFetching = TRUE;
@@ -486,6 +491,7 @@
             [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_normal_down"] forState:UIControlStateSelected];
             [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_normal_down"] forState:UIControlStateHighlighted];
             [self.likeButton setTag:tLikeLike];
+            [self.likeButton setSelected:TRUE];
             [APPQueryHelper likeVideo:self.video];
             break;
         }
@@ -500,6 +506,7 @@
             [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_other_down"] forState:UIControlStateSelected];
             [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_other_down"] forState:UIControlStateHighlighted];
             [self.likeButton setTag:tLikeDislike];
+            [self.likeButton setSelected:TRUE];
             [APPQueryHelper unlikeVideo:self.video];
             break;
         }
@@ -514,6 +521,7 @@
             [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_normal_down"] forState:UIControlStateSelected];
             [self.likeButton setImage:[UIImage imageNamed:@"video_detail_heart_normal_down"] forState:UIControlStateHighlighted];
             [self.likeButton setTag:tLikeLike];
+            [self.likeButton setSelected:TRUE];
             [APPQueryHelper likeVideo:self.video];
             break;
         }
@@ -538,9 +546,17 @@
             
             if ([self.watchLaterButton isSelected]) {
                 [self.watchLaterButton setSelected:NO];
+                
+                NSMutableDictionary *info = [NSMutableDictionary new];
+                [info setValue:video forKey:@"video"];
+                [[NSNotificationCenter defaultCenter] postNotificationName:eventWillRemoveVideoFromWatchLater object:self userInfo:info];
                 [APPQueryHelper removeVideoFromWatchLater:self.video];
             } else {
                 [self.watchLaterButton setSelected:YES];
+                
+                NSMutableDictionary *info = [NSMutableDictionary new];
+                [info setValue:video forKey:@"video"];
+                [[NSNotificationCenter defaultCenter] postNotificationName:eventWillAddVideoToWatchLater object:self userInfo:info];
                 [APPQueryHelper addVideoToWatchLater:self.video];
             }
             break;
@@ -566,9 +582,17 @@
             
             if ([self.favoritesButton isSelected]) {
                 [self.favoritesButton setSelected:NO];
+                
+                NSMutableDictionary *info = [NSMutableDictionary new];
+                [info setValue:self.video forKey:@"video"];
+                [[NSNotificationCenter defaultCenter] postNotificationName:eventWillRemoveVideoFromFavorites object:self userInfo:info];
                 [APPQueryHelper removeVideoFromFavorites:self.video];
             } else {
                 [self.favoritesButton setSelected:YES];
+                
+                NSMutableDictionary *info = [NSMutableDictionary new];
+                [info setValue:self.video forKey:@"video"];
+                [[NSNotificationCenter defaultCenter] postNotificationName:eventWillAddVideoToFavorites object:self userInfo:info];
                 [APPQueryHelper addVideoToFavorites:self.video];
             }
             break;
@@ -824,6 +848,23 @@
 {
     if ([self inState:tPassiveState]) return FALSE;
     return TRUE;
+}
+
+-(void)processWillEvent:(NSNotification*)notification
+{
+    GDataEntryYouTubeVideo *tmpVideo = [(NSDictionary*)[notification userInfo] objectForKey:@"video"];
+    if (tmpVideo != self.video)
+        return;
+    
+    if ([[notification name] isEqualToString:eventWillAddVideoToFavorites]) {
+        [self.favoritesButton setSelected:TRUE];
+    } else if ([[notification name] isEqualToString:eventWillRemoveVideoFromFavorites]) {
+        [self.favoritesButton setSelected:FALSE];
+    } else if ([[notification name] isEqualToString:eventWillAddVideoToWatchLater]) {
+        [self.watchLaterButton setSelected:TRUE];
+    } else if ([[notification name] isEqualToString:eventWillRemoveVideoFromWatchLater]) {
+        [self.watchLaterButton setSelected:FALSE];
+    }
 }
 
 -(void)processEvent:(NSNotification*)notification

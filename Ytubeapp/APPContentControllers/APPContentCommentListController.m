@@ -244,7 +244,7 @@
 -(void)processEvent:(NSNotification*)notification
 {
     NSDictionary *context = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
-    if ([context objectForKey:@"video"] != self.video)
+    if (![[APPContent videoID:[context objectForKey:@"video"]] isEqualToString:[APPContent videoID:self.video]])
         return;
     
     if ([[notification name] isEqualToString:eventAddedCommentToVideo]) {

@@ -30,7 +30,14 @@
         }
 
     } else {
-        GDataYouTubeMediaGroup *mediaGroupVideo = [video mediaGroup];
+        
+        NSString *videoID = [APPContent videoID:video];
+        if (!videoID) {
+            [self setError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"unable to retrieve video id for history item"] code:1 userInfo:nil]];
+            [self loaded];
+            return;
+        }
+        
         NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/users/default/favorites?v=2"]];
         if ([self service]) {
             self.ticket = [[self service] fetchFeedWithURL:feedURL completionHandler:^(GDataServiceTicket *ticket, GDataFeedBase *feed, NSError *error) {
@@ -39,7 +46,7 @@
                     for (GDataEntryBase *entryBase in [feed entries]) {
                         favorite = (GDataEntryYouTubeFavorite*)entryBase;
                         GDataYouTubeMediaGroup *mediaGroupEntry = [favorite mediaGroup];
-                        if ([[mediaGroupVideo videoID] isEqualToString:[mediaGroupEntry videoID]]) {
+                        if ([videoID isEqualToString:[mediaGroupEntry videoID]]) {
                             if ([self service]) {
                                 self.ticket = [[self service] deleteEntry:favorite completionHandler:^(GDataServiceTicket *ticket, GDataEntryBase *entry, NSError *error) {
                                     [this setResult:entry];

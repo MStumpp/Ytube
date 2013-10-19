@@ -254,14 +254,11 @@
 
 -(void)toShowMode:(NSString*)mode
 {
-    NSLog(@"tableview: toShowMode %@", mode);
-    
     if (!mode || ![self hasShowMode:mode])
         [NSException raise:@"show mode is nil or doesn't exists" format:@"show mode is nil or doesn't exists"];
     
     // if current show mode equal to requested show mode, then just scroll to top
     if (self.showMode == mode && [self._del hasData:mode]) {
-        NSLog(@"tableview: already in mode and has data %@", mode);
         //[self scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
         return;
     }
@@ -271,8 +268,6 @@
 
 -(void)toShowModeForce:(NSString*)mode
 {
-    NSLog(@"tableview: toShowModeForce %@", mode);
-    
     if (!mode || ![self hasShowMode:mode])
         [NSException raise:@"tableview: show mode is nil or doesn't exists" format:@"show mode is nil or doesn't exists"];
 
@@ -285,7 +280,6 @@
     [self._del afterShowModeChange];
 
     if ([self._del hasData:mode]) {
-        NSLog(@"tableview: toShowModeForce hasData");
         [self.tableViewMaskView unmaskOnCompletion:^(BOOL isUnmasked) {
             if (isUnmasked) {
                 [self performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
@@ -293,7 +287,6 @@
         }];
 
     } else {
-        NSLog(@"tableview: toShowModeForce hasNoData");
         [self.tableViewMaskView maskOnCompletion:^(BOOL isMasked) {
             if (isMasked) {
                 [self reloadDataForShowMode:mode];

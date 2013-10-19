@@ -54,7 +54,7 @@
         }];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToWatchLater object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeWatchLater:) name:eventWillRemoveVideoFromWatchLater object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventWillRemoveVideoFromWatchLater object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromWatchLater object:nil];
     }
     return self;
@@ -66,10 +66,6 @@
     [self.tableView addDefaultShowMode:tWatchLaterAll];
 }
 
--(void)removeWatchLater:(NSNotification*)notification
-{
-}
-
 #pragma mark -
 #pragma mark Table View Data Source Methods
 -(void)tableView:(UITableView*)tableView forMode:(NSString*)mode commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath*)indexPath;
@@ -78,13 +74,31 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         [[self.dataCache getData:mode] removeObjectAtIndex:[indexPath row]];
         [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
+        
+        NSMutableDictionary *info = [NSMutableDictionary new];
+        [info setValue:video forKey:@"video"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:eventWillRemoveVideoFromWatchLater object:self userInfo:info];
         [APPQueryHelper removeVideoFromWatchLater:video];
     }
 }
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if ([[notification name] isEqualToString:eventAddedVideoToWatchLater]) {
+    if ([[notification name] isEqualToString:eventWillRemoveVideoFromWatchLater]) {
+        GDataEntryYouTubeVideo *video = [(NSDictionary*)[notification userInfo] objectForKey:@"video"];
+        [[self.dataCache getData:tWatchLaterAll] removeObject:video];
+        
+        NSString *videoID = [APPContent videoID:video];
+        [[self.tableView visibleCells] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if ([[APPContent videoID:[obj video]] isEqualToString:videoID]) {
+                // ugly, but doesn't work without the delay for some unknown reason
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                    [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[self.tableView indexPathForCell:obj]] withRowAnimation:UITableViewRowAnimationTop];
+                });
+            }
+        }];
+        
+    } else if ([[notification name] isEqualToString:eventAddedVideoToWatchLater]) {
         if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
             [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
                                         message:[NSString stringWithFormat:@"Unable to add video to watch later."]
@@ -93,7 +107,7 @@
                               otherButtonTitles:nil] show];
         }
         [self.tableView clearViewAndReload];
-        
+    
     } else if ([[notification name] isEqualToString:eventRemovedVideoFromWatchLater]) {
         if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
             [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."

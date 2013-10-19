@@ -88,9 +88,9 @@
 -(void)processEvent:(NSNotification*)notification
 {
     NSDictionary *context = [(NSDictionary*)[notification userInfo] objectForKey:@"context"];
-    if ([context objectForKey:@"playlist"] != self.playlist)
+    if (![[APPContent playlistID:[context objectForKey:@"playlist"]] isEqualToString:[APPContent playlistID:self.playlist]])
         return;
-        
+    
     if ([[notification name] isEqualToString:eventAddedVideoToPlaylist]) {
         if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
             [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."

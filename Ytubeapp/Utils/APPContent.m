@@ -18,8 +18,25 @@
 
 +(NSString*)videoID:(GDataEntryYouTubeVideo*)video
 {
-    GDataYouTubeMediaGroup *mediaGroupVideo = [video mediaGroup];
-    return [mediaGroupVideo videoID];
+    if (!video) return nil;
+    
+    NSString *videoID;
+    if ([video respondsToSelector:@selector(mediaGroup)]) {
+        videoID = [[video mediaGroup] videoID];
+        
+    } else {
+        GDataXMLElement *thumb = [video XMLElement];
+        NSDictionary *myNS = [NSDictionary dictionaryWithObjectsAndKeys:@"http://search.yahoo.com/mrss/", @"m", @"http://gdata.youtube.com/schemas/2007", @"yt", nil];
+        NSArray *elems = [thumb nodesForXPath:@"//entry/m:group/yt:videoid" namespaces:myNS error:nil];
+        
+        if (!elems || [elems count] == 0) {
+            return nil;
+        }
+        
+        videoID = [(GDataXMLNode*)[elems objectAtIndex:0] stringValue];
+    }
+    
+    return videoID;
 }
 
 +(NSString*)playlistID:(GDataEntryYouTubePlaylistLink*)playlist

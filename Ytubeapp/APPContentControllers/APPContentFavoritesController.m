@@ -55,7 +55,7 @@
         }];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToFavorites object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeFavorite:) name:eventWillRemoveVideoFromFavorites object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventWillRemoveVideoFromFavorites object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromFavorites object:nil];
     }
     return self;
@@ -85,7 +85,21 @@
 
 -(void)processEvent:(NSNotification*)notification
 {
-    if ([[notification name] isEqualToString:eventAddedVideoToFavorites]) {
+    if ([[notification name] isEqualToString:eventWillRemoveVideoFromFavorites]) {
+        GDataEntryYouTubeVideo *video = [(NSDictionary*)[notification userInfo] objectForKey:@"video"];
+        [[self.dataCache getData:tFavoritesAll] removeObject:video];
+        
+        NSString *videoID = [APPContent videoID:video];
+        [[self.tableView visibleCells] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if ([[APPContent videoID:[obj video]] isEqualToString:videoID]) {
+                // ugly, but doesn't work without the delay for some unknown reason
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                    [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[self.tableView indexPathForCell:obj]] withRowAnimation:UITableViewRowAnimationTop];
+                });
+            }
+        }];
+        
+    } else if ([[notification name] isEqualToString:eventAddedVideoToFavorites]) {
         if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
             [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
                                         message:[NSString stringWithFormat:@"Unable to add video to favorites."]
