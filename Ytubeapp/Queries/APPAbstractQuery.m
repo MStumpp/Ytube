@@ -21,6 +21,8 @@
 -(void)cancelled:(id)props
 {
     if (self.ticket) [self.ticket cancelTicket];
+    [self setError:[[NSError alloc] initWithDomain:[NSString stringWithFormat:@"cancelled"] code:1 userInfo:nil]];
+    [self loaded];
 }
 
 -(BOOL)hasError

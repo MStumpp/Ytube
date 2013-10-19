@@ -455,41 +455,21 @@
     
     if ([[notification name] isEqualToString:eventAddedVideoToFavorites]) {
         if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
-            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                        message:[NSString stringWithFormat:@"Unable to add video to favorites."]
-                                       delegate:nil
-                              cancelButtonTitle:@"OK"
-                              otherButtonTitles:nil] show];
             [self reset];
         }
 
     } else if ([[notification name] isEqualToString:eventRemovedVideoFromFavorites]) {
         if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
-            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                        message:[NSString stringWithFormat:@"Unable to remove video from favorites."]
-                                       delegate:nil
-                              cancelButtonTitle:@"OK"
-                              otherButtonTitles:nil] show];
             [self reset];
         }
 
     } else if ([[notification name] isEqualToString:eventAddedVideoToWatchLater]) {
         if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
-            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                        message:[NSString stringWithFormat:@"Unable to add video to watch later."]
-                                       delegate:nil
-                              cancelButtonTitle:@"OK"
-                              otherButtonTitles:nil] show];
             [self reset];
         }
 
     } else if ([[notification name] isEqualToString:eventRemovedVideoFromWatchLater]) {
         if ([(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
-            [[[UIAlertView alloc] initWithTitle:@"Something went wrong..."
-                                        message:[NSString stringWithFormat:@"Unable to remove video from watch later."]
-                                       delegate:nil
-                              cancelButtonTitle:@"OK"
-                              otherButtonTitles:nil] show];
             [self reset];
         }
     }

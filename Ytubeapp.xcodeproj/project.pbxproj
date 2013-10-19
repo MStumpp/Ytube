@@ -674,8 +674,8 @@
 		167C98C43060A0F7286C824C /* Queries */ = {
 			isa = PBXGroup;
 			children = (
-				167C9EDABAB380AF004BA384 /* APPAbstractQuery.m */,
 				167C991D87AC86D82CFCA0A8 /* APPAbstractQuery.h */,
+				167C9EDABAB380AF004BA384 /* APPAbstractQuery.m */,
 				167C95D398738B768E34A330 /* Videos */,
 				167C9C8FEAD6AECEFC246614 /* Video */,
 				167C98F412132968AF00F71B /* Playlists */,

@@ -68,6 +68,8 @@
                        change:(NSDictionary *)change
                       context:(void *)context
 {
+    //[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    
     if ([keyPath isEqual:tCancelled])
         [self cancelled:self.props];
 
@@ -76,11 +78,6 @@
             self.handler(keyPath, self.result, self.error, self.context);
         });
     }
-
-    /*[super observeValueForKeyPath:keyPath
-                          ofObject:object
-                            change:change
-                           context:context];*/
 }
 
 -(void)loaded
@@ -100,6 +97,8 @@
     [self loaded];
 }
 
--(void)cancelled:(id)props {}
+-(void)cancelled:(id)props
+{
+}
 
 @end
