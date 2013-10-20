@@ -31,25 +31,29 @@
 
 @implementation APPIndexViewController
 
+-(id)init
+{
+    self = [super init];
+    if (self) {
+        self.buttonsEnabled = TRUE;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
+    }
+    return self;
+}
+
 -(void)loadView
 {
     CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
     UIView *contentView = [[UIView alloc] initWithFrame:applicationFrame];
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
-        contentView.clipsToBounds = YES;
-        contentView.frame = CGRectMake(0, -20, contentView.frame.size.width, contentView.frame.size.height-20);
-        contentView.bounds = CGRectMake(0, -20, contentView.frame.size.width, contentView.frame.size.height);
-    }
     self.view = contentView;
-    
-    [self.view addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main_back"]]];
-    
-    self.buttonsEnabled = TRUE;
-    
+
     // toolbar
     self.toolbar = [[UIToolbar alloc] init];
     self.toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
     self.toolbar.backgroundColor = [UIColor redColor];
+    self.toolbar.opaque = FALSE;
     [self.toolbar setBackgroundImage:[UIImage imageNamed:@"top_bar_back"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
     self.toolbarLabel = [[UILabel alloc] initWithFrame:CGRectMake(65.0, 8.0, self.view.frame.size.width-120.0, 32.0)];
     [self.toolbarLabel setFont:[UIFont fontWithName:@"Nexa Bold" size:16]];
@@ -92,18 +96,15 @@
     // put it all together and add it to view
     [self.toolbar setItems:[NSArray arrayWithObjects:leftBarButtonItem, spinnerBarButtonItem, flexible, rightBarButtonItem, nil]];
     [self.view addSubview:self.toolbar];
-
+    
     self.sliderViewController = [[APPSliderViewController alloc] init];
     self.sliderViewController.controller = self;
-
+    
     self.mainController = [[UINavigationController alloc] initWithRootViewController:self.sliderViewController];
     self.mainController.view.frame = CGRectMake(0, 44, self.view.frame.size.width, self.view.frame.size.height-44);
     self.mainController.navigationBar.hidden = YES;
     self.mainController.delegate = self;
     [self.view addSubview:self.mainController.view];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:eventUserSignedIn object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:eventUserSignedOut object:nil];
 }
 
 -(void)topbarButtonPress:(UIButton*)sender

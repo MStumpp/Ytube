@@ -67,6 +67,19 @@ static NSMutableDictionary *instances;
     return self;
 }
 
+-(void)loadView
+{
+    CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
+    UIView *contentView = [[UIView alloc] initWithFrame:applicationFrame];
+    self.view = contentView;
+    
+    UIImageView *back = [[UIImageView alloc] init];
+    [back setImage:[UIImage imageNamed:@"main_back"]];
+    back.frame = CGRectMake(0, -20, self.view.frame.size.width, self.view.frame.size.height);
+    back.contentMode = UIViewContentModeScaleAspectFit;
+    [self.view addSubview:back];
+}
+
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];

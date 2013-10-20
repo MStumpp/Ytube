@@ -51,13 +51,6 @@
     return self;
 }
 
--(void)loadView
-{
-    CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
-    UIView *contentView = [[UIView alloc] initWithFrame:applicationFrame];
-    self.view = contentView;
-}
-
 // state configuration
 
 -(State*)configureState:(NSString*)state

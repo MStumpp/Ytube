@@ -218,7 +218,6 @@
                 }
             });
         });
-        dispatch_release(downloadQueue);
     }
 }
 

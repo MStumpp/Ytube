@@ -79,7 +79,7 @@
     CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
     UIView *contentView = [[UIView alloc] initWithFrame:applicationFrame];
     self.view = contentView;
-        
+    
     // view structure
     self.mainView = [[UIView alloc] initWithFrame:CGRectMake(-82, 0, self.view.frame.size.width+82+82, self.view.frame.size.height)];
     [self.view addSubview:self.mainView];

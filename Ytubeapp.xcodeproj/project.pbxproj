@@ -96,6 +96,7 @@
 		393D032C17CE6776006C5C15 /* UITableViewHeaderFormView.m in Sources */ = {isa = PBXBuildFile; fileRef = 393D032B17CE6776006C5C15 /* UITableViewHeaderFormView.m */; };
 		3940D17015FF908100847ECA /* top_bar_left_button_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3940D16F15FF908100847ECA /* top_bar_left_button_up@2x.png */; };
 		3943D2D41651AAA60035E0DA /* video_cell_menu_mask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3943D2D31651AAA50035E0DA /* video_cell_menu_mask@2x.png */; };
+		39441CD0181321D90007C9B8 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39441CCF181321D90007C9B8 /* MediaPlayer.framework */; };
 		394B927715EFC84300AE10E4 /* top_bar_back_sign_in@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 394B927615EFC84200AE10E4 /* top_bar_back_sign_in@2x.png */; };
 		394B927A15EFCE7000AE10E4 /* sign_in_account_data_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 394B927915EFCE7000AE10E4 /* sign_in_account_data_back@2x.png */; };
 		394B927C15EFCE7800AE10E4 /* sign_up_button_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 394B927B15EFCE7800AE10E4 /* sign_up_button_up@2x.png */; };
@@ -424,6 +425,7 @@
 		393D032B17CE6776006C5C15 /* UITableViewHeaderFormView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewHeaderFormView.m; sourceTree = "<group>"; };
 		3940D16F15FF908100847ECA /* top_bar_left_button_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top_bar_left_button_up@2x.png"; sourceTree = "<group>"; };
 		3943D2D31651AAA50035E0DA /* video_cell_menu_mask@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "video_cell_menu_mask@2x.png"; sourceTree = "<group>"; };
+		39441CCF181321D90007C9B8 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		394B927615EFC84200AE10E4 /* top_bar_back_sign_in@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top_bar_back_sign_in@2x.png"; sourceTree = "<group>"; };
 		394B927915EFCE7000AE10E4 /* sign_in_account_data_back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sign_in_account_data_back@2x.png"; sourceTree = "<group>"; };
 		394B927B15EFCE7800AE10E4 /* sign_up_button_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sign_up_button_up@2x.png"; sourceTree = "<group>"; };
@@ -622,6 +624,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39441CD0181321D90007C9B8 /* MediaPlayer.framework in Frameworks */,
 				39D6E40A1632391A005E8D42 /* SystemConfiguration.framework in Frameworks */,
 				39D6E40816323914005E8D42 /* Security.framework in Frameworks */,
 				39038E1B15E3B608006CCF19 /* QuartzCore.framework in Frameworks */,
@@ -973,6 +976,7 @@
 		395A876F15E186F4004F39E2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				39441CCF181321D90007C9B8 /* MediaPlayer.framework */,
 				39038E1815E3B594006CCF19 /* QuartzCore.framework */,
 				395A877015E186F4004F39E2 /* UIKit.framework */,
 				395A877215E186F4004F39E2 /* Foundation.framework */,
@@ -1726,13 +1730,13 @@
 					/usr/include/libxml2,
 				);
 				INFOPLIST_FILE = "Ytubeapp/Ytubeapp-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lxml2",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "3D6D0503-F8FE-4C4B-9690-B39F14C5A2F6";
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods\"/**";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1751,13 +1755,13 @@
 					/usr/include/libxml2,
 				);
 				INFOPLIST_FILE = "Ytubeapp/Ytubeapp-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lxml2",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "7049FE01-368C-42D0-8F6E-81965D074CA1";
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/Pods\"/**";
 				WRAPPER_EXTENSION = app;
 			};
