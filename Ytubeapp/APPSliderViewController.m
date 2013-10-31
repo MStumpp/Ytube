@@ -206,11 +206,13 @@
     
     // shadows
     self.rightShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main_shadow_right"]];
-    [self.rightShadow setHidden:YES];
+    //[self.rightShadow setHidden:YES];
+    [self.rightShadow setAlpha:0.0];
     [self.view addSubview:self.rightShadow];
     
     self.leftShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main_shadow_left"]];
-    [self.leftShadow setHidden:YES];
+    [self.leftShadow setAlpha:0.0];
+    //[self.leftShadow setHidden:YES];
     [self.view addSubview:self.leftShadow];
 
     self.maskView = [[UITableViewMaskView alloc] initWithRootView:self.view customMaskView:nil delegate:self];
@@ -385,31 +387,13 @@
         [self.centerController setRootViewController:[self.controllers objectForKey:[NSNumber numberWithInt:context]]];
 
     } else {
-        [self.centerController popToRootViewControllerAnimated:YES];
-        
         // selected controller vorhanden und selected controller != input context
         if (self.selectedController != context) {
-            // -> dodefault auf top view controller
-            // -> setze root controller auf controller für diesen context
-            // -> undo default auf topcontroller (siehe am ende)
-            /*if ([self topViewController]) {
-                dispatch_semaphore_t sema = dispatch_semaphore_create(1);
-                [[self topViewController] doDefaultMode:^{
-                    dispatch_semaphore_signal(sema);
-                }];
-                dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-            }*/
+            [self.centerController popToRootViewControllerAnimated:NO];
             [self.centerController setRootViewController:[self.controllers objectForKey:[NSNumber numberWithInt:context]]];
             
         } else {
-            // selected controller vorhanden und selected controller == input context und top view controller != controller für diesen context
-            // -> center controller to root view
-            // -> undo default auf topcontroller (siehe am ende)
-            //if ([self topViewController] && [self topViewController] != [self.controllers objectForKey:[NSNumber numberWithInt:context]])
-            //    [self.centerController popToRootViewControllerAnimated:YES];
-
-            // selected controller vorhanden und selected controller == input context und top view controller == controller für diesen context
-            // -> undo default auf topcontroller (siehe am ende)
+            [self.centerController popToRootViewControllerAnimated:YES];
         }
     }
     
@@ -509,9 +493,9 @@
                              CGRect mainViewFrame = self.mainView.frame;
                              mainViewFrame.origin.x = 0;
                              self.mainView.frame = mainViewFrame;
+                             self.rightShadow.alpha = 1.0;
                          }
                          completion:^(BOOL finished){
-                             [self.rightShadow setHidden:NO];
                              if (callback)
                                  callback();
                          }];
@@ -532,10 +516,10 @@
                              CGRect mainViewFrame = self.mainView.frame;
                              mainViewFrame.origin.x = -82;
                              self.mainView.frame = mainViewFrame;
+                             self.rightShadow.alpha = 0.0;
+                             self.leftShadow.alpha = 0.0;
                          }
                          completion:^(BOOL finished){
-                             [self.rightShadow setHidden:YES];
-                             [self.leftShadow setHidden:YES];
                              if (callback)
                                  callback();
                          }];
@@ -556,9 +540,9 @@
                              CGRect mainViewFrame = self.mainView.frame;
                              mainViewFrame.origin.x = -164;
                              self.mainView.frame = mainViewFrame;
+                             self.leftShadow.alpha = 1.0;
                          }
                          completion:^(BOOL finished){
-                             [self.leftShadow setHidden:NO];
                              if (callback)
                                  callback();
                          }];

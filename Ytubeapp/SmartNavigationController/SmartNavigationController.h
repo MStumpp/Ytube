@@ -8,11 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SmartNavigationController : UINavigationController //<UINavigationControllerDelegate>
-//@property(nonatomic, retain) id<UINavigationControllerDelegate> _delegate;
+@interface SmartNavigationController : UINavigationController
 -(void)setRootViewController:(UIViewController*)rootViewController;
-//-(void)pushViewController:(UIViewController*)viewController onCompletion:(void (^)(BOOL pushed))callback context:(id)context animated:(BOOL)animated;
-//-(void)popViewControllerOnCompletion:(void (^)(BOOL popped))callback context:(id)context animated:(BOOL)animated;
 @end
 
 @protocol SmartNavigationControllerDelegate
