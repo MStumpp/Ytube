@@ -14,6 +14,7 @@
 {
     NSDictionary *dict = (NSDictionary*) props;
     NSString *query = [dict objectForKey:@"query"];
+    query = [query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *feedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://gdata.youtube.com/feeds/api/videos?q=%@", query]];
     [self fetchFeedWithURL:feedURL];
 }
