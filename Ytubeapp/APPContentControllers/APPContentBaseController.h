@@ -35,4 +35,6 @@
 -(void)showSignAlert;
 -(void)userSignedIn:(NSNotification*)notification;
 -(void)userSignedOut:(NSNotification*)notification;
+@property bool downAtTopOnly;
+@property int downAtTopDistance;
 @end

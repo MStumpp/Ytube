@@ -66,6 +66,8 @@
     if (self) {
         self.video = v;
         self.topbarTitle = [[self.video title] stringValue];
+        
+        self.heightVideoView = 186.0;
 
         self.relatedVideosId = [NSString stringWithFormat:@"%@_%@", tRelatedVideosAll, [APPContent videoID:self.video]];
         self.commentsId = [NSString stringWithFormat:@"%@_%@", tCommentsVideosAll, [APPContent videoID:self.video]];
@@ -227,7 +229,7 @@
     [videoPlayButton setImage:[UIImage imageNamed:@"video_detail_back"]];
     [self.view addSubview:videoPlayButton];*/
                 
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, heightVideoView)];
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, self.heightVideoView)];
     self.webView.allowsInlineMediaPlayback = YES;
     self.webView.mediaPlaybackRequiresUserAction = NO;
     self.webView.scrollView.scrollEnabled = FALSE;
@@ -235,7 +237,7 @@
     
     // set up sub button bar
     /////////////////////////
-    UIControl *subtopbarContainer = [[UIControl alloc] initWithFrame:CGRectMake(0.0, heightVideoView, self.view.frame.size.width, 50.0)];
+    UIControl *subtopbarContainer = [[UIControl alloc] initWithFrame:CGRectMake(0.0, self.heightVideoView, self.view.frame.size.width, 50.0)];
     [subtopbarContainer addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"video_detail_nav"]]];
     [self.view addSubview:subtopbarContainer];
     
@@ -301,7 +303,7 @@
     // set up table
     ////////////////
     
-    self.tableView = [[APPTableView alloc] initWithFrame:CGRectMake(0.0, heightVideoView+50.0+3.0, self.view.frame.size.width, self.view.frame.size.height-heightVideoView-50.0-3.0-44.0) style:UITableViewStylePlain];
+    self.tableView = [[APPTableView alloc] initWithFrame:CGRectMake(0.0, self.heightVideoView+50.0+3.0, self.view.frame.size.width, self.view.frame.size.height-self.heightVideoView-50.0-3.0-44.0) style:UITableViewStylePlain];
     self.tableView._del = self;
     [self.view addSubview:self.tableView];
     self.tableViewHeaderFormView = [[UITableViewHeaderFormView alloc] initWithRootView:self.tableView headerView:nil delegate:self];
@@ -443,7 +445,7 @@
 #pragma mark - Managing the detail item
 -(void)displayGoogleVideo:(NSString*)videoId
 {
-    NSString* embedHTML = [NSString stringWithFormat:@"<html><body style='margin:0px;padding:0px;'><script type='text/javascript' src='http://www.youtube.com/iframe_api'></script><script type='text/javascript'>function onYouTubeIframeAPIReady(){ytplayer=new YT.Player('playerId', {events:{onReady:onPlayerReady}})}function onPlayerReady(a){a.target.playVideo();}</script><iframe id='playerId' type='text/html' width='320' height='%d' src='http://www.youtube.com/embed/%@?enablejsapi=1&rel=0&playsinline=1&showinfo=0&controls=1&modestbranding=1&color=white&iv_load_policy=3&theme=light&autoplay=1' frameborder='0'></body></html>", heightVideoView, videoId];
+    NSString* embedHTML = [NSString stringWithFormat:@"<html><body style='margin:0px;padding:0px;'><script type='text/javascript' src='http://www.youtube.com/iframe_api'></script><script type='text/javascript'>function onYouTubeIframeAPIReady(){ytplayer=new YT.Player('playerId', {events:{onReady:onPlayerReady}})}function onPlayerReady(a){a.target.playVideo();}</script><iframe id='playerId' type='text/html' width='320' height='%d' src='http://www.youtube.com/embed/%@?enablejsapi=1&rel=0&playsinline=1&showinfo=0&controls=1&modestbranding=1&color=white&iv_load_policy=3&theme=light&autoplay=1' frameborder='0'></body></html>", self.heightVideoView, videoId];
     [self.webView loadHTMLString:embedHTML baseURL:[[NSBundle mainBundle] resourceURL]];
 }
 
@@ -660,9 +662,9 @@
     if ([keyPath isEqual:@"contentOffset"]) {
         CGPoint newContentOffset = [[change objectForKey:NSKeyValueChangeNewKey] CGPointValue];
         CGPoint oldContentOffset = [[change objectForKey:NSKeyValueChangeOldKey] CGPointValue];
-        if (oldContentOffset.y < newContentOffset.y && [self.tableViewHeaderFormView isHeaderShown] && newContentOffset.y > downAtTopDistance) {
+        if (oldContentOffset.y < newContentOffset.y && [self.tableViewHeaderFormView isHeaderShown] && newContentOffset.y > self.downAtTopDistance) {
             [self.tableViewHeaderFormView hideOnCompletion:nil animated:NO];
-        } else if (oldContentOffset.y > newContentOffset.y && ![self.tableViewHeaderFormView isHeaderShown] && (downAtTopOnly ? (newContentOffset.y < downAtTopDistance) : (newContentOffset.y + self.tableView.bounds.size.height - self.tableView.contentInset.bottom < (self.tableView.contentSize.height - downAtTopDistance)))) {
+        } else if (oldContentOffset.y > newContentOffset.y && ![self.tableViewHeaderFormView isHeaderShown] && (self.downAtTopOnly ? (newContentOffset.y < self.downAtTopDistance) : (newContentOffset.y + self.tableView.bounds.size.height - self.tableView.contentInset.bottom < (self.tableView.contentSize.height - self.downAtTopDistance)))) {
             [self.tableViewHeaderFormView showOnCompletion:nil animated:NO];
         }
 

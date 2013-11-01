@@ -10,9 +10,6 @@
 #import "APPContentVideoListController.h"
 #import "UITableViewHeaderFormView.h"
 
-const bool downAtTopOnly = TRUE;
-const int downAtTopDistance = 40;
-
 @interface APPContentTopBarVideoListController : APPContentVideoListController <UITableViewHeaderFormViewDelegate>
 @property (nonatomic, strong) UITableViewHeaderFormView *tableViewHeaderFormView;
 @end

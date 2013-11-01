@@ -42,6 +42,9 @@ static NSMutableDictionary *instances;
     if (self) {
         self.dataCache = [[APPGlobals classInstance] getGlobalForKey:@"dataCache"];
         
+        self.downAtTopOnly = TRUE;
+        self.downAtTopDistance = 40;
+        
         [[self configureState:tActiveState] forwardToState:^(State *this, State *from, ForwardResponseCallback callback){
             if (this.data && from && [[from name] isEqualToString:tPassiveState]) {
                 id data = this.data;
