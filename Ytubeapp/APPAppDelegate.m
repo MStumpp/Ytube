@@ -56,8 +56,8 @@
     }];
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     
-    [[AVAudioSession sharedInstance] setDelegate:self];
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+    //[[AVAudioSession sharedInstance] setDelegate:self];
+    //[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerDidExitFullscreen:)

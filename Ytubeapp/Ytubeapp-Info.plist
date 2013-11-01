@@ -17,9 +17,6 @@
 				<string>Settings_Icon</string>
 				<string>Spotlight_Icon</string>
 				<string>App_Icon</string>
-				<string>Icon</string>
-				<string>Icon@2x.png</string>
-				<string>Icon.png</string>
 			</array>
 		</dict>
 	</dict>
@@ -36,7 +33,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.2</string>
+	<string>1.0.1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIAppFonts</key>
@@ -48,6 +45,8 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIStatusBarHidden</key>
+	<false/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

@@ -76,11 +76,13 @@ static NSMutableDictionary *instances;
     UIView *contentView = [[UIView alloc] initWithFrame:applicationFrame];
     self.view = contentView;
     
-    UIImageView *back = [[UIImageView alloc] init];
-    [back setImage:[UIImage imageNamed:@"main_back"]];
+    self.view.backgroundColor = [UIColor yellowColor];
+    
+    /*UIImageView *back = [[UIImageView alloc] init];
+    [back setImage:[[APPGlobals classInstance] getGlobalForKey:@"main_back"]];
     back.frame = CGRectMake(0, -20, self.view.frame.size.width, self.view.frame.size.height);
     back.contentMode = UIViewContentModeScaleAspectFit;
-    [self.view addSubview:back];
+    [self.view addSubview:back];*/
 }
 
 -(void)viewWillAppear:(BOOL)animated

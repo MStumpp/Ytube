@@ -85,8 +85,10 @@
     [self.view addSubview:self.mainView];
 
     // left image view
-    self.leftImageView = [[UIControl alloc] initWithFrame:CGRectMake(0, 0, 82, self.view.frame.size.height)];
-    [self.leftImageView addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"nav_left"]]];
+    self.leftImageView = [[UIControl alloc] initWithFrame:CGRectMake(0, 0, 82, self.view.frame.size.height-44)];
+    UIImageView *imageWrapper = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 82, self.view.frame.size.height-44)];
+    [imageWrapper setImage:[[UIImage imageNamed:@"nav_left"] resizableImageWithCapInsets:UIEdgeInsetsMake(10, 0, 0, 0) resizingMode:UIImageResizingModeStretch]];
+    [self.leftImageView addSubview:imageWrapper];
     [self.mainView addSubview:self.leftImageView];
     
     // set up left buttons
@@ -131,8 +133,10 @@
     [self.leftImageView addSubview:buttonRecentlyFeatured];
 
     // right image view
-    self.rightImageView = [[UIControl alloc] initWithFrame:CGRectMake(self.view.frame.size.width+82, 0, 82, self.view.frame.size.height)];
-    [self.rightImageView addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"nav_right"]]];
+    self.rightImageView = [[UIControl alloc] initWithFrame:CGRectMake(self.view.frame.size.width+82, 0, 82, self.view.frame.size.height-44)];
+    imageWrapper = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 82, self.view.frame.size.height-44)];
+    [imageWrapper setImage:[[UIImage imageNamed:@"nav_right"] resizableImageWithCapInsets:UIEdgeInsetsMake(10, 0, 0, 0) resizingMode:UIImageResizingModeStretch]];
+    [self.rightImageView addSubview:imageWrapper];
     [self.mainView addSubview:self.rightImageView];
     
     // set up right buttons
@@ -198,20 +202,22 @@
                     buttonSignOut, [NSNumber numberWithInt:tSignOut],
                     nil];
 
-    self.centerView = [[UIView alloc] initWithFrame:CGRectMake(82, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    self.centerView = [[UIView alloc] initWithFrame:CGRectMake(82, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
     [self.mainView addSubview:self.centerView];
     self.centerController = [[SmartNavigationController alloc] init];
     self.centerController.delegate = self;
     [self.centerView addSubview:self.centerController.view];
     
     // shadows
-    self.rightShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main_shadow_right"]];
-    [self.rightShadow setAlpha:0.0];
-    [self.view addSubview:self.rightShadow];
-    
-    self.leftShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main_shadow_left"]];
+    self.leftShadow = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
+    [self.leftShadow setImage:[[UIImage imageNamed:@"main_shadow_left"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0) resizingMode:UIImageResizingModeStretch]];
     [self.leftShadow setAlpha:0.0];
     [self.view addSubview:self.leftShadow];
+    
+    self.rightShadow = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
+    [self.rightShadow setImage:[[UIImage imageNamed:@"main_shadow_right"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0) resizingMode:UIImageResizingModeStretch]];
+    [self.rightShadow setAlpha:0.0];
+    [self.view addSubview:self.rightShadow];
 
     self.maskView = [[UITableViewMaskView alloc] initWithRootView:self.view customMaskView:nil delegate:self];
 }
