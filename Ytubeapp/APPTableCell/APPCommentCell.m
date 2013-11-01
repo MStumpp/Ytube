@@ -111,6 +111,9 @@
 -(void)setOpen:(BOOL)n
 {
     if (!(n == open)) {
+        if (self.cellHeightFullComment == 88.0)
+            return;
+        
         open = n;
         if (open) {
             CGSize s = [commentText sizeWithFont:[UIFont fontWithName: @"Nexa Light" size:12] constrainedToSize:CGSizeMake(215.0, MAXFLOAT)];
