@@ -141,6 +141,9 @@ static NSMutableDictionary *instances;
 {
     if (!controller) return;
     
+    if ([[self.navigationController viewControllers] containsObject:controller])
+        return;
+    
     // call doDefaultMode on currently showing top controller, but not root controller
     if ([[self.navigationController viewControllers] count] > 1) {
         dispatch_semaphore_t sema = dispatch_semaphore_create(1);

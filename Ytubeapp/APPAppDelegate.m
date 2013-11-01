@@ -13,6 +13,8 @@
 #import "APPGlobals.h"
 #import "DataCache.h"
 #import "APPContentBaseController.h"
+#import <AVFoundation/AVFoundation.h>
+#import <AudioToolbox/AudioToolbox.h>
 
 @implementation APPAppDelegate
 
@@ -54,6 +56,14 @@
     }];
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     
+    [[AVAudioSession sharedInstance] setDelegate:self];
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerDidExitFullscreen:)
+                                                 name:@"UIMoviePlayerControllerDidExitFullscreenNotification"
+                                               object:nil];
+        
     // set up data cache
     DataCache *dataCache = [DataCache instance];
     [[APPGlobals classInstance] setGlobalObject:dataCache forKey:@"dataCache"];
@@ -112,6 +122,16 @@
     GTMOAuth2Authentication *auth = [(NSDictionary*)[notification userInfo] objectForKey:@"auth"];
     if (service && auth)
         [service setAuthorizer:auth];
+}
+
+-(void)playerDidExitFullscreen:(NSNotification*)notification
+{
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7) {
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+        self.window.clipsToBounds = YES;
+        self.window.frame = CGRectMake(0, 20, self.window.frame.size.width, self.window.frame.size.height-20);
+        self.window.bounds = CGRectMake(0, 0, self.window.frame.size.width, self.window.frame.size.height);
+    }
 }
 
 @end

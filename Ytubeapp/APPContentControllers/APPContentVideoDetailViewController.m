@@ -49,6 +49,7 @@
 @property NSIndexPath *openCommentCell;
 @property NSIndexPath *wasOpenCommentCell;
 @property BOOL *wasVideoPlaying;
+@property BOOL *keepVideoPlaying;
 @end
 
 @implementation APPContentVideoDetailViewController
@@ -101,11 +102,16 @@
                 self.wasOpenCommentCell = nil;
             }
             
-            if ([self isVideoPlaying])
+            if ([self isVideoPlaying]) {
                 self.wasVideoPlaying = TRUE;
-            else
+            } else {
                 self.wasVideoPlaying = FALSE;
-            [self pauseVideo];
+            }
+            
+            if (![self keepVideoPlaying]) {
+            //    [self pauseVideo];
+            }
+            self.keepVideoPlaying = FALSE;
         }];
         
         [[self configureState:tActiveState] onViewState:tDidAppearViewState do:^(State *this, State *other){
@@ -226,7 +232,7 @@
     self.webView.mediaPlaybackRequiresUserAction = NO;
     self.webView.scrollView.scrollEnabled = FALSE;
     [self.view addSubview:self.webView];
-
+    
     // set up sub button bar
     /////////////////////////
     UIControl *subtopbarContainer = [[UIControl alloc] initWithFrame:CGRectMake(0.0, heightVideoView, self.view.frame.size.width, 50.0)];
@@ -607,6 +613,7 @@
         case tComments:
         {
             APPContentCommentListController *commentController = [APPContentCommentListController getInstance:[NSString stringWithFormat:@"comments_%@", [APPContent videoID:self.video]] withData:self.video];
+            self.keepVideoPlaying = TRUE;
             [self pushViewController:commentController];
             break;
         }
@@ -622,6 +629,7 @@
             playlistController.afterSelect = ^(GDataEntryBase *entry) {
                 [APPQueryHelper addVideo:self.video toPlaylist:(GDataEntryYouTubePlaylistLink*)entry];
             };
+            self.keepVideoPlaying = TRUE;
             [self pushViewController:playlistController];
             break;
         }

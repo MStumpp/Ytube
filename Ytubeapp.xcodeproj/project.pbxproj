@@ -154,6 +154,8 @@
 		397641A01600F3E3007C6996 /* video_cell_play_arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3976419F1600F3E3007C6996 /* video_cell_play_arrow@2x.png */; };
 		397641A21601069C007C6996 /* video_cell_menu_buttons@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 397641A11601069B007C6996 /* video_cell_menu_buttons@2x.png */; };
 		397641A616010B06007C6996 /* profile.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 397641A516010B05007C6996 /* profile.jpg */; };
+		3987DB3B18231BFF0097F050 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3987DB3A18231BFF0097F050 /* AVFoundation.framework */; };
+		3987DB3D18231D210097F050 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3987DB3C18231D210097F050 /* AudioToolbox.framework */; };
 		399D962F1600099F000A1FF9 /* nav_right_history_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 399D96291600099F000A1FF9 /* nav_right_history_up@2x.png */; };
 		399D96301600099F000A1FF9 /* nav_right_my_videos_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 399D962A1600099F000A1FF9 /* nav_right_my_videos_up@2x.png */; };
 		399D96311600099F000A1FF9 /* nav_right_playlists_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 399D962B1600099F000A1FF9 /* nav_right_playlists_up@2x.png */; };
@@ -493,6 +495,9 @@
 		397641A11601069B007C6996 /* video_cell_menu_buttons@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "video_cell_menu_buttons@2x.png"; sourceTree = "<group>"; };
 		397641A516010B05007C6996 /* profile.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = profile.jpg; sourceTree = "<group>"; };
 		397641A716010B60007C6996 /* APPSliderViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APPSliderViewController.h; sourceTree = "<group>"; };
+		3987DB3818231BC10097F050 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		3987DB3A18231BFF0097F050 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		3987DB3C18231D210097F050 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		399D96291600099F000A1FF9 /* nav_right_history_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nav_right_history_up@2x.png"; sourceTree = "<group>"; };
 		399D962A1600099F000A1FF9 /* nav_right_my_videos_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nav_right_my_videos_up@2x.png"; sourceTree = "<group>"; };
 		399D962B1600099F000A1FF9 /* nav_right_playlists_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nav_right_playlists_up@2x.png"; sourceTree = "<group>"; };
@@ -624,6 +629,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3987DB3D18231D210097F050 /* AudioToolbox.framework in Frameworks */,
+				3987DB3B18231BFF0097F050 /* AVFoundation.framework in Frameworks */,
 				39441CD0181321D90007C9B8 /* MediaPlayer.framework in Frameworks */,
 				39D6E40A1632391A005E8D42 /* SystemConfiguration.framework in Frameworks */,
 				39D6E40816323914005E8D42 /* Security.framework in Frameworks */,
@@ -976,6 +983,9 @@
 		395A876F15E186F4004F39E2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3987DB3C18231D210097F050 /* AudioToolbox.framework */,
+				3987DB3A18231BFF0097F050 /* AVFoundation.framework */,
+				3987DB3818231BC10097F050 /* CoreAudio.framework */,
 				39441CCF181321D90007C9B8 /* MediaPlayer.framework */,
 				39038E1815E3B594006CCF19 /* QuartzCore.framework */,
 				395A877015E186F4004F39E2 /* UIKit.framework */,
