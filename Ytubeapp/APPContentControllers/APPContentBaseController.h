@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "APPProtocols.h"
-#import "ViewHelpers.h"
 #import "GDataYouTube.h"
 #import "APPTableView.h"
 #import "APPTableCell.h"

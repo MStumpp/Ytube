@@ -48,7 +48,7 @@
     CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
     UIView *contentView = [[UIView alloc] initWithFrame:applicationFrame];
     self.view = contentView;
-
+    
     // toolbar
     self.toolbar = [[UIToolbar alloc] init];
     self.toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);

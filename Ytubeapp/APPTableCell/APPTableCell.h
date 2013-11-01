@@ -8,7 +8,6 @@
 
 
 #import <UIKit/UIKit.h>
-#import "ViewHelpers.h"
 #import "APPProtocols.h"
 #import "APPTableView.h"
 

@@ -206,7 +206,8 @@ static DataCache *classInstance = nil;
     
     // eventualy do not process if there is currently another load more query running
     if ([self queryForKey:key forType:self.queriesLoadMore] &&
-        [self queryForKey:key forType:self.queriesLoadMore] != (id)[NSNull new]) {
+        [self queryForKey:key forType:self.queriesLoadMore] != (id)[NSNull new] &&
+        ![[self queryForKey:key forType:self.queriesLoadMore] isFinished]) {
         return FALSE;
     }
     
@@ -269,6 +270,20 @@ static DataCache *classInstance = nil;
     for (NSString *key in keys) {
         [self clearData:key];
     }
+    return TRUE;
+}
+
+-(BOOL)cancelAllQueries
+{
+    [self.queriesReload enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        if (obj != (id)[NSNull new] && ![obj isFinished])
+            [obj cancel];
+    }];
+    
+    [self.queriesLoadMore enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        if (obj != (id)[NSNull new] && ![obj isFinished])
+            [obj cancel];
+    }];
     return TRUE;
 }
 
