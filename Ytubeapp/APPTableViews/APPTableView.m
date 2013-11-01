@@ -282,6 +282,7 @@
     if ([self._del hasData:mode]) {
         [self.tableViewMaskView unmaskOnCompletion:^(BOOL isUnmasked) {
             if (isUnmasked) {
+                self.scrollEnabled = TRUE;
                 [self performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
             }
         }];
@@ -289,6 +290,7 @@
     } else {
         [self.tableViewMaskView maskOnCompletion:^(BOOL isMasked) {
             if (isMasked) {
+                self.scrollEnabled = FALSE;
                 [self reloadDataForShowMode:mode];
             }
         }];
@@ -329,6 +331,7 @@
     if (mode == self.showMode) {
         [self.tableViewMaskView unmaskOnCompletion:^(BOOL isUnmasked) {
             if (isUnmasked) {
+                self.scrollEnabled = TRUE;
                 [self.pullToRefreshView finishLoading];
                 [self performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
             }
@@ -342,6 +345,7 @@
     if (mode == self.showMode) {
         [self.tableViewMaskView unmaskOnCompletion:^(BOOL isUnmasked) {
             if (isUnmasked) {
+                self.scrollEnabled = TRUE;
                 [self.pullToRefreshView finishLoading];
                 [self performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
             }

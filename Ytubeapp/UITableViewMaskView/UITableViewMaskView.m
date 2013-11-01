@@ -37,10 +37,11 @@
         self._customMaskView = customMaskView;
         self._delegate = delegate;
         
-        self._maskView = [[UIControl alloc] initWithFrame:CGRectMake(0.0, 0.0, self._rootView.frame.size.width, self._rootView.frame.size.height)];
+        self._maskView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, self._rootView.frame.size.width, self._rootView.frame.size.height)];
         self._maskView.backgroundColor = [UIColor blackColor];
         self._maskView.alpha = self.alphaValue;
         self._maskView.layer.masksToBounds = NO;
+        self._maskView.userInteractionEnabled = NO;
         
         self.spinningWheel = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(5.0, 5.0, 30.0, 30.0)];
         self.spinningWheel.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
