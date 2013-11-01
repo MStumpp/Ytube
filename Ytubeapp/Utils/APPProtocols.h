@@ -15,23 +15,32 @@
 #import "SmartNavigationController.h"
 #import "APPTableCell.h"
 
-// button tags
+#define tNone 10
+#define tToday 11
+#define tWeek 12
+#define tMonth 13
+#define tAll 14
+#define tDefault 15
+#define tBack 16
+#define tEdit 17
+#define tAdd 18
+#define tLike 19
+#define tLikeLike 20
+#define tLikeDislike 21
+#define tAddToPlaylist 22
+#define tSignOut 23
 
-#define tToday 1
-#define tWeek 2
-#define tMonth 3
-#define tAll 4
-#define tDefault 5
-#define tBack 21
-#define tEdit 22
-#define tAdd 23
-#define tLike 24
-#define tLikeLike 25
-#define tLikeDislike 26
-#define tAddToPlaylist 27
-#define tWatchLater 28
-#define tFavorites 29
-#define tComments 30
+#define tSearch 51
+#define tMostPopular 52
+#define ttopRated 53
+#define ttopFavorites 54
+#define tRecentlyFeatured 55
+#define tFavorites 56
+#define tPlaylists 57
+#define tHistory 58
+#define tWatchLater 59
+#define tMyVideos 60
+#define tComments 61
 
 typedef void(^APPSelectDelegateCallback)(GDataEntryBase *entryBase);
 
