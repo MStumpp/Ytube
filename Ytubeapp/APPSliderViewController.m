@@ -498,6 +498,7 @@
                              mainViewFrame.origin.x = 0;
                              self.mainView.frame = mainViewFrame;
                              self.rightShadow.alpha = 1.0;
+                             self.leftShadow.alpha = 0.0;
                          }
                          completion:^(BOOL finished){
                              if (callback)
@@ -544,6 +545,7 @@
                              CGRect mainViewFrame = self.mainView.frame;
                              mainViewFrame.origin.x = -164;
                              self.mainView.frame = mainViewFrame;
+                             self.rightShadow.alpha = 0.0;
                              self.leftShadow.alpha = 1.0;
                          }
                          completion:^(BOOL finished){
