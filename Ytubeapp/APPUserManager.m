@@ -75,7 +75,7 @@ static APPUserManager *classInstance = nil;
 -(void)signOutOnCompletion:(void (^)(BOOL isSignedOut))callback
 {
     if (self.auth) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"googleapi" ofType:@"plist"];
         NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
         
         // remove the stored Google authentication from the keychain, if any
