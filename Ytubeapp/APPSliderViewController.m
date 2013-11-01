@@ -206,13 +206,11 @@
     
     // shadows
     self.rightShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main_shadow_right"]];
-    //[self.rightShadow setHidden:YES];
     [self.rightShadow setAlpha:0.0];
     [self.view addSubview:self.rightShadow];
     
     self.leftShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main_shadow_left"]];
     [self.leftShadow setAlpha:0.0];
-    //[self.leftShadow setHidden:YES];
     [self.view addSubview:self.leftShadow];
 
     self.maskView = [[UITableViewMaskView alloc] initWithRootView:self.view customMaskView:nil delegate:self];
