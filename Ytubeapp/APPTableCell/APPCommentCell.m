@@ -116,7 +116,7 @@
         
         open = n;
         if (open) {
-            CGSize s = [commentText sizeWithFont:[UIFont fontWithName: @"Nexa Light" size:12] constrainedToSize:CGSizeMake(215.0, MAXFLOAT)];
+            CGSize s = [commentText boundingRectWithSize:CGSizeMake(215.0, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont fontWithName: @"Nexa Light" size:12]} context:nil].size;
             self.commentLabel.frame = CGRectMake(85.0, 30.0, 215.0, s.height);
             self.commentLabel.numberOfLines = (int) s.height / 12.0;
         } else {
@@ -128,7 +128,7 @@
 
 -(NSUInteger)cellHeightFullComment
 {
-    CGSize s = [commentText sizeWithFont:[UIFont fontWithName: @"Nexa Light" size:12] constrainedToSize:CGSizeMake(215.0, MAXFLOAT) lineBreakMode:self.commentLabel.lineBreakMode];
+    CGSize s = [commentText boundingRectWithSize:CGSizeMake(215.0, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont fontWithName: @"Nexa Light" size:12]} context:nil].size;
     NSUInteger cellHeight = s.height + 30.0 + 12.0;
     return cellHeight >= 88.0 ? cellHeight : 88.0;
 }

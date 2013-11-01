@@ -150,7 +150,7 @@
     [self.durationLabel setFont:[UIFont fontWithName:@"Nexa Light" size:10]];
     [self.durationLabel setTextColor:[UIColor whiteColor]];
     [self.durationLabel setBackgroundColor:[UIColor clearColor]];
-    self.durationLabel.textAlignment = UITextAlignmentCenter;
+    self.durationLabel.textAlignment = NSTextAlignmentCenter;
     [self.tableCellMain addSubview:self.durationLabel];
 
     self.playImage = [[UIImageView alloc] initWithFrame:CGRectMake(16.0, 8.0, 105.0, 71.0)];

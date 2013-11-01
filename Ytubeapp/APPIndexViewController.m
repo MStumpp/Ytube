@@ -60,7 +60,7 @@
     [self.toolbarLabel setTextColor:[UIColor whiteColor]];
     [self.toolbarLabel setShadowColor:[UIColor blackColor]];
     [self.toolbarLabel setShadowOffset:CGSizeMake(.4f, .4f)];
-    self.toolbarLabel.textAlignment = UITextAlignmentCenter;
+    self.toolbarLabel.textAlignment = NSTextAlignmentCenter;
     self.toolbarLabel.backgroundColor = [UIColor clearColor];
     self.toolbarLabel.opaque = NO;
     [self.toolbar addSubview:self.toolbarLabel];

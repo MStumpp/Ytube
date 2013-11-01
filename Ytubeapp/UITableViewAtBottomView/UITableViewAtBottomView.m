@@ -41,7 +41,7 @@
 {
     if ([keyPath isEqual:@"contentSize"]) {
         CGSize contentSize = [[change objectForKey:NSKeyValueChangeNewKey] CGSizeValue];
-        if (self.currentTableViewHeight = 0.0) {
+        if (self.currentTableViewHeight == 0.0) {
             self.currentTableViewHeight = contentSize.height;
             [self.tableView removeObserver:self forKeyPath:@"contentSize"];
 

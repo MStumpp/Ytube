@@ -9,9 +9,9 @@
 
 #import "APPContentBaseController.h"
 
-static bool downAtTopOnly = TRUE;
-static int downAtTopDistance = 40;
-static int heightVideoView = 186.0;
+const bool downAtTopOnly = TRUE;
+const int downAtTopDistance = 40;
+const int heightVideoView = 186.0;
 
 @interface APPContentVideoDetailViewController : APPContentBaseController <VideoDependenceDelegate, APPTableViewDelegate, UITableViewHeaderFormViewDelegate, UITableViewMaskViewDelegate, UIWebViewDelegate>
 
