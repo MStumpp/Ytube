@@ -109,7 +109,7 @@
             }
             
             if (![self keepVideoPlaying]) {
-            //    [self pauseVideo];
+                [self pauseVideo];
             }
             self.keepVideoPlaying = FALSE;
         }];
