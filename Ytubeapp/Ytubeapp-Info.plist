@@ -14,6 +14,9 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
+				<string>Settings_Icon</string>
+				<string>Spotlight_Icon</string>
+				<string>App_Icon</string>
 				<string>Icon</string>
 				<string>Icon@2x.png</string>
 				<string>Icon.png</string>
