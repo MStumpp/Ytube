@@ -17,7 +17,6 @@
 		167C92D16FEF5A54D3AEF694 /* APPFetchFeedWithURLQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C99D7E4E360BE62C7A9BF /* APPFetchFeedWithURLQuery.m */; };
 		167C9310A52C509C4EC7E8A3 /* APPVideoIsFavorite.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C921117F102C8D77D4E6B /* APPVideoIsFavorite.m */; };
 		167C94B98109EB11AAD2F5B8 /* APPTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C94B5B01610D1AB88CFCC /* APPTableCell.m */; };
-		167C954043A17B3DE6D7A5B4 /* settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 167C979DD2EDBC608E73FE4C /* settings.plist */; };
 		167C95C03A00B833B2E35DB0 /* APPFetchEntryByInsertingEntryQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9F3387CC01C5A2268602 /* APPFetchEntryByInsertingEntryQuery.m */; };
 		167C95F8947010E9240EDD6B /* APPPlaylistRemoveVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9B560D150D96A4C51034 /* APPPlaylistRemoveVideo.m */; };
 		167C96165BDCA4DC8116BB70 /* APPContentTopButtonBarVideoListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 167C9EB19C2934FCA9FA3E3E /* APPContentTopButtonBarVideoListController.m */; };
@@ -154,6 +153,7 @@
 		397641A616010B06007C6996 /* profile.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 397641A516010B05007C6996 /* profile.jpg */; };
 		3987DB3B18231BFF0097F050 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3987DB3A18231BFF0097F050 /* AVFoundation.framework */; };
 		3987DB3D18231D210097F050 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3987DB3C18231D210097F050 /* AudioToolbox.framework */; };
+		3987DB3F1823CC010097F050 /* googleapi.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3987DB3E1823CC010097F050 /* googleapi.plist */; };
 		399D962F1600099F000A1FF9 /* nav_right_history_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 399D96291600099F000A1FF9 /* nav_right_history_up@2x.png */; };
 		399D96301600099F000A1FF9 /* nav_right_my_videos_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 399D962A1600099F000A1FF9 /* nav_right_my_videos_up@2x.png */; };
 		399D96311600099F000A1FF9 /* nav_right_playlists_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 399D962B1600099F000A1FF9 /* nav_right_playlists_up@2x.png */; };
@@ -331,7 +331,6 @@
 		167C977012762A2A0E8C8484 /* APPContentTopSearchBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPContentTopSearchBarController.m; path = APPContentControllers/APPContentTopSearchBarController.m; sourceTree = "<group>"; };
 		167C9784251A5566416E524F /* APPVideoRecentlyFeatured.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoRecentlyFeatured.h; path = Videos/APPVideoRecentlyFeatured.h; sourceTree = "<group>"; };
 		167C97902BF2586326EB9918 /* APPVideoMostViewed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPVideoMostViewed.m; path = Videos/APPVideoMostViewed.m; sourceTree = "<group>"; };
-		167C979DD2EDBC608E73FE4C /* settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = settings.plist; sourceTree = SOURCE_ROOT; };
 		167C97A3BB3E5D3377E5503F /* APPContentBaseController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPContentBaseController.h; path = APPContentControllers/APPContentBaseController.h; sourceTree = "<group>"; };
 		167C97AF90C8CE4410804B64 /* APPVideoMyVideoDelete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APPVideoMyVideoDelete.h; path = MyVideo/APPVideoMyVideoDelete.h; sourceTree = "<group>"; };
 		167C97BAB818BF155F1B270B /* APPVideoAddToWatchLater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = APPVideoAddToWatchLater.m; path = WatchLater/APPVideoAddToWatchLater.m; sourceTree = "<group>"; };
@@ -494,6 +493,7 @@
 		3987DB3818231BC10097F050 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		3987DB3A18231BFF0097F050 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		3987DB3C18231D210097F050 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		3987DB3E1823CC010097F050 /* googleapi.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = googleapi.plist; sourceTree = "<group>"; };
 		399D96291600099F000A1FF9 /* nav_right_history_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nav_right_history_up@2x.png"; sourceTree = "<group>"; };
 		399D962A1600099F000A1FF9 /* nav_right_my_videos_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nav_right_my_videos_up@2x.png"; sourceTree = "<group>"; };
 		399D962B1600099F000A1FF9 /* nav_right_playlists_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nav_right_playlists_up@2x.png"; sourceTree = "<group>"; };
@@ -1024,12 +1024,12 @@
 		395A877715E186F4004F39E2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				3987DB3E1823CC010097F050 /* googleapi.plist */,
 				395A87B415E1B294004F39E2 /* Nexa Bold.otf */,
 				395A87B515E1B294004F39E2 /* Nexa Light.otf */,
 				395A877815E186F4004F39E2 /* Ytubeapp-Info.plist */,
 				395A877915E186F4004F39E2 /* InfoPlist.strings */,
 				395A877E15E186F4004F39E2 /* Ytubeapp-Prefix.pch */,
-				167C979DD2EDBC608E73FE4C /* settings.plist */,
 				167C9C98E3B79BD830A08D10 /* main.m */,
 			);
 			name = "Supporting Files";
@@ -1412,6 +1412,7 @@
 				395C92C016001F0F00DD9E55 /* top_bar_back_most_viewed@2x.png in Resources */,
 				395C92C21600229800DD9E55 /* nav_left_most_viewed_up@2x.png in Resources */,
 				395C92C4160022B700DD9E55 /* nav_left_most_viewed_down@2x.png in Resources */,
+				3987DB3F1823CC010097F050 /* googleapi.plist in Resources */,
 				39039A6A1600303300ED53FF /* main_shadow_left@2x.png in Resources */,
 				39039A6F1600330900ED53FF /* main_shadow_right@2x.png in Resources */,
 				39039A7116003CB700ED53FF /* video_cell_hd_logo@2x.png in Resources */,
@@ -1527,7 +1528,6 @@
 				39EBB198167A61D700709BF9 /* video_cell_back_normal_bottom@2x.png in Resources */,
 				39EBB199167A61D700709BF9 /* video_cell_back_normal_top@2x.png in Resources */,
 				39B20207167DDA8400FBC28E /* silhouette.png in Resources */,
-				167C954043A17B3DE6D7A5B4 /* settings.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

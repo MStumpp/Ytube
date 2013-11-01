@@ -120,7 +120,7 @@
         [self.leftButton setSelected:NO];
         [self.rightButton setSelected:YES];
 
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"];
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"googleapi" ofType:@"plist"];
         NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
 
         self.loginController = [[GTMOAuth2ViewControllerTouch alloc] initWithScope:[GDataServiceGoogleYouTube authorizationScope]

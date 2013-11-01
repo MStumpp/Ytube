@@ -20,5 +20,5 @@ DerivedData
 # CocoaPods
 Pods/
 
-# Git
-.gitignore
+# Google API settings
+googleapi.plist
