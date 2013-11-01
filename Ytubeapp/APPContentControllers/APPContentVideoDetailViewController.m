@@ -445,7 +445,7 @@
 #pragma mark - Managing the detail item
 -(void)displayGoogleVideo:(NSString*)videoId
 {
-    NSString* embedHTML = [NSString stringWithFormat:@"<html><body style='margin:0px;padding:0px;'><script type='text/javascript' src='http://www.youtube.com/iframe_api'></script><script type='text/javascript'>function onYouTubeIframeAPIReady(){ytplayer=new YT.Player('playerId', {events:{onReady:onPlayerReady}})}function onPlayerReady(a){a.target.playVideo();}</script><iframe id='playerId' type='text/html' width='320' height='%d' src='http://www.youtube.com/embed/%@?enablejsapi=1&rel=0&playsinline=1&showinfo=0&controls=1&modestbranding=1&color=white&iv_load_policy=3&theme=light&autoplay=1' frameborder='0'></body></html>", self.heightVideoView, videoId];
+    NSString* embedHTML = [NSString stringWithFormat:@"<html><body style='margin:0px;padding:0px;'><script type='text/javascript' src='http://www.youtube.com/iframe_api'></script><script type='text/javascript'>function onYouTubeIframeAPIReady(){ytplayer=new YT.Player('playerId', {events:{onReady:onPlayerReady}})}function onPlayerReady(a){a.target.playVideo();}</script><iframe id='playerId' type='text/html' width='320' height='%d' src='http://www.youtube.com/embed/%@?enablejsapi=1&rel=0&playsinline=1&showinfo=0&controls=1&modestbranding=1&iv_load_policy=3&theme=light&autoplay=1&autohide=1' frameborder='0'></body></html>", self.heightVideoView, videoId];
     [self.webView loadHTMLString:embedHTML baseURL:[[NSBundle mainBundle] resourceURL]];
 }
 
