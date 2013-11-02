@@ -92,6 +92,10 @@
 -(void)cancelSearch
 {
     self.search.text = @"";
+    self.query = @"";
+    // clear cache in order to process new query
+    [self.dataCache clearData:tVideoQueryAll];
+    [self.tableView toDefaultShowModeForce];
     if ([self.search isFirstResponder])
         [self.search resignFirstResponder];
 }

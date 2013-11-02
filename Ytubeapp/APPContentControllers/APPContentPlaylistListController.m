@@ -62,6 +62,8 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedPlaylist object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventDeletedPlaylist object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventAddedVideoToPlaylist object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processEvent:) name:eventRemovedVideoFromPlaylist object:nil];
     }
     return self;
 }
@@ -181,6 +183,16 @@
                                        delegate:nil
                               cancelButtonTitle:@"OK"
                               otherButtonTitles:nil] show];
+            [self.tableView clearViewAndReload];
+        }
+        
+    } else if ([[notification name] isEqualToString:eventAddedVideoToPlaylist]) {
+        if (![(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
+            [self.tableView clearViewAndReload];
+        }
+        
+    } else if ([[notification name] isEqualToString:eventRemovedVideoFromPlaylist]) {
+        if (![(NSDictionary*)[notification userInfo] objectForKey:@"error"]) {
             [self.tableView clearViewAndReload];
         }
     }

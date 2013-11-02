@@ -42,6 +42,9 @@ static NSMutableDictionary *instances;
     if (self) {
         self.dataCache = [[APPGlobals classInstance] getGlobalForKey:@"dataCache"];
         
+        self.topbarImage = nil;
+        self.topbarTitle = nil;
+        
         self.downAtTopOnly = TRUE;
         self.downAtTopDistance = 40;
         

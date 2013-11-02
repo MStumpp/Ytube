@@ -93,7 +93,7 @@
         [[self.tableView visibleCells] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             if ([[APPContent videoID:[obj video]] isEqualToString:videoID]) {
                 // ugly, but doesn't work without the delay for some unknown reason
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                     [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[self.tableView indexPathForCell:obj]] withRowAnimation:UITableViewRowAnimationTop];
                 });
             }

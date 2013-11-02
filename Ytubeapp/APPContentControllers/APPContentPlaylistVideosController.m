@@ -29,6 +29,7 @@
     self = [super init];
     if (self) {
         self.playlist = pl;
+        self.topbarImage = nil;
         self.topbarTitle = [[self.playlist title] stringValue];
         
         self.playlistVideosId = [NSString stringWithFormat:@"%@_%@", tPlaylistVideosAll, [APPContent playlistID:self.playlist]];

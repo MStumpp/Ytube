@@ -14,7 +14,6 @@
 {
     NSDictionary *dict = (NSDictionary*) props;
     GDataEntryYouTubePlaylistLink *playlist = [dict objectForKey:@"playlist"];
-    NSLog(@"%@", [[playlist content] sourceURI]);
     [self fetchFeedWithURL:[NSURL URLWithString:[[playlist content] sourceURI]]];
 }
 

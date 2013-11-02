@@ -65,6 +65,7 @@
     self = [super init];
     if (self) {
         self.video = v;
+        self.topbarImage = nil;
         self.topbarTitle = [[self.video title] stringValue];
         
         self.heightVideoView = 186.0;
