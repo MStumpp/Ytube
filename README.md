@@ -12,7 +12,7 @@ http://ytubeapp.com
 ![Ytube Screen 3](https://raw.github.com/MStumpp/Ytube/master/youtube_screen_3.png)
 
 Joint work by:
-- Luboš Volkov (Screen Design)
-- Marek Zeman (Web Development)
+- Luboš Volkov (Screen Design)(http://dribbble.com/OtherPlanet)
+- Marek Zeman (Web Development)(http://marekzeman.cz)
 - Matthias Stumpp (iOS Development)
 
