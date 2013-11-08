@@ -1,4 +1,5 @@
 Ytubeapp
 ========
 
-![alt text](https://raw.github.com/MStumpp/Ytube/master/badge_ios.png "Download on the App Store")(https://www.google.com)
+![Download on the App Store](https://raw.github.com/MStumpp/Ytube/master/badge_ios.png "Download on the App Store")
+Format: ![Alt Text](http://www.google.de)
