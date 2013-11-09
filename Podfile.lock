@@ -1,4 +1,5 @@
 PODS:
+  - FSMUIViewController (0.0.10)
   - GData (1.12.0):
     - GData/Core
     - GData/XMLNode
@@ -10,41 +11,61 @@ PODS:
   - GData/XMLNode (1.12.0):
     - gtm-oauth2
     - GTMHTTPFetcher
-  - gtm-oauth2 (0.0.1):
+  - gtm-oauth2 (0.0.2):
     - gtm-oauth2/Core
     - GTMHTTPFetcher
     - SBJson
-  - gtm-oauth2/Core (0.0.1):
+  - gtm-oauth2/Core (0.0.2):
     - gtm-oauth2/Core/Mac
     - gtm-oauth2/Core/Touch
     - GTMHTTPFetcher
     - SBJson
-  - gtm-oauth2/Core/Mac (0.0.1):
+  - gtm-oauth2/Core/Mac (0.0.2):
     - GTMHTTPFetcher
     - SBJson
-  - gtm-oauth2/Core/Touch (0.0.1):
+  - gtm-oauth2/Core/Touch (0.0.2):
     - GTMHTTPFetcher
     - SBJson
   - GTMHTTPFetcher (0.0.1):
     - SBJson
   - MBProgressHUD (0.8)
   - NSDate-TimeAgo (0.0.1)
+  - QueryManager (0.0.16)
   - SBJson (3.2)
+  - SmartNavigationController (0.0.3)
   - SSPullToRefresh (1.1.2)
+  - UITableViewAtBottomView (0.0.2)
+  - UITableViewHeaderFormView (0.0.2)
+  - UITableViewMaskView (0.0.2)
+  - UITableViewSwipeView (0.0.2)
 
 DEPENDENCIES:
+  - FSMUIViewController (~> 0.0.10)
   - GData (~> 1.12.0)
   - MBProgressHUD (~> 0.6)
   - NSDate-TimeAgo (~> 0.0.1)
+  - QueryManager (~> 0.0.16)
+  - SmartNavigationController (~> 0.0.3)
   - SSPullToRefresh (~> 1.1.2)
+  - UITableViewAtBottomView (~> 0.0.2)
+  - UITableViewHeaderFormView (~> 0.0.2)
+  - UITableViewMaskView (~> 0.0.2)
+  - UITableViewSwipeView (~> 0.0.2)
 
 SPEC CHECKSUMS:
+  FSMUIViewController: 6afb517758deaf46b074c59de4c2838d02331495
   GData: e95aa598080c7de8b1c954d3cc8b98c2b4ac3534
-  gtm-oauth2: af6d1ff3d4b14b35d3709f7f4bf2be8b43e45e62
+  gtm-oauth2: 92e23fbb4ab77c4f441ffc95e2bbbf174ea589c1
   GTMHTTPFetcher: b0af09f18ec87e7a5edeffcc8cb6449fdbf0e83f
   MBProgressHUD: 2bbc6f470111daf7f3eaa4eb12b8cbf01c4c0622
   NSDate-TimeAgo: c22120e1736dec8ea2e2260fda8f48a0abb83f05
+  QueryManager: c02f4615a8d24955ea024d6a0282cd1922b6972b
   SBJson: e60b4dc22448c2ae1e754b523a4ab53408e85c8d
+  SmartNavigationController: b52eec18118a7a40010bdc4cc285aa34bc394040
   SSPullToRefresh: 8d8360b0ff0dc7b344656b48ddf9732c47e78806
+  UITableViewAtBottomView: 2b054955991ed6d5873845e2adf8d0a05c50ee34
+  UITableViewHeaderFormView: fe49c5a2a6503300a57676543ee60ec99fb33cc8
+  UITableViewMaskView: 8b2d22b3e2f8f6ea8861c5aaa6fac98bf704ab3f
+  UITableViewSwipeView: 7a71a665cf0834b40002cd17787e92488d166661
 
 COCOAPODS: 0.20.2
