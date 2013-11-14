@@ -11,7 +11,7 @@ Official site: http://ytubeapp.com
 <div style="float: left"><img src="https://raw.github.com/MStumpp/Ytube/master/youtube_screen_2.png"/></div>
 <div style="float: left"><img src="https://raw.github.com/MStumpp/Ytube/master/youtube_screen_3.png"/></div>
 
-Joint work by:
+Joint work with:
 - [Luboš Volkov](http://dribbble.com/OtherPlanet) (Screen Design)
 - [Marek Zeman](http://marekzeman.cz) (Web Development)
 - Matthias Stumpp (iOS Development)
